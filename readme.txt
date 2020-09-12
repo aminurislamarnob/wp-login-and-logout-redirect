@@ -8,7 +8,7 @@ Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin enable simple and easy way to redirect user to Admin Pre-defined specific URL, on login or logout or both.
+This plugin enable simple and easy way to redirect user to admin Pre-defined specific URL, on login or logout or both.
 
 == Description ==
 

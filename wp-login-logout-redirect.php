@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Login and Logout Redirect
-Plugin URI: https://wordpress.org/plugins/wp-login-logout-redirect/
+Plugin URI: https://wordpress.org/plugins/wp-login-and-logout-redirect/
 Description: This plugin which enables you to redirect users to specific URL on login or logout or both.
 Version: 1.0
 Author: Aminur Islam
@@ -85,7 +85,7 @@ function jfb_logout_field_callback() {
 
 //Plugin settings page section text
 function jfb_login_logout_section_text() {
-	printf('%s You can change WordPress Default login or logout or both redirect URL %s', '<p>', '</p>');
+	printf('%s %s %s', '<p>', __('You can change WordPress Default login or logout or both redirect URL', 'wp-login-logout-redirect'), '</p>');
 }
 
 
