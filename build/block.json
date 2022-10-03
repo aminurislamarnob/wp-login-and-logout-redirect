@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "wp-login-logout-block/wp-login-logout-redirect",
+  "version": "0.1.0",
+  "title": "Wp Login Logout Redirect",
+  "category": "widgets",
+  "icon": "smiley",
+  "description": "Not used any where, just admin area.",
+  "supports": {
+    "html": false
+  },
+  "textdomain": "wp-login-logout-redirect",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}
