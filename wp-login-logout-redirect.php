@@ -114,7 +114,7 @@ function wplalr_wp_login_redirect( $redirect_to, $request, $user ) {
  */
 function wplalr_wp_logout_redirect($redirect_to, $requested_redirect_to, $user){
 	$wplalr_logout_redirect = home_url();
-	if ($user->ID && $user?->roles[0]) {
+	if (isset( $user->roles ) && is_array( $user->roles )) {
 		$redirect_data = wplalr_get_redirect_data($user->roles[0]);
 		if ($redirect_data[0]['logout_url']) {
 			$wplalr_logout_redirect = $redirect_data[0]['logout_url'];
@@ -155,15 +155,15 @@ function wplalr_login_logout_redirect_admin_scripts() {
 				'You need to run `npm start` or `npm run build` to build the asset files first.'
 		);
 	}
-	//$admin_js     = 'build/admin.js';
+
 	$admin_js     = plugins_url( '/', __FILE__ ) . 'build/admin.js';
-//	$script_asset = require( $script_asset_path );
-//	wp_register_script(
-//			'wplalr-login-logout-redirect-admin',
-//			plugins_url( $admin_js, __FILE__ ),
-//			$script_asset['dependencies'],
-//			$script_asset['version']
-//	);
+	wp_register_script(
+			'wplalr-login-logout-redirect-admin',
+			$admin_js,
+		array('react', 'react-dom', 'wp-api', 'wp-components', 'wp-dom-ready', 'wp-element', 'wp-i18n'),
+			1,
+		false
+	);
 
 	wp_enqueue_script(
 			'wplalr-login-logout-redirect-admin',

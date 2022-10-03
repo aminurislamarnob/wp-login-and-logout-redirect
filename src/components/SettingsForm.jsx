@@ -22,7 +22,11 @@ import { useState, useEffect } from '@wordpress/element';
 import FetchSettings from './FetchSettings';
 
 const SettingsForm = ( { availableRoles } ) => {
-	const [ valuesList, setValuesList ] = useState( [] );
+	const [ valuesList, setValuesList ] = useState( [{
+		login_url: '',
+		logout_url: '',
+		roles: [],
+	}] );
 
 	const [ siteRoles, setSiteRoles ] = useState( [] );
 

@@ -14,13 +14,21 @@ const FetchSettings = ( availableRoles ) => {
 			apiSettings
 				.fetch()
 				.then( ( res ) => {
-					const data = JSON.parse( res.wplalr_login_logout_data ).map(
-						( item ) => {
-							item.roles = formatRoles( item.roles, roles );
-							return item;
-						}
-					);
-					setData( data );
+					let newData = [{
+						login_url: '',
+						logout_url: '',
+						roles: [],
+					}]
+					const resData = res.wplalr_login_logout_data
+					if (resData.length) {
+						newData = JSON.parse(resData).map(
+							( item ) => {
+								item.roles = formatRoles( item.roles, roles );
+								return item;
+							}
+						);
+					}
+					setData( newData );
 				} )
 				.catch( ( err ) => setError( err ) );
 		} );
