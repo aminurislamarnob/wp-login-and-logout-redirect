@@ -98,7 +98,7 @@ function wplalr_wp_login_redirect( $redirect_to, $request, $user ) {
 								}
 
 							$redirect_data = wplalr_get_redirect_data($user->roles[0]);
-							if ($redirect_data[0]['login_url']) {
+							if (isset($redirect_data[0]['login_url'])) {
 									$redirect_to = $redirect_data[0]['login_url'];
 								}
 

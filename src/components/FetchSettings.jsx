@@ -5,7 +5,7 @@ import api from '@wordpress/api';
 
 const FetchSettings = ( availableRoles ) => {
 	const [ roles, setRoles ] = useState( availableRoles );
-	const [ data, setData ] = useState( null );
+	  
 	const [ error, setError ] = useState( null );
 
 	useEffect( () => {
