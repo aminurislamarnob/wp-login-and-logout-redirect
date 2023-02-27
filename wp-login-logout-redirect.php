@@ -3,7 +3,8 @@
 Plugin Name: WP Login and Logout Redirect
 Plugin URI: https://wordpress.org/plugins/wp-login-and-logout-redirect/
 Description: This plugin which enables you to redirect users to specific URL on login or logout or both.
-Version: 1.0
+Version: 1.2
+Tested up to: 6.0
 Author: Aminur Islam
 Author URI: https://github.com/aminurislamarnob
 License: GPLv2 or later
@@ -23,95 +24,61 @@ if ( !defined( 'ABSPATH' ) ) exit;
 */
 define('WPLALR_PLUGIN_VERSION', '1.0');
 
- 
+
+/**
+	* Plugin Dir
+	*/
+define( 'WPLALR_PLUGIN', __FILE__ );
+define( 'WPLALR_PLUGIN_DIR', untrailingslashit( dirname( WPLALR_PLUGIN ) ) );
+
 /**
  * Load plugin textdomain.
  */
 function wplalr_login_logout_load_textdomain() {
-    load_plugin_textdomain( 'wp-login-logout-redirect', false, basename( dirname( __FILE__ ) ) . '/languages' ); 
+    load_plugin_textdomain( 'wp-login-logout-redirect', false, basename( dirname( __FILE__ ) ) . '/languages' );
 }
-add_action( 'init', 'wplalr_login_logout_load_textdomain' );
 
 
 /**
  * Plugin settings page
  */
 function wplalr_login_logout_register() {
-    
+
     // register a new section
-    add_settings_section(
-        'wplalr_login_logout_settings_section', 
-        __('WP Login and Logout Redirect Options', 'wp-login-logout-redirect'), 'wplalr_login_logout_section_text', 
-        'wplalr_login_logout_section'
-    );
-
-    // register a new field in the "wplalr_login_logout_settings_section" section
-    add_settings_field(
-        'wplalr_login_redirect', 
-        __('Login Redirect URL','wp-login-logout-redirect'), 'wplalr_login_field_callback', 
-        'wplalr_login_logout_section',  
-        'wplalr_login_logout_settings_section'
-    );
-
-    // register a new setting for login redirect field
-	register_setting('wplalr_login_logout_settings_section', 'wplalr_login_redirect');
-
-    // register a new field in the "wplalr_login_logout_settings_section" section
-	add_settings_field(
-        'wplalr_logout_redirect', 
-        __('Logout Redirect URL', 'wp-login-logout-redirect'), 'wplalr_logout_field_callback', 
-        'wplalr_login_logout_section',  
-        'wplalr_login_logout_settings_section'
-    );
-
-    // register a new setting for logout redirect field
-	register_setting('wplalr_login_logout_settings_section', 'wplalr_logout_redirect');
-
+	//if (is_admin()) {
+		register_setting(
+				'wplalr_login_logout_settings_section',
+				'wplalr_login_logout_data',
+				array(
+						'default'      => '',
+						'show_in_rest' => true,
+						'type'         => 'string',
+				)
+		);
 }
-add_action('admin_init', 'wplalr_login_logout_register');
-
-
-//Login redirect field content
-function wplalr_login_field_callback(){
-    $wplalr_login_redirect_value = get_option('wplalr_login_redirect');
-	printf('<input name="wplalr_login_redirect" type="text" class="regular-text" value="%s"/>', $wplalr_login_redirect_value);
-}
-
-//Logout redirect field content
-function wplalr_logout_field_callback() {
-    $wplalr_logout_redirect_value = get_option('wplalr_logout_redirect');
-	printf('<input name="wplalr_logout_redirect" type="text" class="regular-text" value="%s"/>', $wplalr_logout_redirect_value);
-}
-
-//Plugin settings page section text
-function wplalr_login_logout_section_text() {
-	printf('%s %s %s', '<p>', __('You can change WordPress Default login or logout or both redirect URL', 'wp-login-logout-redirect'), '</p>');
-}
-
 
 //Register plugin admin menu
-add_action('admin_menu', 'wplalr_login_logout_redirect_menu');
 function wplalr_login_logout_redirect_menu() {
-	add_menu_page(__('WP Login and Logout Redirect Options', 'wp-login-logout-redirect'), __('Redirect Options', 'wp-login-logout-redirect'), 'manage_options', 'wplalr_login_logout_redirect', 'wplalr_login_logout_redirect_output', 'dashicons-randomize');
+	add_menu_page(
+   __('WP Login and Logout Redirect Options', 'wp-login-logout-redirect'),
+   __('Redirect Options', 'wp-login-logout-redirect'),
+   'manage_options',
+   'wplalr_login_logout_redirect',
+   'wplalr_login_logout_redirect_output',
+   'dashicons-randomize');
 }
 
 
 //Plugin options form
 function wplalr_login_logout_redirect_output(){
-    settings_errors();
     ?>
-	<form action="options.php" method="POST">
-		<?php do_settings_sections('wplalr_login_logout_section');?>
-		<?php settings_fields('wplalr_login_logout_settings_section');?>
-		<?php submit_button();?>
-	</form>
+ <div id="wplalr-login-logout-plugin-settings"></div>
 <?php }
 
 
 /**
  * Add settings page link with plugin.
  */
-add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'wplalr_login_logout_action_links' );
 function wplalr_login_logout_action_links( $links ){
     $wplalr_login_logout_plugin_action_links = array(
     '<a href="' . admin_url( 'admin.php?page=wplalr_login_logout_redirect' ) . '"> '. __('Settings', 'wp-login-logout-redirect') . '</a>',
@@ -124,28 +91,122 @@ function wplalr_login_logout_action_links( $links ){
  * Login redirect to user specific URL.
  */
 function wplalr_wp_login_redirect( $redirect_to, $request, $user ) {
-    $redirect_to =  get_option('wplalr_login_redirect');
+				if (isset( $user->roles ) && is_array( $user->roles )) {
 
-    if(empty($redirect_to)){
-        $redirect_to = admin_url();
-    }
+								if(empty($redirect_to)){
+									$redirect_to = admin_url();
+								}
 
-    return $redirect_to;
+							$redirect_data = wplalr_get_redirect_data($user->roles[0]);
+							if (isset($redirect_data[0]['login_url'])) {
+									$redirect_to = $redirect_data[0]['login_url'];
+								}
+
+				}
+				return $redirect_to;
+
 }
-add_filter( 'login_redirect', 'wplalr_wp_login_redirect', 10, 3 );
+
 
 
 /**
  * Logout redirect to user specific URL.
  */
-function wplalr_wp_logout_redirect(){
-    $wplalr_logout_redirect =  get_option('wplalr_logout_redirect');
-
-    if(empty($wplalr_logout_redirect)){
-        $wplalr_logout_redirect = home_url();
-    }
-
-    wp_redirect( $wplalr_logout_redirect );
-    exit();
+function wplalr_wp_logout_redirect($redirect_to, $requested_redirect_to, $user){
+	$wplalr_logout_redirect = home_url();
+	if (isset( $user->roles ) && is_array( $user->roles )) {
+		$redirect_data = wplalr_get_redirect_data($user->roles[0]);
+		if ($redirect_data[0]['logout_url']) {
+			$wplalr_logout_redirect = $redirect_data[0]['logout_url'];
+		}
+	}
+	wp_redirect( $wplalr_logout_redirect );
+	exit();
 }
-add_action('wp_logout', 'wplalr_wp_logout_redirect');
+
+
+function wplalr_get_roles_array() {
+	$editable_roles = get_editable_roles();
+	foreach ($editable_roles as $role => $details) {
+		$sub['role'] = esc_attr($role);
+		$sub['name'] = translate_user_role($details['name']);
+		$roles[] = $sub;
+	}
+	return $roles;
+}
+
+function wplalr_get_redirect_data($role) {
+	$redirect_data = json_decode(get_option('wplalr_login_logout_data'), true);
+
+	$redirect_to = array_filter($redirect_data, function ($data) use ($role) {
+		return in_array($role, $data['roles']) ?? true;
+	});
+
+	return array_values($redirect_to);
+}
+// Register and enqueue admin scripts
+function wplalr_login_logout_redirect_admin_scripts() {
+	$dir = __DIR__;
+
+	$script_asset_path = "$dir/build/admin.asset.php";
+
+	if ( ! file_exists( $script_asset_path ) ) {
+		throw new Error(
+				'You need to run `npm start` or `npm run build` to build the asset files first.'
+		);
+	}
+
+	$admin_js     = plugins_url( '/', __FILE__ ) . 'build/admin.js';
+	wp_register_script(
+			'wplalr-login-logout-redirect-admin',
+			$admin_js,
+		array('react', 'react-dom', 'wp-api', 'wp-components', 'wp-dom-ready', 'wp-element', 'wp-i18n'),
+			1,
+		false
+	);
+
+	wp_enqueue_script(
+			'wplalr-login-logout-redirect-admin',
+			$admin_js,
+			array('react', 'react-dom', 'wp-api', 'wp-components', 'wp-dom-ready', 'wp-element', 'wp-i18n'),
+			1,
+			true
+	);
+
+	$data = [
+			'roles' => wplalr_get_roles_array(),
+	];
+
+	wp_add_inline_script(
+			'wplalr-login-logout-redirect-admin',
+			'var loginlogoutData = ' . wp_json_encode( $data ),
+			'before'
+	);
+
+	wp_set_script_translations(
+			'wplalr-login-logout-redirect-admin',
+			'wp-login-logout-redirect'
+	);
+
+	$admin_css = 'build/admin.css';
+	wp_enqueue_style(
+			'wplalr-login-logout-redirect-admin',
+			plugins_url( $admin_css, __FILE__ ),
+			['wp-components'],
+			filemtime( "$dir/$admin_css" )
+	);
+}
+
+/**
+	* Include user functions
+	*/
+require_once WPLALR_PLUGIN_DIR . '/includes/login-user-time/login-user-time.php';
+// @TODO load roles correctly in selct fields.
+add_action( 'init', 'wplalr_login_logout_load_textdomain' );
+add_action('init', 'wplalr_login_logout_register');
+add_action('admin_menu', 'wplalr_login_logout_redirect_menu');
+add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'wplalr_login_logout_action_links' );
+
+add_filter( 'login_redirect', 'wplalr_wp_login_redirect', 9999, 3 );
+add_filter( 'logout_redirect', 'wplalr_wp_logout_redirect', 9999, 3 );
+add_action( 'admin_enqueue_scripts', 'wplalr_login_logout_redirect_admin_scripts', 10 );
