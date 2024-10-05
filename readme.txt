@@ -1,6 +1,6 @@
 === WP Login and Logout Redirect ===
 Contributors: aminurislam01, pluginizelab
-Tags: WP login and logout redirect, wp login logout redirect, wordpress login logout redirect, wp redirect, redirect on login, redirect on logout, login redirect, logout redirect
+Tags: WP login and logout redirect, wp login logout redirect, wordpress login logout redirect, wp redirect, login redirect, logout redirect
 Requires at least: 3.7.0
 Tested up to: 6.6
 Stable tag: 3.0
