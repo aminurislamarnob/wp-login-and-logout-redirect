@@ -3,7 +3,7 @@
 Plugin Name: WP Login and Logout Redirect
 Plugin URI: https://wordpress.org/plugins/wp-login-and-logout-redirect/
 Description: This plugin which enables you to redirect users to specific URL on login or logout or both.
-Version: 1.0
+Version: 2.0
 Author: Aminur Islam
 Author URI: https://github.com/aminurislamarnob
 License: GPLv2 or later
@@ -22,6 +22,12 @@ if ( !defined( 'ABSPATH' ) ) exit;
  * Currently plugin version.
 */
 define('WPLALR_PLUGIN_VERSION', '1.0');
+
+/**
+ * Plugin Dir
+ * **/
+define( 'WPLALR_PLUGIN', __FILE__ );
+define( 'WPLALR_PLUGIN_DIR', untrailingslashit( dirname( WPLALR_PLUGIN ) ) );
 
  
 /**
@@ -71,16 +77,22 @@ function wplalr_login_logout_register() {
 add_action('admin_init', 'wplalr_login_logout_register');
 
 
-//Login redirect field content
+//Login redirect url field
 function wplalr_login_field_callback(){
     $wplalr_login_redirect_value = get_option('wplalr_login_redirect');
-	printf('<input name="wplalr_login_redirect" type="text" class="regular-text" value="%s"/>', $wplalr_login_redirect_value);
+
+    //Using esc_url() here because of here expecting url input
+	printf('<div><input name="wplalr_login_redirect" type="text" class="regular-text" value="%s" placeholder="%s"/></div>', esc_url( $wplalr_login_redirect_value ), esc_attr(get_home_url() . '/example-login-redirect-link/'));
+
+    echo '<small>' . esc_html__('Enter the URL to which the user will be redirected after a successful login.', 'wp-login-logout-redirect') . '</small>';
 }
 
-//Logout redirect field content
+//Logout redirect url field
 function wplalr_logout_field_callback() {
     $wplalr_logout_redirect_value = get_option('wplalr_logout_redirect');
-	printf('<input name="wplalr_logout_redirect" type="text" class="regular-text" value="%s"/>', $wplalr_logout_redirect_value);
+	printf('<div><input name="wplalr_logout_redirect" type="text" class="regular-text" value="%s"  placeholder="%s"/></div>', esc_url($wplalr_logout_redirect_value), esc_attr(get_home_url() . '/example-logout-redirect-link/'));  //Using esc_url() here because of here expecting url input
+
+    echo '<small>' . esc_html__('Enter the URL to which the user will be redirected after a successful logout.', 'wp-login-logout-redirect') . '</small>';
 }
 
 //Plugin settings page section text
@@ -114,7 +126,7 @@ function wplalr_login_logout_redirect_output(){
 add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'wplalr_login_logout_action_links' );
 function wplalr_login_logout_action_links( $links ){
     $wplalr_login_logout_plugin_action_links = array(
-    '<a href="' . admin_url( 'admin.php?page=wplalr_login_logout_redirect' ) . '"> '. __('Settings', 'wp-login-logout-redirect') . '</a>',
+    '<a href="' . esc_url( admin_url( 'admin.php?page=wplalr_login_logout_redirect' ) ) . '"> '. __('Settings', 'wp-login-logout-redirect') . '</a>',
     );
     return array_merge( $links, $wplalr_login_logout_plugin_action_links );
 }
@@ -130,7 +142,7 @@ function wplalr_wp_login_redirect( $redirect_to, $request, $user ) {
         $redirect_to = admin_url();
     }
 
-    return $redirect_to;
+    return esc_url( $redirect_to );
 }
 add_filter( 'login_redirect', 'wplalr_wp_login_redirect', 10, 3 );
 
@@ -145,7 +157,13 @@ function wplalr_wp_logout_redirect(){
         $wplalr_logout_redirect = home_url();
     }
 
-    wp_redirect( $wplalr_logout_redirect );
+    wp_redirect( esc_url( $wplalr_logout_redirect ) );
     exit();
 }
 add_action('wp_logout', 'wplalr_wp_logout_redirect');
+
+
+/**
+ * Include user functions
+*/
+require_once WPLALR_PLUGIN_DIR . '/includes/login-user-time/login-user-time.php';
