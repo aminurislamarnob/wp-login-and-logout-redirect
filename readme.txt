@@ -3,7 +3,7 @@ Contributors: aminurislam01, pluginizelab
 Tags: WP login and logout redirect, wp login logout redirect, wordpress login logout redirect, wp redirect, redirect on login, redirect on logout, login redirect, logout redirect
 Requires at least: 3.7.0
 Tested up to: 6.6
-Stable tag: 2.0.1
+Stable tag: 3.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -60,6 +60,12 @@ Yes, go to Users->All Users from admin dashboard left sidebar menu.
 
 
 == Changelog ==
+
+= 3.0 =
+* Few security update.
+
+= 2.0 =
+* Just minor updates like modify tags, check with WordPress version etc.
 
 = 1.1 =
 * Added every users last login date & time on admin dashboard all users table.

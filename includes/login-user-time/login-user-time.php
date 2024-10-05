@@ -34,7 +34,7 @@ function wplalr_user_last_login_time( $output, $column_id, $user_id ){
 		$wplalr_last_login = get_user_meta( $user_id, 'wplalr_last_login', true );
 		$wplalr_date_format = get_option( 'date_format' ) .' '. get_option( 'time_format' );
  
-		$wplalr_output = $wplalr_last_login ? esc_html( date( $wplalr_date_format, $wplalr_last_login ) ) : '-';
+		$wplalr_output = $wplalr_last_login ? esc_html( wp_date( $wplalr_date_format, $wplalr_last_login ) ) : '-';
  
 	}
  
