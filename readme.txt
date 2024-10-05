@@ -2,7 +2,7 @@
 Contributors: aminurislam01, pluginizelab
 Tags: WP login and logout redirect, wp login logout redirect, wordpress login logout redirect, wp redirect, redirect on login, redirect on logout, login redirect, logout redirect
 Requires at least: 3.7.0
-Tested up to: 6.4.3
+Tested up to: 6.6
 Stable tag: 2.0
 Requires PHP: 7.4
 License: GPLv2 or later
