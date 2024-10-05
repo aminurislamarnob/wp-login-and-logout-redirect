@@ -62,6 +62,9 @@ Yes, go to Users->All Users from admin dashboard left sidebar menu.
 == Changelog ==
 
 = 3.0 =
+* Update plugin tags.
+
+= 3.0 =
 * Few security update.
 
 = 2.0 =
