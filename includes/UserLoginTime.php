@@ -7,7 +7,7 @@ class UserLoginTime {
 	* The constructor.
 	*/
 	public function __construct() {
-		add_action( 'wp_login', array( $this, 'update_user_login_timestamp' ) );
+		add_action( 'wp_login', array( $this, 'update_user_login_timestamp' ), 20, 2 );
         add_filter( 'manage_users_columns', array( $this, 'add_user_table_column' ) );
         add_filter( 'manage_users_custom_column', array( $this, 'user_last_login_time' ), 10, 3 );
         add_filter( 'manage_users_sortable_columns', array( $this, 'user_login_time_sortable_columns' ) );

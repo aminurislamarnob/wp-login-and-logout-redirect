@@ -8,7 +8,7 @@ class Settings {
 	 */
 	public function __construct() {
         add_action( 'admin_menu', array( $this, 'login_logout_redirect_menu' ) );
-        add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_link' ) );
+        add_filter( 'plugin_action_links_' . WP_LOGIN_LOGOUT_REDIRECT_BASENAME, array( $this, 'plugin_action_link' ) );
         add_action( 'admin_init', array( $this, 'register_login_logout_settings' ) );
 	}
 
@@ -98,6 +98,6 @@ class Settings {
      * Plugin settings page section text
      */
     public function login_logout_section_text() {
-        printf('%s %s %s', '<p>', esc_html__('You can change WordPress Default login or logout or both redirect URL', 'wp-login-logout-redirect'), '</p>');
+        printf('%s %s %s', '<p>', esc_html__('You can change WordPress default login or logout or both redirect URL', 'wp-login-logout-redirect'), '</p>');
     }
 }

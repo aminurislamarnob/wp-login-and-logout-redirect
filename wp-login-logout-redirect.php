@@ -21,6 +21,10 @@ if ( ! defined( 'WP_LOGIN_LOGOUT_REDIRECT_FILE' ) ) {
     define( 'WP_LOGIN_LOGOUT_REDIRECT_FILE', __FILE__ );
 }
 
+if ( ! defined( 'WP_LOGIN_LOGOUT_REDIRECT_BASENAME' ) ) {
+    define( 'WP_LOGIN_LOGOUT_REDIRECT_BASENAME', plugin_basename( __FILE__ ) );
+}
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 /**
