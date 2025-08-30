@@ -7,7 +7,7 @@ set -e
 cd "$(dirname "$0")"
 cd ..
 DIR=$(pwd)
-BUILD_DIR="$DIR/build/wp-login-logout-redirect"
+BUILD_DIR="$DIR/build/wp-login-and-logout-redirect"
 
 # Enable nicer messaging for build status.
 BLUE_BOLD='\033[1;34m'
@@ -43,7 +43,7 @@ status "Generating build... 👷‍♀️"
 
 # Copy all files
 status "Copying files... ✌️"
-FILES=(wp-login-logout-redirect.php readme.txt dist includes templates assets languages composer.json composer.lock)
+FILES=(wp-login-and-logout-redirect.php readme.txt dist includes templates assets languages composer.json composer.lock)
 
 for file in ${FILES[@]}; do
     if [ -f "$file" ] || [ -d "$file" ]; then
@@ -62,10 +62,10 @@ rm composer.json composer.lock
 # go one up, to the build dir
 status "Creating archive... 🎁"
 cd ..
-zip -r -q wp-login-logout-redirect.zip wp-login-logout-redirect
+zip -r -q wp-login-and-logout-redirect.zip wp-login-and-logout-redirect
 
 # remove the source directory
-rm -rf wp-login-logout-redirect
+rm -rf wp-login-and-logout-redirect
 
 success "Done. You've built Wp Login Logout Redirect! 🎉 "
-echo -e "\n${BLUE_BOLD}File Path${COLOR_RESET}: ${YELLOW_BOLD}$(pwd)/wp-login-logout-redirect.zip${COLOR_RESET} \n"
+echo -e "\n${BLUE_BOLD}File Path${COLOR_RESET}: ${YELLOW_BOLD}$(pwd)/wp-login-and-logout-redirect.zip${COLOR_RESET} \n"

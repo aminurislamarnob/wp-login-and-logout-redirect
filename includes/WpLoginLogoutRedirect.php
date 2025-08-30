@@ -143,6 +143,7 @@ final class WpLoginLogoutRedirect {
      */
     public function init_hooks() {
         // initialize the classes
+        add_action( 'init', [ $this, 'load_textdomain' ] );
         add_action( 'init', [ $this, 'init_classes' ], 4 );
         add_action( 'plugins_loaded', [ $this, 'after_plugins_loaded' ] );
     }
@@ -155,6 +156,13 @@ final class WpLoginLogoutRedirect {
     public function includes() {
         // include_once STUB_PLUGIN_DIR . '/functions.php';
     }
+
+    /**
+     * Load plugin textdomain.
+     */
+    public function load_textdomain() {
+        load_plugin_textdomain( 'wp-login-logout-redirect', false, WP_LOGIN_LOGOUT_REDIRECT_DIR . '/languages' ); 
+    }   
 
     /**
      * Init all the classes
