@@ -17,11 +17,9 @@ behat.yml               export-ignore
 bitbucket-pipelines.yml export-ignore
 bin/                    export-ignore
 .circleci/config.yml    export-ignore
-composer.json           export-ignore
 composer.lock           export-ignore
 dependencies.yml        export-ignore
 Gruntfile.js            export-ignore
-package.json            export-ignore
 package-lock.json       export-ignore
 phpunit.xml             export-ignore
 phpunit.xml.dist        export-ignore
