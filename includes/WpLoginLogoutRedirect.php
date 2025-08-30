@@ -166,6 +166,7 @@ final class WpLoginLogoutRedirect {
      */
     public function init_classes() {
         $this->container['scripts'] = new Assets();
+        $this->container['user_login_time'] = new UserLoginTime();
     }
 
     /**
