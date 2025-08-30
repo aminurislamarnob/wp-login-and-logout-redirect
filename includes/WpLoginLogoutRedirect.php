@@ -86,9 +86,6 @@ final class WpLoginLogoutRedirect {
      */
     public function activate() {
         // Rewrite rules during wp_login_logout_redirect activation
-        if ( $this->has_woocommerce() ) {
-            $this->flush_rewrite_rules();
-        }
     }
 
     /**
@@ -165,7 +162,9 @@ final class WpLoginLogoutRedirect {
      * @return void
      */
     public function init_classes() {
-        $this->container['scripts'] = new Assets();
+        // $this->container['scripts'] = new Assets();
+        $this->container['admin_settings'] = new Settings();
+        $this->container['redirection'] = new Redirection();
         $this->container['user_login_time'] = new UserLoginTime();
     }
 
@@ -180,28 +179,6 @@ final class WpLoginLogoutRedirect {
      */
     public function after_plugins_loaded() {
         // Initiate background processes and other tasks
-    }
-
-    /**
-     * Check whether woocommerce is installed and active
-     *
-     * @since 2.9.16
-     *
-     * @return bool
-     */
-    public function has_woocommerce() {
-        return class_exists( 'WooCommerce' );
-    }
-
-    /**
-     * Check whether woocommerce is installed
-     *
-     * @since 3.2.8
-     *
-     * @return bool
-     */
-    public function is_woocommerce_installed() {
-        return in_array( 'woocommerce/woocommerce.php', array_keys( get_plugins() ), true );
     }
 
     /**
