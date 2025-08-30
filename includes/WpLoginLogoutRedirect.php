@@ -14,7 +14,7 @@ final class WpLoginLogoutRedirect {
      *
      * @var string
      */
-    public $version = '0.0.1';
+    public $version = '3.1.0';
 
     /**
      * Instance of self
