@@ -56,8 +56,8 @@ status "Installing dependencies... 📦"
 cd $BUILD_DIR
 composer install --optimize-autoloader --no-dev -q
 
-# Remove composer files
-rm composer.json composer.lock
+# Remove composer lock file
+rm composer.lock
 
 # go one up, to the build dir
 status "Creating archive... 🎁"
