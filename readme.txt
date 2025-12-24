@@ -1,9 +1,10 @@
 === WP Login and Logout Redirect ===
 Contributors: aminurislam01, pluginizelab
+Donate link: https://www.buymeacoffee.com/aiarnob
 Tags: WP login and logout redirect, wp login logout redirect, wordpress login logout redirect, login redirect, logout redirect
-Requires at least: 3.7.0
-Tested up to: 6.8.2
-Stable tag: 3.1.3
+Requires at least: 5.8
+Tested up to: 6.9
+Stable tag: 3.1.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -60,6 +61,8 @@ Yes, go to Users->All Users from admin dashboard left sidebar menu.
 
 
 == Changelog ==
+= 3.1.4 =
+* Compatibility check with latest WordPress Version.
 
 = 3.1.1 =
 * [Improve] Re-structure full plugin codebase.

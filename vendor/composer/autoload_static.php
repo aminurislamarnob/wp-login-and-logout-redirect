@@ -7,14 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit34af8294de6b22b86cd9db31e04af4dd
 {
     public static $prefixLengthsPsr4 = array (
-        'P' => 
+        'P' =>
         array (
             'PluginizeLab\\WpLoginLogoutRedirect\\' => 35,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'PluginizeLab\\WpLoginLogoutRedirect\\' => 
+        'PluginizeLab\\WpLoginLogoutRedirect\\' =>
         array (
             0 => __DIR__ . '/../..' . '/includes',
         ),
