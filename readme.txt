@@ -4,7 +4,7 @@ Donate link: https://www.buymeacoffee.com/aiarnob
 Tags: WP login and logout redirect, wp login logout redirect, wordpress login logout redirect, login redirect, logout redirect
 Requires at least: 5.8
 Tested up to: 6.9
-Stable tag: 3.1.4
+Stable tag: 3.1.5
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,9 @@ This plugin also show each users last/latest login date and time on admin dashbo
 
 = Latest Features =
 * Every User last login date and time shown on dashbaord all users page.
+
+== Support ==
+If you find this plugin useful, consider supporting its development through a [donation](https://www.buymeacoffee.com/aiarnob).
 
 
 == Installation ==
