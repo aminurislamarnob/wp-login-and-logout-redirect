@@ -3,7 +3,7 @@
 Plugin Name: WP Login and Logout Redirect
 Plugin URI: https://wordpress.org/plugins/wp-login-and-logout-redirect/
 Description: This plugin which enables you to redirect users to specific URL on login or logout or both.
-Version: 3.1.5
+Version: 3.1.6
 Author: Aminur Islam
 Author URI: https://github.com/aminurislamarnob
 License: GPLv2 or later

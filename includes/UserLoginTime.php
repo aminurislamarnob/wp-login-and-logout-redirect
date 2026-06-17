@@ -80,6 +80,10 @@ class UserLoginTime {
         if( !is_admin() ) {
             return $query;
         }
+
+        if( ! function_exists( 'get_current_screen' ) ) {
+            return $query;
+        }
      
         $screen = get_current_screen();
         if( isset( $screen->id ) && $screen->id !== 'users' ) {
