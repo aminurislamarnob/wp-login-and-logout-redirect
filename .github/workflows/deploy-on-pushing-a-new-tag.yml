@@ -1,16 +1,18 @@
-name: Deploy to WordPress.org
+name: Plugin asset/readme update
 on:
   push:
-    tags:
-      - "*"
+    branches:
+      - develop
 jobs:
-  tag:
-    name: New tag
+  develop:
+    name: Push to develop
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: WordPress Plugin Deploy
-        uses: 10up/action-wordpress-plugin-deploy@stable
+      - name: WordPress.org plugin asset/readme update
+        uses: 10up/action-wordpress-plugin-asset-update@stable
         env:
-          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: wp-login-and-logout-redirect
+          IGNORE_OTHER_FILES: true

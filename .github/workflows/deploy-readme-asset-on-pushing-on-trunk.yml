@@ -1,16 +1,58 @@
-name: Plugin asset/readme update
+name: Build and Release Plugin
+
 on:
   push:
-    branches:
-      - trunk
+    tags:
+      - "*"
+
 jobs:
-  trunk:
-    name: Push to trunk
+  buildAndRelease:
+    name: Build Plugin
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@master
-      - name: WordPress.org plugin asset/readme update
-        uses: 10up/action-wordpress-plugin-asset-update@stable
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 7.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "7.4"
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies and build
+        run: |
+          composer install --no-dev --optimize-autoloader
+
+      - name: Create plugin zip
+        run: |
+          rsync -rc --exclude-from=.distignore ./ wp-login-and-logout-redirect/ --delete --delete-excluded
+          zip -r wp-login-and-logout-redirect.zip wp-login-and-logout-redirect/
+          rm -rf wp-login-and-logout-redirect
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wp-login-and-logout-redirect
+          path: wp-login-and-logout-redirect.zip
+          retention-days: 30
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: wp-login-and-logout-redirect.zip
         env:
-          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # TODO: Uncomment when ready to deploy to WordPress.org
+      - name: WordPress Plugin Deploy
+        id: deploy
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          generate-zip: true
+        env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: wp-login-and-logout-redirect
