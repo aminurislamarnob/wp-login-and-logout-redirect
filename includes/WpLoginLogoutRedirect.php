@@ -14,7 +14,7 @@ final class WpLoginLogoutRedirect {
      *
      * @var string
      */
-    public $version = '3.1.6';
+    public $version = '3.1.7';
 
     /**
      * Instance of self
@@ -116,8 +116,8 @@ final class WpLoginLogoutRedirect {
         defined( 'WP_LOGIN_LOGOUT_REDIRECT_INC_DIR' ) || define( 'WP_LOGIN_LOGOUT_REDIRECT_INC_DIR', WP_LOGIN_LOGOUT_REDIRECT_DIR . '/includes' );
         defined( 'WP_LOGIN_LOGOUT_REDIRECT_TEMPLATE_DIR' ) || define( 'WP_LOGIN_LOGOUT_REDIRECT_TEMPLATE_DIR', WP_LOGIN_LOGOUT_REDIRECT_DIR . '/templates' );
         defined( 'WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_ASSET' ) || define( 'WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_ASSET', plugins_url( 'assets', WP_LOGIN_LOGOUT_REDIRECT_FILE ) );
-        defined( 'WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_ADMIN_ASSET' ) || define( 'WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_ADMIN_ASSET' , WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_ASSET . '/admin' );
-        defined( 'WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_PUBLIC_ASSET' ) || define( 'WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_PUBLIC_ASSET' , WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_ASSET . '/public' );
+        defined( 'WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_ADMIN_ASSET' ) || define( 'WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_ADMIN_ASSET', WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_ASSET . '/admin' );
+        defined( 'WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_PUBLIC_ASSET' ) || define( 'WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_PUBLIC_ASSET', WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_ASSET . '/public' );
 
         // give a way to turn off loading styles and scripts from parent theme
         defined( 'WP_LOGIN_LOGOUT_REDIRECT_LOAD_STYLE' ) || define( 'WP_LOGIN_LOGOUT_REDIRECT_LOAD_STYLE', true );
@@ -161,8 +161,8 @@ final class WpLoginLogoutRedirect {
      * Load plugin textdomain.
      */
     public function load_textdomain() {
-        load_plugin_textdomain( 'wp-login-logout-redirect', false, WP_LOGIN_LOGOUT_REDIRECT_DIR . '/languages' ); 
-    }   
+        load_plugin_textdomain( 'wp-login-logout-redirect', false, WP_LOGIN_LOGOUT_REDIRECT_DIR . '/languages' );
+    }
 
     /**
      * Init all the classes
@@ -207,6 +207,6 @@ final class WpLoginLogoutRedirect {
     public function get_template( $name ) {
         $template = untrailingslashit( WP_LOGIN_LOGOUT_REDIRECT_TEMPLATE_DIR ) . '/' . untrailingslashit( $name );
 
-        return apply_filters( 'wp-login-logout-redirect_template', $template, $name );
+        return apply_filters( 'wp_login_logout_redirect_template', $template, $name );
     }
 }

@@ -32,7 +32,7 @@ class UserLoginTime {
     * @return array
     */
     public function add_user_table_column( $columns ) {
-        $columns['wplalr_last_login'] = esc_html__('Last Login', 'wp-login-logout-redirect');
+        $columns['wplalr_last_login'] = esc_html__( 'Last Login', 'wp-login-logout-redirect' );
         return $columns;
     }
 
@@ -45,15 +45,15 @@ class UserLoginTime {
 	 *
 	 * @return string
      */
-    public function user_last_login_time( $output, $column_id, $user_id ){
+    public function user_last_login_time( $output, $column_id, $user_id ) {
         $wplalr_output = '';
-        
-        if( $column_id == 'wplalr_last_login' ) {
+
+        if ( $column_id === 'wplalr_last_login' ) {
             $wplalr_last_login = get_user_meta( $user_id, 'wplalr_last_login', true );
-            $wplalr_date_format = get_option( 'date_format' ) .' '. get_option( 'time_format' );
+            $wplalr_date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
             $wplalr_output = $wplalr_last_login ? esc_html( wp_date( $wplalr_date_format, $wplalr_last_login ) ) : '-';
         }
-     
+
         return $wplalr_output;
     }
 
@@ -64,12 +64,14 @@ class UserLoginTime {
      * @return array
      */
     public function user_login_time_sortable_columns( $columns ) {
-        return wp_parse_args( array(
-            'wplalr_last_login' => 'wplalr_last_login'
-        ), $columns );
+        return wp_parse_args(
+            array(
+				'wplalr_last_login' => 'wplalr_last_login',
+            ), $columns
+        );
     }
 
-    
+
     /**
      * Sort user last login column
      *
@@ -77,24 +79,24 @@ class UserLoginTime {
      * @return object
      */
     public function sort_user_last_login_column( $query ) {
-        if( !is_admin() ) {
+        if ( ! is_admin() ) {
             return $query;
         }
 
-        if( ! function_exists( 'get_current_screen' ) ) {
+        if ( ! function_exists( 'get_current_screen' ) ) {
             return $query;
         }
-     
+
         $screen = get_current_screen();
-        if( isset( $screen->id ) && $screen->id !== 'users' ) {
+        if ( isset( $screen->id ) && $screen->id !== 'users' ) {
             return $query;
         }
-     
-        if( isset( $_GET[ 'orderby' ] ) && $_GET[ 'orderby' ] == 'wplalr_last_login' ) {
-            $query->query_vars['meta_key'] = 'wplalr_last_login';
+
+        if ( isset( $_GET['orderby'] ) && sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) === 'wplalr_last_login' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            $query->query_vars['meta_key'] = 'wplalr_last_login'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
             $query->query_vars['orderby'] = 'meta_value';
         }
-     
+
         return $query;
     }
 }
