@@ -77,10 +77,14 @@ class UserLoginTime {
      * @return object
      */
     public function sort_user_last_login_column( $query ) {
-        if( !is_admin() ) {
+        if( ! is_admin() ) {
             return $query;
         }
      
+        if( ! function_exists( 'get_current_screen' ) ) {
+            return $query;
+        }
+
         $screen = get_current_screen();
         if( isset( $screen->id ) && $screen->id !== 'users' ) {
             return $query;

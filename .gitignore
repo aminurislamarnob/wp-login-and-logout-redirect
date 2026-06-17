@@ -5,5 +5,7 @@ npm-debug.log
 *.DS_Store
 .idea
 debug.log
+vendor
 phpcs-report.txt
 .phpunit.result.cache
+.gitkeep
