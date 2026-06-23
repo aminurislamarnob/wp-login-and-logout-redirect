@@ -9,5 +9,5 @@ export {
 	AdjustmentsHorizontalIcon as RulesIcon,
 	PlusIcon,
 	TrashIcon,
-	Bars2Icon as DragHandleIcon,
+	ArrowsUpDownIcon as DragHandleIcon,
 } from '@heroicons/react/24/outline';

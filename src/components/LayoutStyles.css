@@ -334,6 +334,14 @@
 	color: #d63638;
 }
 
+/* Render the delete (trash) icons as outline glyphs in the danger color
+   instead of the solid fill @wordpress/components applies to button SVGs. */
+.wplalr-admin-app .wplalr-rule-delete svg,
+.wplalr-admin-app .wplalr-condition-remove svg {
+	fill: none;
+	stroke: currentColor;
+}
+
 .wplalr-add-condition {
 	padding-left: 0;
 }

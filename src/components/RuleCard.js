@@ -95,12 +95,14 @@ const RuleCard = ( { rule, onChange, onRemove } ) => {
 							__nextHasNoMarginBottom
 						/>
 						<Button
+							className="wplalr-rule-delete"
 							icon={ <TrashIcon /> }
 							label={ __(
 								'Delete rule',
 								'wp-login-logout-redirect'
 							) }
 							onClick={ onRemove }
+							isDestructive
 						/>
 					</div>
 
