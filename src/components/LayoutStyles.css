@@ -347,6 +347,18 @@
 	border-top: 1px solid #f0f0f1;
 }
 
+/* ========== Placeholder hint ========== */
+.wplalr-placeholder-hint {
+	margin: 4px 0 0 0;
+	font-size: 12px;
+	color: #646970;
+	font-family: Menlo, Consolas, monaco, monospace;
+}
+
+.wplalr-settings-group + .wplalr-placeholder-hint {
+	margin-bottom: 16px;
+}
+
 /* ========== Rules: actions / empty ========== */
 .wplalr-rules-empty {
 	margin-bottom: 16px;

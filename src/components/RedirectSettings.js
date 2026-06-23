@@ -91,6 +91,12 @@ const RedirectSettings = () => {
 								__nextHasNoMarginBottom
 							/>
 						</div>
+						<p className="wplalr-placeholder-hint">
+							{ __(
+								'Placeholders: {{username}}, {{user_slug}}, {{website_url}}',
+								'wp-login-logout-redirect'
+							) }
+						</p>
 						<Button
 							variant="primary"
 							type="submit"

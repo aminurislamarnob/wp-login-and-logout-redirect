@@ -171,6 +171,12 @@ const RuleCard = ( { rule, onChange, onRemove } ) => {
 							__next40pxDefaultSize
 							__nextHasNoMarginBottom
 						/>
+						<p className="wplalr-placeholder-hint">
+							{ __(
+								'Placeholders: {{username}}, {{user_slug}}, {{website_url}}',
+								'wp-login-logout-redirect'
+							) }
+						</p>
 					</div>
 				</CardBody>
 			</Card>
