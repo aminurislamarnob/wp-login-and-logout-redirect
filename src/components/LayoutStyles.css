@@ -261,3 +261,106 @@
 .wplalr-admin-app .components-snackbar-list .components-snackbar {
 	margin-inline: auto !important;
 }
+
+/* ========== Rules: cards ========== */
+.wplalr-rule-card {
+	margin-bottom: 16px;
+}
+
+.wplalr-rule-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding-bottom: 16px;
+	margin-bottom: 16px;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.wplalr-rule-header .wplalr-rule-label {
+	flex: 1 1 auto;
+}
+
+.wplalr-rule-drag {
+	cursor: grab;
+	color: #646970;
+}
+
+.wplalr-rule-drag:active {
+	cursor: grabbing;
+}
+
+.wplalr-rule-drag svg {
+	width: 20px;
+	height: 20px;
+}
+
+/* ========== Rules: conditions ========== */
+.wplalr-rule-conditions {
+	margin-bottom: 16px;
+}
+
+.wplalr-rule-conditions-title {
+	font-size: 13px;
+	font-weight: 600;
+	color: #1d2327;
+	margin: 0 0 12px 0;
+}
+
+.wplalr-rule-conditions-empty {
+	font-size: 13px;
+	color: #646970;
+	margin: 0 0 12px 0;
+	font-style: italic;
+}
+
+.wplalr-condition-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	margin-bottom: 12px;
+}
+
+.wplalr-condition-type {
+	flex: 0 0 160px;
+}
+
+.wplalr-condition-values {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.wplalr-condition-remove {
+	margin-top: 24px;
+	color: #d63638;
+}
+
+.wplalr-add-condition {
+	padding-left: 0;
+}
+
+/* ========== Rules: URLs ========== */
+.wplalr-rule-urls {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding-top: 16px;
+	border-top: 1px solid #f0f0f1;
+}
+
+/* ========== Rules: actions / empty ========== */
+.wplalr-rules-empty {
+	margin-bottom: 16px;
+}
+
+.wplalr-rules-empty p {
+	margin: 0;
+	color: #646970;
+	font-size: 14px;
+}
+
+.wplalr-rules-actions {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	margin-top: 8px;
+}

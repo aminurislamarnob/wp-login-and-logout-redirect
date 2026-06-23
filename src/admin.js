@@ -15,6 +15,7 @@ import './components/LayoutStyles.css';
 import { SettingsProvider } from './context/SettingsContext';
 import Layout from './components/Layout';
 import RedirectSettings from './components/RedirectSettings';
+import RulesSettings from './components/RulesSettings';
 
 const App = () => (
 	<SettingsProvider>
@@ -22,6 +23,7 @@ const App = () => (
 			<Routes>
 				<Route path="/" element={ <Layout /> }>
 					<Route index element={ <RedirectSettings /> } />
+					<Route path="rules" element={ <RulesSettings /> } />
 				</Route>
 			</Routes>
 		</Router>

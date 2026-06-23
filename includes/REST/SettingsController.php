@@ -123,7 +123,7 @@ class SettingsController extends WP_REST_Controller {
 			return array();
 		}
 
-		$valid_roles = array_keys( get_editable_roles() );
+		$valid_roles = array_keys( wp_roles()->roles );
 		$clean       = array();
 
 		foreach ( $raw as $rule ) {

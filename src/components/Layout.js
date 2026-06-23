@@ -11,7 +11,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
 
 import { useSettings } from '../context/SettingsContext';
-import { RedirectIcon, Squares2X2Icon } from './icons';
+import { RedirectIcon, RulesIcon, Squares2X2Icon } from './icons';
 import SettingsHeader from './SettingsHeader';
 
 const TABS = [
@@ -20,9 +20,14 @@ const TABS = [
 		icon: RedirectIcon,
 		label: __( 'Redirects', 'wp-login-logout-redirect' ),
 	},
+	{
+		to: '/rules',
+		icon: RulesIcon,
+		label: __( 'Rules', 'wp-login-logout-redirect' ),
+	},
 ];
 
-const SKELETON_WIDTHS = [ 120 ];
+const SKELETON_WIDTHS = [ 120, 90 ];
 
 const Layout = () => {
 	const { isLoading } = useSettings();

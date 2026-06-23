@@ -78,11 +78,22 @@ class Assets {
 
 		wp_set_script_translations( 'wplalr-admin-page', 'wp-login-logout-redirect' );
 
+		if ( ! function_exists( 'get_editable_roles' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/user.php';
+		}
+
+		$roles = array();
+		foreach ( get_editable_roles() as $slug => $details ) {
+			$roles[ $slug ] = translate_user_role( $details['name'] );
+		}
+
 		wp_localize_script(
 			'wplalr-admin-page',
 			'wplalrAdmin',
 			array(
-				'homeUrl' => home_url(),
+				'homeUrl'  => home_url(),
+				'restRoot' => esc_url_raw( rest_url() ),
+				'roles'    => $roles,
 			)
 		);
 
