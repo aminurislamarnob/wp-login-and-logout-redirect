@@ -1,12 +1,12 @@
 /**
  * External dependencies
  */
-export { ArrowRightOnRectangleIcon as RedirectIcon } from '@heroicons/react/24/outline';
+export { ArrowsRightLeftIcon as RedirectIcon } from '@heroicons/react/24/outline';
 export {
 	CheckBadgeIcon,
 	ExclamationCircleIcon,
 	Squares2X2Icon,
-	QueueListIcon as RulesIcon,
+	AdjustmentsHorizontalIcon as RulesIcon,
 	PlusIcon,
 	TrashIcon,
 	Bars2Icon as DragHandleIcon,

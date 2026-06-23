@@ -101,7 +101,6 @@ const RuleCard = ( { rule, onChange, onRemove } ) => {
 								'wp-login-logout-redirect'
 							) }
 							onClick={ onRemove }
-							isDestructive
 						/>
 					</div>
 
