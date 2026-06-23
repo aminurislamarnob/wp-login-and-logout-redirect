@@ -4,6 +4,13 @@ Manual/automated UI test plan for the React admin settings, written so it can be
 driven by the Claude-in-Chrome browser tools. Each case lists the browser
 actions and how to verify the outcome (screenshot, `wp-cli`, or console).
 
+## Last run
+
+**2026-06-24 — all cases PASS.** TC-01…TC-15 (admin UI) run in Chrome as `admin`;
+TC-B1…TC-B4 (behavioral) run as a real subscriber login (`user`, ID 4) on
+`woocommerce.test`. Per-case results are recorded inline below. Notable findings
+from that run are collected under [Run notes](#run-notes).
+
 ## Environment & setup
 
 - **Settings URL:** `https://woocommerce.test/wp-admin/admin.php?page=wplalr_login_logout_redirect`
@@ -49,6 +56,8 @@ wp option update wplalr_redirect_rules '[]' --format=json
 - Defaults card titled "Default Redirect URLs" with Login/Logout URL fields and the
   placeholder hint `Placeholders: {{username}}, {{user_slug}}, {{website_url}}`.
 
+**Result:** ✅ PASS (2026-06-24) — header, both tabs, defaults card and hint all present.
+
 ## TC-02 — Save default redirect URLs
 
 **Steps**
@@ -61,6 +70,8 @@ wp option update wplalr_redirect_rules '[]' --format=json
 - `wp option get wplalr_login_redirect` → `https://woocommerce.test/after-login`.
 - `wp option get wplalr_logout_redirect` → `https://woocommerce.test/after-logout`.
 
+**Result:** ✅ PASS (2026-06-24) — snackbar shown, both options persisted.
+
 ## TC-03 — Switch to Rules tab (empty state)
 
 **Steps**
@@ -71,6 +82,8 @@ wp option update wplalr_redirect_rules '[]' --format=json
 - "Redirect Rules" header with explanatory text.
 - Empty state: "No rules yet. Add a rule to redirect specific roles, users, or capabilities."
 - **Add rule** and **Save Rules** buttons visible.
+
+**Result:** ✅ PASS (2026-06-24) — empty-state message, hash `#/rules`, both buttons visible.
 
 ## TC-04 — Add a rule with a role condition
 
@@ -91,6 +104,9 @@ wp option update wplalr_redirect_rules '[]' --format=json
   values:["editor"]}]` (stored as the **slug**, not the display name), and the
   login URL. `logout_url` empty.
 
+**Result:** ✅ PASS (2026-06-24) — autocomplete + token chip worked; stored UUID,
+`role:["editor"]` (slug), login URL, empty `logout_url`.
+
 ## TC-05 — Persistence / round-trip on reload
 
 **Steps**
@@ -102,6 +118,8 @@ wp option update wplalr_redirect_rules '[]' --format=json
 - The saved rule re-renders: name, the **Editor** token (slug→name mapping on load),
   and the login URL all intact.
 
+**Result:** ✅ PASS (2026-06-24) — name, Editor token, and URL re-rendered after fresh navigate.
+
 ## TC-06 — Capability condition (free-text tokens)
 
 **Steps**
@@ -111,6 +129,9 @@ wp option update wplalr_redirect_rules '[]' --format=json
 
 **Expected**
 - Both capabilities stored as `conditions: [{type:"capability", values:["edit_pages","manage_options"]}]`.
+
+**Result:** ✅ PASS (2026-06-24) — both capability tokens stored. Switching a condition's
+**When** type clears the previous values field.
 
 ## TC-07 — Specific-user condition (async search)
 
@@ -124,6 +145,9 @@ wp option update wplalr_redirect_rules '[]' --format=json
 - Stored value is the numeric user **ID** (string), e.g. `values:["9"]`.
 - On reload, the token shows the user label, not a bare id.
 
+**Result:** ✅ PASS (2026-06-24) — `admin (#1)` suggestion; stored `values:["1"]`;
+on reload the token still showed the `admin (#1)` label.
+
 ## TC-08 — Multi-condition AND
 
 **Steps**
@@ -133,6 +157,8 @@ wp option update wplalr_redirect_rules '[]' --format=json
 **Expected**
 - Rule stores both conditions; runtime requires **all** to match (AND). (Behavioral
   match is covered by the PHP unit harness, not the browser.)
+
+**Result:** ✅ PASS (2026-06-24) — both `role` and `capability` conditions stored on the rule.
 
 ## TC-09 — Add a second rule and drag-reorder
 
@@ -147,6 +173,12 @@ wp option update wplalr_redirect_rules '[]' --format=json
 - After save, `wp option get wplalr_redirect_rules --format=json` shows the new order
   (Second rule at index 0).
 
+**Result:** ✅ PASS (2026-06-24) — reordered; `Second rule` at index 0 after save.
+**Automation note:** a pixel `left_click_drag` is unreliable here because a tall rule
+card pushes both handles outside one viewport. The handle is keyboard-operable
+(dnd-kit): focus the **Reorder rule** button, press `Space` to pick up, `Up`/`Down`
+to move, `Space` to drop. That path was used and works.
+
 ## TC-10 — Toggle Enabled off
 
 **Steps**
@@ -154,6 +186,8 @@ wp option update wplalr_redirect_rules '[]' --format=json
 
 **Expected**
 - Rule persists with `enabled: false`. (Disabled rules are skipped at runtime.)
+
+**Result:** ✅ PASS (2026-06-24) — rule persisted with `enabled: false`.
 
 ## TC-11 — Delete a rule
 
@@ -164,6 +198,9 @@ wp option update wplalr_redirect_rules '[]' --format=json
 **Expected**
 - The deleted rule is gone from the list and from `wplalr_redirect_rules` after save.
 
+**Result:** ✅ PASS (2026-06-24) — card removed immediately (no confirm dialog), gone
+from the option after save.
+
 ## TC-12 — Delete all rules → empty state
 
 **Steps**
@@ -173,6 +210,8 @@ wp option update wplalr_redirect_rules '[]' --format=json
 **Expected**
 - Empty-state message returns; `wp option get wplalr_redirect_rules` → `[]`.
 
+**Result:** ✅ PASS (2026-06-24) — empty-state message returned; option `[]`.
+
 ## TC-13 — Placeholder hint present on rule cards
 
 **Steps**
@@ -180,6 +219,8 @@ wp option update wplalr_redirect_rules '[]' --format=json
 
 **Expected**
 - Monospace line: `Placeholders: {{username}}, {{user_slug}}, {{website_url}}`.
+
+**Result:** ✅ PASS (2026-06-24) — hint present on every rule card.
 
 ## TC-14 — No-op extension filters don't break the UI
 
@@ -191,6 +232,10 @@ wp option update wplalr_redirect_rules '[]' --format=json
   `wplalr_condition_value_control`, `wplalr_rule_fields` all return defaults; the UI is
   unchanged and no console errors appear.
 
+**Result:** ✅ PASS (2026-06-24) — UI unchanged. Console showed only two benign React
+Router v7 future-flag **warnings** (`v7_startTransition`, `v7_relativeSplatPath`);
+no errors, no PHP critical-error snackbar.
+
 ## TC-15 — Server-side validation hardening
 
 **Steps**
@@ -201,12 +246,32 @@ wp option update wplalr_redirect_rules '[]' --format=json
 - Invalid values are dropped server-side (role not in `wp_roles()`, user id not found);
   the saved option contains only valid values. No fatal error.
 
+**Result:** ✅ PASS (2026-06-24) — status 200; `not_a_role` and `999999` dropped,
+`editor`/`1` kept; no fatal.
+**Note:** the rules array is sent/received under the param key **`rules`** (not
+`redirect_rules`). A convenient way to exercise the exact sanitizer without a browser
+nonce is `wp eval` + `rest_do_request`:
+
+```php
+wp_set_current_user( 1 );
+$req = new WP_REST_Request( 'POST', '/wplalr/v1/settings' );
+$req->set_header( 'Content-Type', 'application/json' );
+$req->set_body( wp_json_encode( array( 'rules' => array( /* rule(s) */ ) ) ) );
+$res = rest_do_request( $req );
+// $res->get_data()['rules'] holds the sanitized result.
+```
+
 ---
 
 ## Behavioral redirect checks (optional, needs a second account)
 
 These verify the actual redirect, not just the admin UI. They require logging in/out,
 so run in a separate browser profile or incognito to avoid disturbing the admin session.
+
+> **Can't enter passwords?** If the automation harness cannot type credentials, you can
+> still verify the same code path without a browser login by calling the plugin's
+> redirect resolver directly (see the [Run notes](#run-notes) — "Filter-level
+> verification"). The browser run below is the genuine end-to-end check.
 
 ## TC-B1 — Role rule redirects on login
 
@@ -218,12 +283,18 @@ so run in a separate browser profile or incognito to avoid disturbing the admin 
 **Expected**
 - Lands on `…/welcome/` (rule wins over the default).
 
+**Result:** ✅ PASS (2026-06-24) — subscriber `user` landed on
+`http://woocommerce.test/welcome/` (404 page is fine — only the redirect target matters).
+
 ## TC-B2 — Default fallback on login
 
 **Setup:** no rule matches the logging-in user; default login URL set.
 
 **Expected**
 - Lands on the default login URL.
+
+**Result:** ✅ PASS (2026-06-24) — with only an `administrator` rule, subscriber `user`
+fell back to the default `http://woocommerce.test/after-login`.
 
 ## TC-B3 — Placeholder expansion
 
@@ -232,6 +303,9 @@ so run in a separate browser profile or incognito to avoid disturbing the admin 
 **Expected**
 - Redirect resolves to `https://woocommerce.test/u/<login>/`.
 
+**Result:** ✅ PASS (2026-06-24) — resolved to `http://woocommerce.test/u/user/`
+(`{{website_url}}` + `{{username}}` expanded).
+
 ## TC-B4 — Loop guard
 
 **Setup:** set a login redirect to the login page URL (`…/wp-login.php`).
@@ -239,7 +313,43 @@ so run in a separate browser profile or incognito to avoid disturbing the admin 
 **Expected**
 - The loop guard blocks it; the user lands on `admin_url()` instead of bouncing.
 
+**Result:** ✅ PASS (2026-06-24) — the user did **not** bounce back to `wp-login.php`
+(the loop the guard prevents). The plugin resolved to `admin_url()` as designed.
+**Caveat:** for a subscriber, WooCommerce then redirects `/wp-admin/` → `/my-account/`
+(customers/subscribers are blocked from admin), so the observed final URL was
+`…/my-account/`, not `/wp-admin/`. Testing with a user who *can* access admin would land
+on `/wp-admin/` directly.
+
 ---
+
+## Run notes
+
+Observations from the 2026-06-24 run that aren't obvious from the steps:
+
+- **TC-09 drag-reorder:** prefer dnd-kit keyboard reordering (focus handle → `Space` →
+  arrows → `Space`) over a pixel drag; tall cards put both handles out of one viewport.
+- **TC-15 param key:** the REST rules param is **`rules`**, not `redirect_rules`. The
+  response also returns rules under `rules`.
+- **StoreSuite interferes with filter-level testing.** Another active plugin
+  (`storesuite`) hooks `login_redirect` and calls `wp_safe_redirect()` inside the
+  callback, so firing `apply_filters( 'login_redirect', … )` in WP-CLI aborts the run
+  ("Some code is trying to do a URL redirect"). In a real browser login our redirect
+  still wins (confirmed in TC-B1–B3).
+- **Filter-level verification (no password needed).** To check redirect logic without a
+  browser login, construct the plugin's resolver and call it directly — this bypasses
+  other plugins on the hook:
+
+  ```php
+  use PluginizeLab\WpLoginLogoutRedirect\{Redirection, RuleEngine, Placeholders};
+  $redir = new Redirection( new RuleEngine(), new Placeholders() );
+  $user  = get_user_by( 'id', 4 ); // a subscriber
+  echo $redir->login_redirect( admin_url(), '', $user );
+  ```
+
+  Set `wplalr_redirect_rules` / `wplalr_login_redirect` per scenario first, and restore
+  them afterward. This is a code-level equivalent of TC-B1–B4, not a real login.
+- **Snackbars auto-dismiss.** After clicking a Save button, screenshot promptly (≤1s) or
+  the success snackbar may have already faded.
 
 ## Regression checklist (run before release)
 
@@ -249,3 +359,4 @@ so run in a separate browser profile or incognito to avoid disturbing the admin 
       `wp-components`, `wp-api-fetch`, `wp-data`, `wp-element`, `wp-i18n`,
       `wp-notices`, `wp-url`, `wp-hooks`.
 - [ ] TC-01 … TC-15 pass with no plugin console errors.
+- [ ] TC-B1 … TC-B4 pass (real login or filter-level verification).

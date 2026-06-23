@@ -98,11 +98,11 @@ class SettingsController extends WP_REST_Controller {
 	 */
 	public function update_settings( $request ) {
 		if ( $request->has_param( 'wplalr_login_redirect' ) ) {
-			update_option( 'wplalr_login_redirect', esc_url_raw( $request->get_param( 'wplalr_login_redirect' ) ) );
+			update_option( 'wplalr_login_redirect', $this->sanitize_redirect_url( $request->get_param( 'wplalr_login_redirect' ) ) );
 		}
 
 		if ( $request->has_param( 'wplalr_logout_redirect' ) ) {
-			update_option( 'wplalr_logout_redirect', esc_url_raw( $request->get_param( 'wplalr_logout_redirect' ) ) );
+			update_option( 'wplalr_logout_redirect', $this->sanitize_redirect_url( $request->get_param( 'wplalr_logout_redirect' ) ) );
 		}
 
 		if ( $request->has_param( 'rules' ) ) {
@@ -110,6 +110,37 @@ class SettingsController extends WP_REST_Controller {
 		}
 
 		return $this->get_settings( $request );
+	}
+
+	/**
+	 * Sanitize a redirect URL while preserving {{placeholder}} tokens.
+	 *
+	 * Redirect URLs may contain placeholders such as `{{website_url}}` or
+	 * `{{username}}`. `esc_url_raw()` strips the curly braces (and can prepend a
+	 * scheme), which corrupts the template, so it is skipped when a placeholder is
+	 * present. The resolved URL is escaped and validated *after* placeholder
+	 * expansion at redirect time (see Redirection::resolve_login_redirect and
+	 * Redirection::redirect_after_logout), so the stored template stays intact.
+	 *
+	 * @param mixed $value Raw URL from the request.
+	 * @return string
+	 */
+	protected function sanitize_redirect_url( $value ) {
+		if ( ! is_string( $value ) ) {
+			return '';
+		}
+
+		$value = trim( $value );
+
+		if ( '' === $value ) {
+			return '';
+		}
+
+		if ( preg_match( '/\{\{\s*[a-z0-9_]+\s*\}\}/i', $value ) ) {
+			return sanitize_text_field( $value );
+		}
+
+		return esc_url_raw( $value );
 	}
 
 	/**
@@ -167,8 +198,8 @@ class SettingsController extends WP_REST_Controller {
 				'enabled'    => ! empty( $rule['enabled'] ),
 				'label'      => isset( $rule['label'] ) ? sanitize_text_field( $rule['label'] ) : '',
 				'conditions' => $conditions,
-				'login_url'  => isset( $rule['login_url'] ) ? esc_url_raw( $rule['login_url'] ) : '',
-				'logout_url' => isset( $rule['logout_url'] ) ? esc_url_raw( $rule['logout_url'] ) : '',
+				'login_url'  => isset( $rule['login_url'] ) ? $this->sanitize_redirect_url( $rule['login_url'] ) : '',
+				'logout_url' => isset( $rule['logout_url'] ) ? $this->sanitize_redirect_url( $rule['logout_url'] ) : '',
 			);
 
 			/**
@@ -283,12 +314,10 @@ class SettingsController extends WP_REST_Controller {
 					),
 				),
 				'login_url'  => array(
-					'type'   => 'string',
-					'format' => 'uri',
+					'type' => 'string',
 				),
 				'logout_url' => array(
-					'type'   => 'string',
-					'format' => 'uri',
+					'type' => 'string',
 				),
 			),
 		);
@@ -335,15 +364,13 @@ class SettingsController extends WP_REST_Controller {
 			'type'       => 'object',
 			'properties' => array(
 				'wplalr_login_redirect'  => array(
-					'description' => __( 'URL to redirect the user to after a successful login.', 'wp-login-logout-redirect' ),
+					'description' => __( 'URL to redirect the user to after a successful login. May contain {{placeholder}} tokens.', 'wp-login-logout-redirect' ),
 					'type'        => 'string',
-					'format'      => 'uri',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'wplalr_logout_redirect' => array(
-					'description' => __( 'URL to redirect the user to after a successful logout.', 'wp-login-logout-redirect' ),
+					'description' => __( 'URL to redirect the user to after a successful logout. May contain {{placeholder}} tokens.', 'wp-login-logout-redirect' ),
 					'type'        => 'string',
-					'format'      => 'uri',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'rules'                  => array(
