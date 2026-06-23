@@ -6,6 +6,7 @@ import {
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
+import { applyFilters } from '@wordpress/hooks';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -178,6 +179,12 @@ const RuleCard = ( { rule, onChange, onRemove } ) => {
 							) }
 						</p>
 					</div>
+
+					{ /* Pro extensions inject extra rule fields here. */ }
+					{ applyFilters( 'wplalr.ruleFields', null, {
+						rule,
+						onChange,
+					} ) }
 				</CardBody>
 			</Card>
 		</div>

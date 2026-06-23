@@ -3,6 +3,7 @@ import { FormTokenField } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
+import { applyFilters } from '@wordpress/hooks';
 
 const ROLES = window.wplalrAdmin?.roles ?? {};
 
@@ -25,6 +26,17 @@ const parseUserId = ( label ) => {
  * @param {Function} props.onChange Receives the next values array.
  */
 const ConditionValueControl = ( { type, values, onChange } ) => {
+	// Pro extensions render value controls for their custom match types.
+	const custom = applyFilters( 'wplalr.conditionValueControl', null, {
+		type,
+		values,
+		onChange,
+	} );
+
+	if ( custom ) {
+		return custom;
+	}
+
 	if ( type === 'role' ) {
 		const nameBySlug = ROLES;
 		const slugByName = Object.fromEntries(

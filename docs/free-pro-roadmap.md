@@ -272,14 +272,15 @@ rules behave exactly as today.
 - **Acceptance:** placeholders expand correctly; self-referential redirects are
   caught; off-site URLs blocked unless allowlisted.
 
-### Phase 4 — Freemius (free side) + extension scaffolding
+### Phase 4 — extension scaffolding (done) · Freemius (deferred)
 
-- Freemius SDK + `wplalr_fs()` initializer (org-compliant, has-premium-version).
-- Finalize PHP filters (§8) + `@wordpress/hooks` JS slots so the Pro add-on
-  injects panels/fields without forking the free bundle.
-- Replace "Support Me" with a Freemius **Upgrade** CTA (hidden when Pro active).
-- **Acceptance:** free plugin loads with SDK, no paid code in the free repo;
-  extension points documented for the Pro plugin.
+**Done:** PHP filters (§8) + `@wordpress/hooks` JS slots so the Pro add-on
+injects routes/tabs/fields/match-types without forking the free bundle. Header
+actions are filterable (`wplalr.headerActions`) so an Upgrade CTA can be added
+later. All extension points documented in [`extensibility.md`](extensibility.md).
+
+**Deferred (by request):** Freemius SDK + `wplalr_fs()` initializer and the
+Freemius-driven Upgrade CTA — to be introduced later. "Support Me" stays for now.
 
 ### Phase 5 — Pro add-on (separate plugin, after free lands)
 

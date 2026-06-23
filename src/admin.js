@@ -9,6 +9,11 @@ import { createRoot } from '@wordpress/element';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 
 /**
+ * WordPress dependencies
+ */
+import { applyFilters } from '@wordpress/hooks';
+
+/**
  * Internal dependencies
  */
 import './components/LayoutStyles.css';
@@ -17,18 +22,31 @@ import Layout from './components/Layout';
 import RedirectSettings from './components/RedirectSettings';
 import RulesSettings from './components/RulesSettings';
 
-const App = () => (
-	<SettingsProvider>
-		<Router>
-			<Routes>
-				<Route path="/" element={ <Layout /> }>
-					<Route index element={ <RedirectSettings /> } />
-					<Route path="rules" element={ <RulesSettings /> } />
-				</Route>
-			</Routes>
-		</Router>
-	</SettingsProvider>
-);
+const App = () => {
+	// Pro extensions add routes here via the `wplalr.routes` filter.
+	const routes = applyFilters( 'wplalr.routes', [
+		{ path: 'rules', element: <RulesSettings /> },
+	] );
+
+	return (
+		<SettingsProvider>
+			<Router>
+				<Routes>
+					<Route path="/" element={ <Layout /> }>
+						<Route index element={ <RedirectSettings /> } />
+						{ routes.map( ( { path, element } ) => (
+							<Route
+								key={ path }
+								path={ path }
+								element={ element }
+							/>
+						) ) }
+					</Route>
+				</Routes>
+			</Router>
+		</SettingsProvider>
+	);
+};
 
 document.addEventListener( 'DOMContentLoaded', () => {
 	const container = document.getElementById( 'wplalr-settings' );

@@ -123,7 +123,7 @@ class SettingsController extends WP_REST_Controller {
 			return array();
 		}
 
-		$valid_roles = array_keys( wp_roles()->roles );
+		$match_types = $this->get_match_types();
 		$clean       = array();
 
 		foreach ( $raw as $rule ) {
@@ -144,12 +144,12 @@ class SettingsController extends WP_REST_Controller {
 
 				$type = isset( $condition['type'] ) ? sanitize_key( $condition['type'] ) : '';
 
-				if ( ! in_array( $type, array( 'role', 'user', 'capability' ), true ) ) {
+				if ( ! in_array( $type, $match_types, true ) ) {
 					continue;
 				}
 
 				$values = isset( $condition['values'] ) && is_array( $condition['values'] )
-					? $this->sanitize_condition_values( $type, $condition['values'], $valid_roles )
+					? $this->sanitize_condition_values( $type, $condition['values'] )
 					: array();
 
 				if ( empty( $values ) ) {
@@ -162,7 +162,7 @@ class SettingsController extends WP_REST_Controller {
 				);
 			}
 
-			$clean[] = array(
+			$clean_rule = array(
 				'id'         => isset( $rule['id'] ) && '' !== $rule['id'] ? sanitize_text_field( $rule['id'] ) : wp_generate_uuid4(),
 				'enabled'    => ! empty( $rule['enabled'] ),
 				'label'      => isset( $rule['label'] ) ? sanitize_text_field( $rule['label'] ) : '',
@@ -170,21 +170,61 @@ class SettingsController extends WP_REST_Controller {
 				'login_url'  => isset( $rule['login_url'] ) ? esc_url_raw( $rule['login_url'] ) : '',
 				'logout_url' => isset( $rule['logout_url'] ) ? esc_url_raw( $rule['logout_url'] ) : '',
 			);
+
+			/**
+			 * Filter a single sanitized rule before it is stored.
+			 *
+			 * Pro extensions hook here to add their own sanitized fields
+			 * (e.g. first_login_only, wc_context) that the free plugin drops.
+			 *
+			 * @param array $clean_rule The sanitized rule.
+			 * @param array $rule       The raw rule from the request.
+			 */
+			$clean[] = apply_filters( 'wplalr/rest/sanitize_rule', $clean_rule, $rule );
 		}
 
 		return $clean;
 	}
 
 	/**
-	 * Sanitize a condition's values against its type.
+	 * The condition match types the rule engine understands.
 	 *
-	 * @param string $type        Condition type: role|user|capability.
-	 * @param array  $values      Raw values.
-	 * @param array  $valid_roles List of valid role slugs.
 	 * @return array
 	 */
-	protected function sanitize_condition_values( $type, $values, $valid_roles ) {
-		$clean = array();
+	protected function get_match_types() {
+		/**
+		 * Filter the available rule condition match types.
+		 *
+		 * Pro extensions hook here to register custom match types; they should
+		 * also handle their sanitization via `wplalr/sanitize_condition_values`
+		 * and matching via `wplalr/match_condition`.
+		 *
+		 * @param array $types Match type slugs.
+		 */
+		return apply_filters( 'wplalr/rule_match_types', array( 'role', 'user', 'capability' ) );
+	}
+
+	/**
+	 * Sanitize a condition's values against its type.
+	 *
+	 * @param string $type   Condition type: role|user|capability or a custom type.
+	 * @param array  $values Raw values.
+	 * @return array
+	 */
+	protected function sanitize_condition_values( $type, $values ) {
+		if ( ! in_array( $type, array( 'role', 'user', 'capability' ), true ) ) {
+			/**
+			 * Sanitize the values for a custom condition type.
+			 *
+			 * @param array  $clean  Sanitized values. Default empty array.
+			 * @param string $type   The condition type.
+			 * @param array  $values The raw values.
+			 */
+			return array_values( (array) apply_filters( 'wplalr/sanitize_condition_values', array(), $type, $values ) );
+		}
+
+		$valid_roles = array_keys( wp_roles()->roles );
+		$clean       = array();
 
 		foreach ( $values as $value ) {
 			switch ( $type ) {
@@ -233,7 +273,7 @@ class SettingsController extends WP_REST_Controller {
 						'properties' => array(
 							'type'   => array(
 								'type' => 'string',
-								'enum' => array( 'role', 'user', 'capability' ),
+								'enum' => array_values( $this->get_match_types() ),
 							),
 							'values' => array(
 								'type'  => 'array',

@@ -9,6 +9,7 @@ import {
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
+import { applyFilters } from '@wordpress/hooks';
 
 import { useSettings } from '../context/SettingsContext';
 import { RedirectIcon, RulesIcon, Squares2X2Icon } from './icons';
@@ -42,6 +43,30 @@ const Layout = () => {
 		( notice ) => notice.type === 'snackbar'
 	);
 
+	// Pro extensions add tabs / header actions via these filters.
+	const tabs = applyFilters( 'wplalr.tabs', TABS );
+	const headerActions = applyFilters(
+		'wplalr.headerActions',
+		<>
+			<Button
+				variant="secondary"
+				href="https://wordpress.org/plugins/wp-login-and-logout-redirect/"
+				target="_blank"
+				rel="noreferrer"
+			>
+				{ __( 'Documentation', 'wp-login-logout-redirect' ) }
+			</Button>
+			<Button
+				variant="primary"
+				href="https://buymeacoffee.com/aiarnob"
+				target="_blank"
+				rel="noreferrer"
+			>
+				{ __( 'Support Me', 'wp-login-logout-redirect' ) }
+			</Button>
+		</>
+	);
+
 	return (
 		<div className="wplalr-admin-app">
 			<SettingsHeader
@@ -54,29 +79,7 @@ const Layout = () => {
 					'Configure where users are sent after they log in or log out.',
 					'wp-login-logout-redirect'
 				) }
-				actions={
-					<>
-						<Button
-							variant="secondary"
-							href="https://wordpress.org/plugins/wp-login-and-logout-redirect/"
-							target="_blank"
-							rel="noreferrer"
-						>
-							{ __(
-								'Documentation',
-								'wp-login-logout-redirect'
-							) }
-						</Button>
-						<Button
-							variant="primary"
-							href="https://buymeacoffee.com/aiarnob"
-							target="_blank"
-							rel="noreferrer"
-						>
-							{ __( 'Support Me', 'wp-login-logout-redirect' ) }
-						</Button>
-					</>
-				}
+				actions={ headerActions }
 			/>
 
 			<main className="wplalr-main-content wplalr-setting-wrapper">
@@ -105,7 +108,7 @@ const Layout = () => {
 					) : (
 						<>
 							<div className="wplalr-hash-nav">
-								{ TABS.map( ( { to, icon: Icon, label } ) => (
+								{ tabs.map( ( { to, icon: Icon, label } ) => (
 									<Link
 										key={ to }
 										to={ to }

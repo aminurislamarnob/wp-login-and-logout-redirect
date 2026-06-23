@@ -148,7 +148,18 @@ class RuleEngine {
 				return false;
 
 			default:
-				return false;
+				/**
+				 * Resolve a match for a condition type the free plugin does not handle.
+				 *
+				 * Pro extensions hook here to evaluate custom match types registered
+				 * via the `wplalr/rule_match_types` filter.
+				 *
+				 * @param bool     $matched Whether the condition matches. Default false.
+				 * @param string   $type    The condition type.
+				 * @param array    $values  The condition values.
+				 * @param \WP_User $user    The user being redirected.
+				 */
+				return (bool) apply_filters( 'wplalr/match_condition', false, $type, $values, $user );
 		}
 	}
 }
