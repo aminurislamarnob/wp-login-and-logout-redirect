@@ -174,7 +174,8 @@ final class WpLoginLogoutRedirect {
         $this->container['scripts'] = new Assets();
         $this->container['admin_settings'] = new Settings();
         $this->container['admin_settings_controller'] = new REST\SettingsController();
-        $this->container['redirection'] = new Redirection();
+        $this->container['rule_engine'] = new RuleEngine();
+        $this->container['redirection'] = new Redirection( $this->container['rule_engine'] );
         $this->container['user_login_time'] = new UserLoginTime();
     }
 

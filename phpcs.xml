@@ -135,4 +135,8 @@
     <rule ref="Squiz.PHP.CommentedOutCode.Found">
         <severity>0</severity>
     </rule>
+    <!-- Allow namespaced "wplalr/..." hook names used by the extension API. -->
+    <rule ref="WordPress.NamingConventions.ValidHookName.UseUnderscores">
+        <severity>0</severity>
+    </rule>
 </ruleset>
