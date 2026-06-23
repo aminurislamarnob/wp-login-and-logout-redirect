@@ -46,6 +46,7 @@ final class WpLoginLogoutRedirect {
 
         add_action( 'plugins_loaded', [ $this, 'init_plugin' ] );
         add_action( 'woocommerce_flush_rewrite_rules', [ $this, 'flush_rewrite_rules' ] );
+        add_action( 'rest_api_init', [ $this, 'register_rest_routes' ] );
     }
 
     /**
@@ -170,10 +171,23 @@ final class WpLoginLogoutRedirect {
      * @return void
      */
     public function init_classes() {
-        // $this->container['scripts'] = new Assets();
+        $this->container['scripts'] = new Assets();
         $this->container['admin_settings'] = new Settings();
+        $this->container['admin_settings_controller'] = new REST\SettingsController();
         $this->container['redirection'] = new Redirection();
         $this->container['user_login_time'] = new UserLoginTime();
+    }
+
+    /**
+     * Register plugin REST routes
+     *
+     * @return void
+     */
+    public function register_rest_routes() {
+        if ( ! isset( $this->container['admin_settings_controller'] ) ) {
+            $this->container['admin_settings_controller'] = new REST\SettingsController();
+        }
+        $this->container['admin_settings_controller']->register_routes();
     }
 
     /**

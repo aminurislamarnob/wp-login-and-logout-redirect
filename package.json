@@ -1,0 +1,39 @@
+{
+	"name": "wp-login-and-logout-redirect",
+	"version": "3.1.7",
+	"description": "Redirect users to specific URLs on login or logout.",
+	"main": "index.js",
+	"scripts": {
+		"build": "wp-scripts build",
+		"start": "wp-scripts start",
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"packages-update": "wp-scripts packages-update"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/aminurislamarnob/wp-login-and-logout-redirect.git"
+	},
+	"keywords": [
+		"wordpress",
+		"login",
+		"logout",
+		"redirect"
+	],
+	"author": "Aminur Islam",
+	"license": "GPL-2.0-or-later",
+	"dependencies": {
+		"@heroicons/react": "^2.2.0",
+		"@wordpress/api-fetch": "^7.0.0",
+		"@wordpress/components": "^33.1.0",
+		"@wordpress/data": "^10.0.0",
+		"@wordpress/element": "^6.0.0",
+		"@wordpress/i18n": "^6.0.0",
+		"@wordpress/notices": "^5.0.0",
+		"react-router-dom": "^6.23.1"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^32.2.0"
+	}
+}

@@ -40,6 +40,9 @@ mkdir -p "$BUILD_DIR"
 # npm install
 
 status "Generating build... 👷‍♀️"
+status "Installing node dependencies... 📦"
+npm install
+npm run build
 
 # Copy all files
 status "Copying files... ✌️"

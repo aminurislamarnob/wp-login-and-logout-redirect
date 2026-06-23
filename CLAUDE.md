@@ -9,10 +9,10 @@ WP Login and Logout Redirect is a WordPress plugin that redirects users to confi
 ## Commands
 
 ```bash
-# Install dependencies (dev)
+# Install PHP dependencies (dev)
 composer update
 
-# Install dependencies (production, no dev)
+# Install PHP dependencies (production, no dev)
 composer update --no-dev
 
 # Run PHPCS linting
@@ -21,7 +21,16 @@ composer phpcs
 # Auto-fix PHPCS issues
 composer phpcbf
 
-# Build release ZIP
+# Install JS dependencies
+npm install
+
+# Build the React admin bundle (outputs to assets/build/)
+npm run build
+
+# Watch/rebuild during development
+npm run start
+
+# Build release ZIP (runs npm install + npm run build internally)
 chmod +x bin/build.sh && bin/build.sh
 ```
 
@@ -33,10 +42,19 @@ Namespace: `PluginizeLab\WpLoginLogoutRedirect` — PSR-4 autoloaded from `inclu
 
 **Core classes (all in `includes/`):**
 
-- `WpLoginLogoutRedirect` — singleton bootstrap. Defines constants, registers activation/deactivation hooks, initializes all other classes via a `$container` array accessible through `__get()`.
-- `Settings` — registers the admin menu page ("Redirect Options") and two WP options: `wplalr_login_redirect` and `wplalr_logout_redirect`. Renders `templates/settings-form.php`.
+- `WpLoginLogoutRedirect` — singleton bootstrap. Defines constants, registers activation/deactivation hooks, registers REST routes on `rest_api_init`, and initializes all other classes via a `$container` array accessible through `__get()`.
+- `Settings` — registers the admin menu page ("Redirect Options") and renders the React app mount point (`<div id="wplalr-settings">`). No longer uses the Settings API.
+- `REST\SettingsController` — `WP_REST_Controller` exposing `GET`/`POST` at `wplalr/v1/settings` (cap: `manage_options`). Reads/writes the two existing options `wplalr_login_redirect` and `wplalr_logout_redirect`. This is what the React settings page talks to.
+- `Assets` — on the settings screen (`toplevel_page_wplalr_login_logout_redirect`) enqueues the webpack build from `assets/build/admin/` (using `script.asset.php` for deps/version), localizes `window.wplalrAdmin`, and loads `wp-components` styles. Also registers/enqueues the front-end script/style.
 - `Redirection` — hooks into `login_redirect`, `woocommerce_login_redirect`, and `wp_logout` to perform the actual redirects using the stored options. Falls back to `admin_url()` for login and `home_url()` for logout when no URL is configured.
 - `UserLoginTime` — stores `wplalr_last_login` user meta on login, adds a sortable "Last Login" column to the WP admin users list.
+
+**React admin app (`src/`, built with `@wordpress/scripts`):**
+
+- `src/admin.js` — mounts `<App>` (HashRouter + `SettingsProvider`) onto `#wplalr-settings`.
+- `src/context/SettingsContext.js` — fetches/saves settings via `apiFetch` against `/wplalr/v1/settings`; exposes `settings`, `isLoading`, `isSaving`, `saveSettings`; fires `@wordpress/notices` snackbars.
+- `src/components/` — `Layout` (header + tabbed hash-nav + `SnackbarList` + loading skeleton), `SettingsHeader`, `RedirectSettings` (the Redirects tab), `icons`, `LayoutStyles.css`.
+- `webpack.config.js` — single entry `admin/script: ./src/admin.js`, output to `assets/build/`. Source (`src/`, `webpack.config.js`, `package.json`) is excluded from the release ZIP via `.distignore`; the prebuilt `assets/build/` ships.
 
 ## Coding Standards
 

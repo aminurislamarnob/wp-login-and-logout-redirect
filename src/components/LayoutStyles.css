@@ -1,0 +1,263 @@
+/* ========== Admin page padding override ========== */
+.toplevel_page_wplalr_login_logout_redirect div#wpcontent {
+	padding-inline-start: 0;
+}
+
+/* ========== Top header bar ========== */
+.wplalr-header-wrapper {
+	background: #fff;
+	border-bottom: 1px solid #dcdcde;
+	width: 100%;
+}
+
+.wplalr-settings-header {
+	background: #fff;
+	padding: 24px 40px;
+}
+
+.wplalr-settings-header-inner {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.wplalr-header-text-column {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.wplalr-header-title-container {
+	display: flex;
+	align-items: center;
+}
+
+.wplalr-settings-header h2 {
+	font-size: 20px;
+	margin: 0;
+	line-height: 1.4;
+	color: #1d2327;
+	font-weight: 600;
+}
+
+.wplalr-header-subtitle {
+	margin: 0;
+	font-size: 13px;
+	color: #646970;
+	line-height: 1.5;
+}
+
+.wplalr-header-actions {
+	display: flex;
+	gap: 12px;
+}
+
+.wplalr-settings-header-icon {
+	display: inline-flex;
+	width: 24px;
+	height: 24px;
+	margin-right: 12px;
+	color: #5539fd;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+}
+
+.wplalr-settings-header-icon svg {
+	width: 24px;
+	height: 24px;
+}
+
+.wplalr-settings-header-logo {
+	display: block;
+	width: auto;
+	height: 28px;
+	max-width: 180px;
+}
+
+/* ========== Main content area ========== */
+.wplalr-main-content {
+	position: relative;
+	background: #f0f0f1;
+	padding: 0;
+	flex: 1 1 auto;
+	max-width: 100%;
+}
+
+/* ========== Content body ========== */
+.wplalr-content-body {
+	padding: 40px;
+	max-width: 1200px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+/* ========== Horizontal tab navigation ========== */
+.wplalr-hash-nav {
+	display: flex;
+	gap: 24px;
+	margin-bottom: 24px;
+	border-bottom: 1px solid #dcdcde;
+	width: 800px;
+}
+
+.wplalr-hash-nav a {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	text-decoration: none;
+	color: #646970;
+	font-weight: 500;
+	font-size: 14px;
+	padding: 0 0 12px 0;
+	border-bottom: 3px solid transparent;
+	transition: all 0.2s ease;
+}
+
+.wplalr-hash-nav a svg {
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+}
+
+.wplalr-hash-nav a:hover {
+	color: #1d2327;
+}
+
+.wplalr-hash-nav a:focus {
+	outline: 0;
+	box-shadow: none;
+}
+
+.wplalr-hash-nav a.is-active {
+	color: #5539fd;
+	border-bottom: 3px solid #5539fd;
+}
+
+/* ========== Skeleton loader ========== */
+.wplalr-skeleton-tab {
+	height: 16px;
+	background: #e2e8f0;
+	border-radius: 4px;
+	margin-bottom: 13px;
+	margin-top: 2px;
+	animation: wplalr-pulse 1.5s cubic-bezier( 0.4, 0, 0.6, 1 ) infinite;
+}
+
+@keyframes wplalr-pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.5;
+	}
+}
+
+/* ========== Loading spinner ========== */
+.wplalr-loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 200px;
+}
+
+/* ========== Section wrappers ========== */
+.wplalr-section {
+	margin-bottom: 24px;
+	max-width: 800px;
+	width: 800px;
+}
+
+.wplalr-section--narrow {
+	min-width: 600px;
+}
+
+/* ========== Section header card ========== */
+.wplalr-form-header-card {
+	margin-bottom: 10px;
+}
+
+.wplalr-form-header-card .wplalr-form-section-header {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 24px;
+}
+
+.wplalr-form-section-body {
+	padding: 24px !important;
+}
+
+/* ========== Section title / description ========== */
+.wplalr-section-title {
+	font-size: 16px;
+	font-weight: 600;
+	margin: 0;
+	color: #1d2327;
+}
+
+.wplalr-section-description {
+	font-size: 14px;
+	color: #646970;
+	margin: 0;
+	line-height: 1.6;
+}
+
+/* ========== Settings groups ========== */
+.wplalr-settings-group {
+	margin-bottom: 24px;
+}
+
+/* ========== @wordpress/components overrides ========== */
+.wplalr-setting-wrapper label {
+	color: #1d2327;
+}
+
+.wplalr-setting-wrapper .components-card {
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	box-shadow: none;
+}
+
+.wplalr-setting-wrapper .components-button.is-primary {
+	background: #5539fd;
+}
+
+.wplalr-setting-wrapper .components-button.is-primary:hover {
+	background: #635bff;
+}
+
+/* ========== Snackbar notices ========== */
+.components-editor-notices__snackbar {
+	position: fixed !important;
+	bottom: 32px !important;
+	left: 50% !important;
+	transform: translateX( -50% ) !important;
+	z-index: 100000 !important;
+	justify-content: center !important;
+	animation: wplalr-snackbar-slide-up 0.3s cubic-bezier( 0.16, 1, 0.3, 1 )
+		forwards !important;
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+}
+
+@keyframes wplalr-snackbar-slide-up {
+	from {
+		opacity: 0;
+		transform: translate( -50%, 20px );
+	}
+	to {
+		opacity: 1;
+		transform: translate( -50%, 0 );
+	}
+}
+
+.wplalr-admin-app .components-snackbar-list .components-snackbar {
+	margin-inline: auto !important;
+}
