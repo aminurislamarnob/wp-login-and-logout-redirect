@@ -44,9 +44,9 @@ const Layout = () => {
 	);
 
 	// Pro extensions add tabs / header actions via these filters.
-	const tabs = applyFilters( 'wplalr.tabs', TABS );
+	const tabs = applyFilters( 'wplalr_tabs', TABS );
 	const headerActions = applyFilters(
-		'wplalr.headerActions',
+		'wplalr_header_actions',
 		<>
 			<Button
 				variant="secondary"

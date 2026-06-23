@@ -85,7 +85,7 @@ class SettingsController extends WP_REST_Controller {
 		 *
 		 * @param array $settings The settings payload.
 		 */
-		$settings = apply_filters( 'wplalr/rest/settings_response', $settings );
+		$settings = apply_filters( 'wplalr_rest_settings_response', $settings );
 
 		return rest_ensure_response( $settings );
 	}
@@ -180,7 +180,7 @@ class SettingsController extends WP_REST_Controller {
 			 * @param array $clean_rule The sanitized rule.
 			 * @param array $rule       The raw rule from the request.
 			 */
-			$clean[] = apply_filters( 'wplalr/rest/sanitize_rule', $clean_rule, $rule );
+			$clean[] = apply_filters( 'wplalr_rest_sanitize_rule', $clean_rule, $rule );
 		}
 
 		return $clean;
@@ -196,12 +196,12 @@ class SettingsController extends WP_REST_Controller {
 		 * Filter the available rule condition match types.
 		 *
 		 * Pro extensions hook here to register custom match types; they should
-		 * also handle their sanitization via `wplalr/sanitize_condition_values`
-		 * and matching via `wplalr/match_condition`.
+		 * also handle their sanitization via `wplalr_sanitize_condition_values`
+		 * and matching via `wplalr_match_condition`.
 		 *
 		 * @param array $types Match type slugs.
 		 */
-		return apply_filters( 'wplalr/rule_match_types', array( 'role', 'user', 'capability' ) );
+		return apply_filters( 'wplalr_rule_match_types', array( 'role', 'user', 'capability' ) );
 	}
 
 	/**
@@ -220,7 +220,7 @@ class SettingsController extends WP_REST_Controller {
 			 * @param string $type   The condition type.
 			 * @param array  $values The raw values.
 			 */
-			return array_values( (array) apply_filters( 'wplalr/sanitize_condition_values', array(), $type, $values ) );
+			return array_values( (array) apply_filters( 'wplalr_sanitize_condition_values', array(), $type, $values ) );
 		}
 
 		$valid_roles = array_keys( wp_roles()->roles );
@@ -300,7 +300,7 @@ class SettingsController extends WP_REST_Controller {
 		 *
 		 * @param array $schema The rule schema.
 		 */
-		return apply_filters( 'wplalr/rest/rule_schema', $schema );
+		return apply_filters( 'wplalr_rest_rule_schema', $schema );
 	}
 
 	/**

@@ -125,7 +125,7 @@ class Redirection {
 		 * @param bool   $allow        Whether to allow the external host.
 		 * @param string $redirect_url The resolved logout URL.
 		 */
-		$allow_external = apply_filters( 'wplalr/allow_external_redirect', true, $redirect_url );
+		$allow_external = apply_filters( 'wplalr_allow_external_redirect', true, $redirect_url );
 
 		if ( $redirect_host && $allow_external ) {
 			add_filter(

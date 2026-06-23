@@ -27,7 +27,7 @@ const parseUserId = ( label ) => {
  */
 const ConditionValueControl = ( { type, values, onChange } ) => {
 	// Pro extensions render value controls for their custom match types.
-	const custom = applyFilters( 'wplalr.conditionValueControl', null, {
+	const custom = applyFilters( 'wplalr_condition_value_control', null, {
 		type,
 		values,
 		onChange,

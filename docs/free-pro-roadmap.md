@@ -104,13 +104,13 @@ Rule object shape:
 `woocommerce_login_redirect`, `wp_logout`, but resolves through a new
 `RuleEngine`:
 
-1. `do_action( 'wplalr/before_resolve', $event, $user )`.
+1. `do_action( 'wplalr_before_resolve', $event, $user )`.
 2. Iterate `wplalr_redirect_rules` in order; first rule whose `match` passes for
    the current `$user` wins → take its `login_url`/`logout_url`.
 3. If none match, fall back to `wplalr_login_redirect` / `wplalr_logout_redirect`.
 4. If still empty, WP defaults (`admin_url()` / `home_url()`).
-5. Resolve placeholders: `apply_filters( 'wplalr/placeholders', $map, $user, $ctx )`.
-6. `apply_filters( 'wplalr/resolve_redirect', $url, $user, $rule, $event )`
+5. Resolve placeholders: `apply_filters( 'wplalr_placeholders', $map, $user, $ctx )`.
+6. `apply_filters( 'wplalr_resolve_redirect', $url, $user, $rule, $event )`
    (Pro overrides here for WC/EDD/referrer).
 7. Loop guard + `wp_validate_redirect()` against an allowlisted-host policy.
 
@@ -133,8 +133,8 @@ Extend `GET/POST wplalr/v1/settings` (cap `manage_options`) to:
 - Server validates each rule: `match.type` ∈ allowlist; `match.values` validated
   against `get_editable_roles()`, existing user IDs, or registered capabilities;
   URLs sanitized with `esc_url_raw`.
-- Schema extensible for Pro: `apply_filters( 'wplalr/rest/rule_schema', $schema )`
-  and `apply_filters( 'wplalr/rest/settings_response', $data )`.
+- Schema extensible for Pro: `apply_filters( 'wplalr_rest_rule_schema', $schema )`
+  and `apply_filters( 'wplalr_rest_settings_response', $data )`.
 
 ## 7. React admin UI
 
@@ -143,8 +143,8 @@ Extend `GET/POST wplalr/v1/settings` (cap `manage_options`) to:
   enable toggle, inline validation, placeholder helper text.
 - **Defaults / Fallback** card → the two existing options (unchanged UX for
   users who never add a rule).
-- Pro fields surfaced via `wp.hooks` filters (e.g. `wplalr.ruleFields`,
-  `wplalr.tabs`); when free, render a locked/upsell state.
+- Pro fields surfaced via `wp.hooks` filters (e.g. `wplalr_rule_fields`,
+  `wplalr_tabs`); when free, render a locked/upsell state.
 - Replace the "Support Me" button with a Freemius-driven **Upgrade** CTA on free,
   hidden when Pro is active.
 
@@ -152,11 +152,11 @@ Extend `GET/POST wplalr/v1/settings` (cap `manage_options`) to:
 
 PHP filters/actions the Pro plugin hooks:
 
-- `wplalr/rule_match_types` — Pro registers advanced match types.
-- `wplalr/placeholders` — Pro adds `{{current_page}}`/`{{previous_page}}`.
-- `wplalr/resolve_redirect` — Pro overrides final URL (WC/EDD/referrer).
-- `wplalr/before_resolve`, `wplalr/after_resolve` — lifecycle.
-- `wplalr/rest/rule_schema`, `wplalr/rest/settings_response` — REST extension.
+- `wplalr_rule_match_types` — Pro registers advanced match types.
+- `wplalr_placeholders` — Pro adds `{{current_page}}`/`{{previous_page}}`.
+- `wplalr_resolve_redirect` — Pro overrides final URL (WC/EDD/referrer).
+- `wplalr_before_resolve`, `wplalr_after_resolve` — lifecycle.
+- `wplalr_rest_rule_schema`, `wplalr_rest_settings_response` — REST extension.
 
 JS: `@wordpress/hooks` filters as above so Pro can inject panels/fields without
 forking the free bundle.
@@ -232,8 +232,8 @@ rules behave exactly as today.
 - **`includes/RuleEngine.php` (new):** `resolve( $event, $user )` walks rules in
   order, returns first rule where **every** condition passes
   (`role`→`$user->roles`, `user`→`$user->ID`, `capability`→`$user->allcaps`);
-  empty `conditions` = matches everyone. Fires `wplalr/before_resolve`,
-  `wplalr/resolve_redirect`, `wplalr/after_resolve`.
+  empty `conditions` = matches everyone. Fires `wplalr_before_resolve`,
+  `wplalr_resolve_redirect`, `wplalr_after_resolve`.
 - **`includes/Redirection.php` (rewrite):** same hooks (`login_redirect`,
   `woocommerce_login_redirect`, `wp_logout`); route through `RuleEngine` →
   default options → WP default. Retain `wp_validate_redirect()`.
@@ -241,8 +241,8 @@ rules behave exactly as today.
   `default_login_redirect`, `default_logout_redirect`, `rules[]`. Server-side
   validation: condition `type` ∈ allowlist; `values` validated against
   `get_editable_roles()` / existing user IDs / registered capabilities; URLs via
-  `esc_url_raw`. Pro-extension filters `wplalr/rest/rule_schema`,
-  `wplalr/rest/settings_response`.
+  `esc_url_raw`. Pro-extension filters `wplalr_rest_rule_schema`,
+  `wplalr_rest_settings_response`.
 - **Acceptance:** rule created via REST redirects a matching user; non-matching
   users fall through to defaults; `composer phpcs` + `php -l` clean.
 - **Not in scope:** UI, placeholders, Freemius.
@@ -259,14 +259,14 @@ rules behave exactly as today.
 - **Defaults / Fallback** card → the two existing options (unchanged UX for
   users who add no rules).
 - Inline validation, placeholder helper text. Pro fields surfaced via `wp.hooks`
-  filters (`wplalr.ruleFields`, `wplalr.tabs`) with a locked/upsell state.
+  filters (`wplalr_rule_fields`, `wplalr_tabs`) with a locked/upsell state.
 - **Acceptance:** create/edit/delete/reorder rules end-to-end; `npm run build`
   + `npm run lint:js` clean.
 
 ### Phase 3 — Free placeholders + hardening
 
 - **`includes/Placeholders.php` (new):** resolver for `{{username}}`,
-  `{{user_slug}}`, `{{website_url}}`, exposed via `wplalr/placeholders` filter so
+  `{{user_slug}}`, `{{website_url}}`, exposed via `wplalr_placeholders` filter so
   Pro can add `{{current_page}}`/`{{previous_page}}`.
 - **Loop detection** + same-site allowlist URL policy in the resolve pipeline.
 - **Acceptance:** placeholders expand correctly; self-referential redirects are
@@ -276,7 +276,7 @@ rules behave exactly as today.
 
 **Done:** PHP filters (§8) + `@wordpress/hooks` JS slots so the Pro add-on
 injects routes/tabs/fields/match-types without forking the free bundle. Header
-actions are filterable (`wplalr.headerActions`) so an Upgrade CTA can be added
+actions are filterable (`wplalr_header_actions`) so an Upgrade CTA can be added
 later. All extension points documented in [`extensibility.md`](extensibility.md).
 
 **Deferred (by request):** Freemius SDK + `wplalr_fs()` initializer and the

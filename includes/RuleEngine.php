@@ -43,7 +43,7 @@ class RuleEngine {
 	 * @return string The resolved URL, or an empty string when no rule applies.
 	 */
 	public function resolve( $event, $user = null ) {
-		do_action( 'wplalr/before_resolve', $event, $user );
+		do_action( 'wplalr_before_resolve', $event, $user );
 
 		$url     = '';
 		$matched = null;
@@ -76,9 +76,9 @@ class RuleEngine {
 		 * @param array|null    $matched The matched rule, or null.
 		 * @param string        $event   'login' or 'logout'.
 		 */
-		$url = apply_filters( 'wplalr/resolve_redirect', $url, $user, $matched, $event );
+		$url = apply_filters( 'wplalr_resolve_redirect', $url, $user, $matched, $event );
 
-		do_action( 'wplalr/after_resolve', $url, $event, $user, $matched );
+		do_action( 'wplalr_after_resolve', $url, $event, $user, $matched );
 
 		return $url;
 	}
@@ -152,14 +152,14 @@ class RuleEngine {
 				 * Resolve a match for a condition type the free plugin does not handle.
 				 *
 				 * Pro extensions hook here to evaluate custom match types registered
-				 * via the `wplalr/rule_match_types` filter.
+				 * via the `wplalr_rule_match_types` filter.
 				 *
 				 * @param bool     $matched Whether the condition matches. Default false.
 				 * @param string   $type    The condition type.
 				 * @param array    $values  The condition values.
 				 * @param \WP_User $user    The user being redirected.
 				 */
-				return (bool) apply_filters( 'wplalr/match_condition', false, $type, $values, $user );
+				return (bool) apply_filters( 'wplalr_match_condition', false, $type, $values, $user );
 		}
 	}
 }

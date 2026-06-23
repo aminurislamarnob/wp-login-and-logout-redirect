@@ -181,7 +181,7 @@ const RuleCard = ( { rule, onChange, onRemove } ) => {
 					</div>
 
 					{ /* Pro extensions inject extra rule fields here. */ }
-					{ applyFilters( 'wplalr.ruleFields', null, {
+					{ applyFilters( 'wplalr_rule_fields', null, {
 						rule,
 						onChange,
 					} ) }

@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Free tokens: {{username}}, {{user_slug}}, {{website_url}}. Pro extensions add
  * tokens (e.g. {{current_page}}, {{previous_page}}) via the
- * `wplalr/placeholders` filter.
+ * `wplalr_placeholders` filter.
  */
 class Placeholders {
 
@@ -40,7 +40,7 @@ class Placeholders {
 		 * @param array         $map  Map of `{{token}}` => replacement value.
 		 * @param \WP_User|null $user The user being redirected.
 		 */
-		return apply_filters( 'wplalr/placeholders', $map, $user );
+		return apply_filters( 'wplalr_placeholders', $map, $user );
 	}
 
 	/**

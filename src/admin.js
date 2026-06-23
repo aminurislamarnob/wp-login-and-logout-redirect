@@ -23,8 +23,8 @@ import RedirectSettings from './components/RedirectSettings';
 import RulesSettings from './components/RulesSettings';
 
 const App = () => {
-	// Pro extensions add routes here via the `wplalr.routes` filter.
-	const routes = applyFilters( 'wplalr.routes', [
+	// Pro extensions add routes here via the `wplalr_routes` filter.
+	const routes = applyFilters( 'wplalr_routes', [
 		{ path: 'rules', element: <RulesSettings /> },
 	] );
 

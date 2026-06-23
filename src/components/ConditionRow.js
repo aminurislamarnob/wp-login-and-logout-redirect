@@ -24,7 +24,7 @@ const TYPE_OPTIONS = [
  */
 const ConditionRow = ( { condition, onChange, onRemove } ) => {
 	// Pro extensions register additional match types here.
-	const typeOptions = applyFilters( 'wplalr.conditionTypes', TYPE_OPTIONS );
+	const typeOptions = applyFilters( 'wplalr_condition_types', TYPE_OPTIONS );
 
 	return (
 		<div className="wplalr-condition-row">
