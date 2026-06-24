@@ -406,6 +406,81 @@
 	color: #646970;
 }
 
+/* ========== Logged-in Users: table ========== */
+.wplalr-sessions-table .wplalr-col-check {
+	width: 32px;
+}
+
+.wplalr-session-user {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.wplalr-session-avatar {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+
+.wplalr-session-user strong {
+	display: block;
+	color: #1d2327;
+}
+
+.wplalr-session-email {
+	display: block;
+	font-size: 12px;
+	color: #646970;
+}
+
+.wplalr-you-badge {
+	display: inline-block;
+	margin-left: 6px;
+	padding: 1px 6px;
+	border-radius: 8px;
+	font-size: 11px;
+	font-weight: 500;
+	background: #ecf3ff;
+	color: #2271b1;
+}
+
+.wplalr-expand-sessions {
+	margin-left: 8px;
+	height: auto !important;
+	padding: 0 !important;
+}
+
+.wplalr-session-detail td {
+	background: #f6f7f7;
+	font-size: 12px;
+}
+
+.wplalr-session-device {
+	font-weight: 500;
+	color: #3c434a;
+}
+
+.wplalr-session-ip {
+	margin-left: 12px;
+	color: #646970;
+	font-family: Menlo, Consolas, monaco, monospace;
+}
+
+/* ========== Logged-in Users: bulk bar ========== */
+.wplalr-bulk-bar {
+	width: 800px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	padding: 12px 16px;
+}
+
+.wplalr-modal-actions {
+	margin-top: 16px;
+}
+
 /* ========== Rules: cards ========== */
 .wplalr-rule-card {
 	margin-bottom: 16px;

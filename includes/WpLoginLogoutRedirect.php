@@ -179,6 +179,7 @@ final class WpLoginLogoutRedirect {
         $this->container['admin_settings'] = new Settings();
         $this->container['admin_settings_controller'] = new REST\SettingsController();
         $this->container['logs_controller'] = new REST\LogsController();
+        $this->container['sessions_controller'] = new REST\SessionsController();
         $this->container['rule_engine'] = new RuleEngine();
         $this->container['placeholders'] = new Placeholders();
         $this->container['redirection'] = new Redirection( $this->container['rule_engine'], $this->container['placeholders'] );
@@ -205,6 +206,11 @@ final class WpLoginLogoutRedirect {
             $this->container['logs_controller'] = new REST\LogsController();
         }
         $this->container['logs_controller']->register_routes();
+
+        if ( ! isset( $this->container['sessions_controller'] ) ) {
+            $this->container['sessions_controller'] = new REST\SessionsController();
+        }
+        $this->container['sessions_controller']->register_routes();
     }
 
     /**

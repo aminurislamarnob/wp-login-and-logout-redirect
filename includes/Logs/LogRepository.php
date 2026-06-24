@@ -27,7 +27,7 @@ class LogRepository {
 	 *
 	 * @var string[]
 	 */
-	const EVENTS = array( 'login', 'logout', 'failed' );
+	const EVENTS = array( 'login', 'logout', 'failed', 'forced_logout' );
 
 	/**
 	 * Insert a log row.

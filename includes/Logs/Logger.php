@@ -50,6 +50,7 @@ class Logger {
 		add_action( 'wplalr_after_resolve', array( $this, 'on_after_resolve' ), 10, 4 );
 		add_action( 'wp_login_failed', array( $this, 'on_login_failed' ), 10, 2 );
 		add_action( 'shutdown', array( $this, 'flush_pending_login' ) );
+		add_action( 'wplalr_session_destroyed', array( $this, 'on_session_destroyed' ), 10, 2 );
 	}
 
 	/**
@@ -140,6 +141,36 @@ class Logger {
 					'event'      => 'failed',
 					'status'     => 'failed',
 					'error_code' => $error_code,
+				)
+			)
+		);
+	}
+
+	/**
+	 * Record a forced logout performed from the Logged-in Users screen.
+	 *
+	 * @param int    $user_id The user whose session(s) were destroyed.
+	 * @param string $context Scope: session|user|bulk|all.
+	 * @return void
+	 */
+	public function on_session_destroyed( $user_id, $context = '' ) {
+		$user  = get_userdata( $user_id );
+		$actor = wp_get_current_user();
+
+		$this->record(
+			array_merge(
+				$this->base_row(),
+				array(
+					'user_id'     => $user_id,
+					'username'    => $user instanceof \WP_User ? $user->user_login : '',
+					'event'       => 'forced_logout',
+					'status'      => 'success',
+					'description' => sprintf(
+						/* translators: 1: admin username, 2: scope (session/user/bulk/all). */
+						__( 'Forced logout by %1$s (%2$s)', 'wp-login-logout-redirect' ),
+						$actor instanceof \WP_User && $actor->exists() ? $actor->user_login : __( 'system', 'wp-login-logout-redirect' ),
+						$context
+					),
 				)
 			)
 		);

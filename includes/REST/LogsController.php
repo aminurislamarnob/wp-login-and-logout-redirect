@@ -197,7 +197,7 @@ class LogsController extends WP_REST_Controller {
 			'event'    => array(
 				'type'              => 'string',
 				'default'           => '',
-				'enum'              => array( '', 'login', 'logout', 'failed' ),
+				'enum'              => array( '', 'login', 'logout', 'failed', 'forced_logout' ),
 				'sanitize_callback' => 'sanitize_key',
 			),
 			'status'   => array(

@@ -31,6 +31,10 @@ const EVENT_OPTIONS = [
 		label: __( 'Failed login', 'wp-login-logout-redirect' ),
 		value: 'failed',
 	},
+	{
+		label: __( 'Forced logout', 'wp-login-logout-redirect' ),
+		value: 'forced_logout',
+	},
 ];
 
 const STAT_CARDS = [
@@ -47,6 +51,7 @@ const EVENT_LABELS = {
 	login: __( 'Login', 'wp-login-logout-redirect' ),
 	logout: __( 'Logout', 'wp-login-logout-redirect' ),
 	failed: __( 'Failed', 'wp-login-logout-redirect' ),
+	forced_logout: __( 'Forced logout', 'wp-login-logout-redirect' ),
 };
 
 const LogsViewer = () => {
