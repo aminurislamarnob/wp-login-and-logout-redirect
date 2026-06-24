@@ -73,9 +73,11 @@ class SettingsController extends WP_REST_Controller {
 	 */
 	public function get_settings( $request ) {
 		$settings = array(
-			'wplalr_login_redirect'  => get_option( 'wplalr_login_redirect', '' ),
-			'wplalr_logout_redirect' => get_option( 'wplalr_logout_redirect', '' ),
-			'rules'                  => array_values( (array) get_option( RuleEngine::OPTION_RULES, array() ) ),
+			'wplalr_login_redirect'      => get_option( 'wplalr_login_redirect', '' ),
+			'wplalr_logout_redirect'     => get_option( 'wplalr_logout_redirect', '' ),
+			'rules'                      => array_values( (array) get_option( RuleEngine::OPTION_RULES, array() ) ),
+			'wplalr_enable_logs'         => 'yes' === get_option( 'wplalr_enable_logs', 'no' ),
+			'wplalr_logs_retention_days' => (int) get_option( 'wplalr_logs_retention_days', 30 ),
 		);
 
 		/**
@@ -107,6 +109,14 @@ class SettingsController extends WP_REST_Controller {
 
 		if ( $request->has_param( 'rules' ) ) {
 			update_option( RuleEngine::OPTION_RULES, $this->sanitize_rules( $request->get_param( 'rules' ) ) );
+		}
+
+		if ( $request->has_param( 'wplalr_enable_logs' ) ) {
+			update_option( 'wplalr_enable_logs', $request->get_param( 'wplalr_enable_logs' ) ? 'yes' : 'no' );
+		}
+
+		if ( $request->has_param( 'wplalr_logs_retention_days' ) ) {
+			update_option( 'wplalr_logs_retention_days', absint( $request->get_param( 'wplalr_logs_retention_days' ) ) );
 		}
 
 		return $this->get_settings( $request );
@@ -378,6 +388,16 @@ class SettingsController extends WP_REST_Controller {
 					'type'        => 'array',
 					'context'     => array( 'view', 'edit' ),
 					'items'       => $this->get_rule_schema(),
+				),
+				'wplalr_enable_logs'         => array(
+					'description' => __( 'Whether login/logout audit logging is enabled.', 'wp-login-logout-redirect' ),
+					'type'        => 'boolean',
+					'context'     => array( 'view', 'edit' ),
+				),
+				'wplalr_logs_retention_days' => array(
+					'description' => __( 'Auto-delete log rows older than this many days (0 = keep forever).', 'wp-login-logout-redirect' ),
+					'type'        => 'integer',
+					'context'     => array( 'view', 'edit' ),
 				),
 			),
 		);

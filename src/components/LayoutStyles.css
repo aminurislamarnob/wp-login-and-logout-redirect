@@ -297,6 +297,115 @@
 	margin-inline: auto !important;
 }
 
+/* ========== Audit Logs: stat cards ========== */
+.wplalr-stat-cards {
+	display: grid;
+	grid-template-columns: repeat( 4, 1fr );
+	gap: 16px;
+	width: 800px;
+}
+
+.wplalr-stat-card .components-card__body {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 20px 24px;
+}
+
+.wplalr-stat-value {
+	font-size: 28px;
+	font-weight: 600;
+	color: #1d2327;
+	line-height: 1.2;
+}
+
+.wplalr-stat-label {
+	font-size: 13px;
+	color: #646970;
+}
+
+/* ========== Audit Logs: toolbar ========== */
+.wplalr-logs-toolbar {
+	width: 800px;
+	align-items: flex-end !important;
+	gap: 12px;
+}
+
+/* ========== Audit Logs: table ========== */
+.wplalr-logs-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.wplalr-logs-table th {
+	text-align: left;
+	font-weight: 600;
+	color: #1d2327;
+	padding: 8px 12px;
+	border-bottom: 1px solid #dcdcde;
+	white-space: nowrap;
+}
+
+.wplalr-logs-table td {
+	padding: 10px 12px;
+	border-bottom: 1px solid #f0f0f1;
+	color: #3c434a;
+	vertical-align: middle;
+}
+
+.wplalr-logs-redirect {
+	max-width: 220px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-family: Menlo, Consolas, monaco, monospace;
+	font-size: 12px;
+}
+
+.wplalr-event-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 10px;
+	font-size: 12px;
+	font-weight: 500;
+	background: #edeff0;
+	color: #3c434a;
+}
+
+.wplalr-event-badge.is-failed {
+	background: #fcf0f1;
+	color: #d63638;
+}
+
+.wplalr-error-code {
+	display: block;
+	font-size: 11px;
+	color: #d63638;
+	margin-top: 2px;
+}
+
+.wplalr-admin-app .wplalr-log-delete svg {
+	fill: none;
+	stroke: currentColor;
+	width: 18px;
+	height: 18px;
+}
+
+/* ========== Audit Logs: pagination ========== */
+.wplalr-logs-pagination {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 12px;
+	margin-top: 16px;
+}
+
+.wplalr-logs-page-info {
+	font-size: 13px;
+	color: #646970;
+}
+
 /* ========== Rules: cards ========== */
 .wplalr-rule-card {
 	margin-bottom: 16px;

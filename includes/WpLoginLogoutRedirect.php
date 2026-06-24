@@ -86,7 +86,8 @@ final class WpLoginLogoutRedirect {
      * Nothing is being called here yet.
      */
     public function activate() {
-        // Rewrite rules during wp_login_logout_redirect activation
+        // Create the audit-log table and schedule its cleanup cron.
+        ( new Logs\Installer() )->install();
     }
 
     /**
@@ -104,7 +105,10 @@ final class WpLoginLogoutRedirect {
      *
      * Nothing being called here yet.
      */
-    public function deactivate() {     }
+    public function deactivate() {
+        // Clear scheduled cron events; the table and its data are kept.
+        Logs\Installer::unschedule_cleanup();
+    }
 
     /**
      * Define all constants
@@ -174,10 +178,16 @@ final class WpLoginLogoutRedirect {
         $this->container['scripts'] = new Assets();
         $this->container['admin_settings'] = new Settings();
         $this->container['admin_settings_controller'] = new REST\SettingsController();
+        $this->container['logs_controller'] = new REST\LogsController();
         $this->container['rule_engine'] = new RuleEngine();
         $this->container['placeholders'] = new Placeholders();
         $this->container['redirection'] = new Redirection( $this->container['rule_engine'], $this->container['placeholders'] );
         $this->container['user_login_time'] = new UserLoginTime();
+
+        // Audit logs.
+        $this->container['logs_installer']  = new Logs\Installer();
+        $this->container['logs_repository'] = new Logs\LogRepository();
+        $this->container['logger']          = new Logs\Logger( $this->container['logs_repository'] );
     }
 
     /**
@@ -190,6 +200,11 @@ final class WpLoginLogoutRedirect {
             $this->container['admin_settings_controller'] = new REST\SettingsController();
         }
         $this->container['admin_settings_controller']->register_routes();
+
+        if ( ! isset( $this->container['logs_controller'] ) ) {
+            $this->container['logs_controller'] = new REST\LogsController();
+        }
+        $this->container['logs_controller']->register_routes();
     }
 
     /**
