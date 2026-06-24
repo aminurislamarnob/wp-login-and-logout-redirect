@@ -1,5 +1,5 @@
 /* ========== Admin page padding override ========== */
-.toplevel_page_wplalr_login_logout_redirect div#wpcontent {
+.wplalr-admin-page div#wpcontent {
 	padding-inline-start: 0;
 }
 
@@ -75,6 +75,41 @@
 	width: auto;
 	height: 28px;
 	max-width: 180px;
+}
+
+/* ========== Cross-page navigation (submenu pages) ========== */
+.wplalr-page-nav {
+	display: flex;
+	gap: 8px;
+	background: #fff;
+	border-bottom: 1px solid #dcdcde;
+	padding: 0 40px;
+}
+
+.wplalr-page-nav a {
+	display: inline-flex;
+	align-items: center;
+	text-decoration: none;
+	color: #646970;
+	font-weight: 500;
+	font-size: 14px;
+	padding: 14px 12px;
+	border-bottom: 3px solid transparent;
+	transition: all 0.2s ease;
+}
+
+.wplalr-page-nav a:hover {
+	color: #1d2327;
+}
+
+.wplalr-page-nav a:focus {
+	outline: 0;
+	box-shadow: none;
+}
+
+.wplalr-page-nav a.is-active {
+	color: #5539fd;
+	border-bottom: 3px solid #5539fd;
 }
 
 /* ========== Main content area ========== */
