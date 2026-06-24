@@ -17,9 +17,9 @@ const EMPTY_STATS = { login: 0, logout: 0, failed: 0, total: 0 };
 /**
  * Data hook for the Audit Logs view.
  *
- * Owns the paginated/filtered log list, the stat cards, the enable/retention
- * settings (folded into /settings), and the delete mutations. Re-fetches the
- * list + stats after each mutation.
+ * Owns the paginated/filtered log list, the stat cards, and the delete
+ * mutations. Reads the logging-enabled flag (managed on the Others settings tab)
+ * to drive the empty state. Re-fetches the list + stats after each mutation.
  *
  * @return {Object} Logs state and actions.
  */
@@ -33,10 +33,7 @@ export const useLogs = () => {
 	const [ stats, setStats ] = useState( EMPTY_STATS );
 
 	const [ isLoading, setIsLoading ] = useState( true );
-	const [ isSavingSettings, setIsSavingSettings ] = useState( false );
-
 	const [ enabled, setEnabled ] = useState( false );
-	const [ retentionDays, setRetentionDays ] = useState( 30 );
 
 	// Query state.
 	const [ page, setPage ] = useState( 1 );
@@ -93,19 +90,16 @@ export const useLogs = () => {
 		}
 	}, [ page, event, search, notifyError ] );
 
-	// Seed enable/retention from /settings once on mount.
+	// Read the logging-enabled flag from /settings once on mount (it is managed
+	// on the Others settings tab) to drive the empty state.
 	useEffect( () => {
 		let cancelled = false;
 
 		apiFetch( { path: SETTINGS_PATH } )
 			.then( ( response ) => {
-				if ( cancelled ) {
-					return;
+				if ( ! cancelled ) {
+					setEnabled( !! response?.wplalr_enable_logs );
 				}
-				setEnabled( !! response?.wplalr_enable_logs );
-				setRetentionDays(
-					Number( response?.wplalr_logs_retention_days ?? 30 )
-				);
 			} )
 			.catch( notifyError );
 
@@ -128,38 +122,6 @@ export const useLogs = () => {
 		fetchLogs();
 		fetchStats();
 	}, [ fetchLogs, fetchStats ] );
-
-	const saveLogSettings = useCallback(
-		async ( next ) => {
-			setIsSavingSettings( true );
-
-			try {
-				const response = await apiFetch( {
-					path: SETTINGS_PATH,
-					method: 'POST',
-					data: next,
-				} );
-
-				setEnabled( !! response?.wplalr_enable_logs );
-				setRetentionDays(
-					Number( response?.wplalr_logs_retention_days ?? 30 )
-				);
-				createSuccessNotice(
-					__( 'Settings saved.', 'wp-login-logout-redirect' ),
-					{
-						type: 'snackbar',
-						id: 'wplalr-logs-settings-saved',
-						isDismissible: false,
-					}
-				);
-			} catch ( err ) {
-				notifyError( err );
-			} finally {
-				setIsSavingSettings( false );
-			}
-		},
-		[ createSuccessNotice, notifyError ]
-	);
 
 	const deleteLog = useCallback(
 		async ( id ) => {
@@ -207,9 +169,7 @@ export const useLogs = () => {
 		totalPages,
 		stats,
 		isLoading,
-		isSavingSettings,
 		enabled,
-		retentionDays,
 		page,
 		event,
 		search,
@@ -217,7 +177,6 @@ export const useLogs = () => {
 		setEvent: updateEvent,
 		setSearch: updateSearch,
 		refresh,
-		saveLogSettings,
 		deleteLog,
 		deleteAllLogs,
 	};

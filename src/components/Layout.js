@@ -4,7 +4,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
 
 import { useSettings } from '../context/SettingsContext';
-import { RedirectIcon, RulesIcon } from './icons';
+import { RedirectIcon, RulesIcon, OthersIcon } from './icons';
 
 const TABS = [
 	{
@@ -16,6 +16,11 @@ const TABS = [
 		to: '/rules',
 		icon: RulesIcon,
 		label: __( 'Rules', 'wp-login-logout-redirect' ),
+	},
+	{
+		to: '/others',
+		icon: OthersIcon,
+		label: __( 'Others', 'wp-login-logout-redirect' ),
 	},
 ];
 

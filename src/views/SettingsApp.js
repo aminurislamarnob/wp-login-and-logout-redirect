@@ -15,6 +15,7 @@ import { SettingsProvider } from '../context/SettingsContext';
 import Layout from '../components/Layout';
 import RedirectSettings from '../components/RedirectSettings';
 import RulesSettings from '../components/RulesSettings';
+import OthersSettings from '../components/OthersSettings';
 
 /**
  * The Redirects + Rules settings view.
@@ -26,6 +27,7 @@ const SettingsApp = () => {
 	// Pro extensions add routes here via the `wplalr_routes` filter.
 	const routes = applyFilters( 'wplalr_routes', [
 		{ path: 'rules', element: <RulesSettings /> },
+		{ path: 'others', element: <OthersSettings /> },
 	] );
 
 	return (

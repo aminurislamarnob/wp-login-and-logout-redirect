@@ -8,7 +8,6 @@ import {
 	CardBody,
 	Button,
 	Spinner,
-	ToggleControl,
 	SelectControl,
 	SearchControl,
 	Modal,
@@ -61,9 +60,7 @@ const LogsViewer = () => {
 		totalPages,
 		stats,
 		isLoading,
-		isSavingSettings,
 		enabled,
-		retentionDays,
 		page,
 		event,
 		search,
@@ -71,7 +68,6 @@ const LogsViewer = () => {
 		setEvent,
 		setSearch,
 		refresh,
-		saveLogSettings,
 		deleteLog,
 		deleteAllLogs,
 	} = useLogs();
@@ -92,7 +88,7 @@ const LogsViewer = () => {
 				'wp-login-logout-redirect'
 		  )
 		: __(
-				'Logging is off. Enable it above to start recording login activity.',
+				'Logging is off. Enable it on the Others tab under Redirect Options to start recording login activity.',
 				'wp-login-logout-redirect'
 		  );
 
@@ -114,79 +110,6 @@ const LogsViewer = () => {
 						</Card>
 					) ) }
 				</div>
-			</div>
-
-			{ /* Settings: enable + retention */ }
-			<div className="wplalr-section">
-				<Card>
-					<CardBody className="wplalr-form-section-body">
-						<ToggleControl
-							__nextHasNoMarginBottom
-							label={ __(
-								'Enable logging',
-								'wp-login-logout-redirect'
-							) }
-							help={ __(
-								'Record login, logout and failed-login events. IP address and browser are stored.',
-								'wp-login-logout-redirect'
-							) }
-							checked={ enabled }
-							disabled={ isSavingSettings }
-							onChange={ ( value ) =>
-								saveLogSettings( {
-									wplalr_enable_logs: value,
-								} )
-							}
-						/>
-						<SelectControl
-							__nextHasNoMarginBottom
-							label={ __(
-								'Delete logs older than',
-								'wp-login-logout-redirect'
-							) }
-							value={ String( retentionDays ) }
-							disabled={ isSavingSettings }
-							options={ [
-								{
-									label: __(
-										'7 days',
-										'wp-login-logout-redirect'
-									),
-									value: '7',
-								},
-								{
-									label: __(
-										'30 days',
-										'wp-login-logout-redirect'
-									),
-									value: '30',
-								},
-								{
-									label: __(
-										'90 days',
-										'wp-login-logout-redirect'
-									),
-									value: '90',
-								},
-								{
-									label: __(
-										'Keep forever',
-										'wp-login-logout-redirect'
-									),
-									value: '0',
-								},
-							] }
-							onChange={ ( value ) =>
-								saveLogSettings( {
-									wplalr_logs_retention_days: parseInt(
-										value,
-										10
-									),
-								} )
-							}
-						/>
-					</CardBody>
-				</Card>
 			</div>
 
 			{ /* Toolbar */ }
