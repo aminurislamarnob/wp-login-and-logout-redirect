@@ -62,6 +62,31 @@ class LogRepository {
 	}
 
 	/**
+	 * Fetch a single row by id.
+	 *
+	 * The async alert sender re-reads the row this way (`query()` is list-only).
+	 *
+	 * @param int $id Row id.
+	 * @return array|null The prepared row, or null when not found.
+	 */
+	public function get( $id ) {
+		global $wpdb;
+
+		$id = absint( $id );
+
+		if ( $id < 1 ) {
+			return null;
+		}
+
+		$table = Installer::table_name();
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ), ARRAY_A );
+
+		return $row ? $this->prepare_item( $row ) : null;
+	}
+
+	/**
 	 * Paginated, filtered query of log rows.
 	 *
 	 * @param array $args page|per_page|event|status|search|orderby|order.

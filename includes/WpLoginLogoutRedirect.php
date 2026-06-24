@@ -107,7 +107,7 @@ final class WpLoginLogoutRedirect {
      */
     public function deactivate() {
         // Clear scheduled cron events; the table and its data are kept.
-        Logs\Installer::unschedule_cleanup();
+        Logs\Installer::unschedule_all();
     }
 
     /**
@@ -189,6 +189,7 @@ final class WpLoginLogoutRedirect {
         $this->container['logs_installer']  = new Logs\Installer();
         $this->container['logs_repository'] = new Logs\LogRepository();
         $this->container['logger']          = new Logs\Logger( $this->container['logs_repository'] );
+        $this->container['logs_notifier']   = new Logs\Notifier( $this->container['logs_repository'] );
     }
 
     /**

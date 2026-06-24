@@ -40,6 +40,17 @@ A custom match type generally needs three hooks together: `wplalr_rule_match_typ
 (register it), `wplalr_sanitize_condition_values` (validate input), and
 `wplalr_match_condition` (evaluate it at runtime).
 
+### Notifications (`Logs\Notifier`)
+
+| Hook | Type | Signature | Purpose |
+|------|------|-----------|---------|
+| `wplalr_log_notification_email` | filter | `( array $email, array $context )` | Re-template the per-login alert email. `$email` is `[ 'to', 'subject', 'body', 'headers' ]`; `$context` is `[ 'row', 'user' ]`. |
+| `wplalr_log_digest_email` | filter | `( array $email, array $context )` | Re-template the activity digest email. `$context` is `[ 'cadence', 'stats' ]`. |
+
+Returning an empty `to` from either filter cancels that send. The digest runs on
+the `wplalr_logs_digest_send` cron event; alerts dispatch via the single-event
+`wplalr_send_login_alert` hook so login is never blocked on SMTP.
+
 ## JavaScript filters (`@wordpress/hooks`)
 
 Registered with `wp.hooks.addFilter( name, namespace, callback )`. The admin
