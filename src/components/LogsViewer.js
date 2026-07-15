@@ -20,7 +20,13 @@ import { applyFilters } from '@wordpress/hooks';
  * Internal dependencies
  */
 import { useLogs } from '../hooks/useLogs';
-import { TrashIcon } from './icons';
+import {
+	TrashIcon,
+	LoginIcon,
+	LogoutIcon,
+	FailedLoginIcon,
+	ChartBarIcon,
+} from './icons';
 
 const EVENT_OPTIONS = [
 	{ label: __( 'All events', 'wp-login-logout-redirect' ), value: '' },
@@ -37,13 +43,26 @@ const EVENT_OPTIONS = [
 ];
 
 const STAT_CARDS = [
-	{ key: 'login', label: __( 'Logins', 'wp-login-logout-redirect' ) },
-	{ key: 'logout', label: __( 'Logouts', 'wp-login-logout-redirect' ) },
+	{
+		key: 'login',
+		label: __( 'Logins', 'wp-login-logout-redirect' ),
+		icon: LoginIcon,
+	},
+	{
+		key: 'logout',
+		label: __( 'Logouts', 'wp-login-logout-redirect' ),
+		icon: LogoutIcon,
+	},
 	{
 		key: 'failed',
 		label: __( 'Failed logins', 'wp-login-logout-redirect' ),
+		icon: FailedLoginIcon,
 	},
-	{ key: 'total', label: __( 'Total events', 'wp-login-logout-redirect' ) },
+	{
+		key: 'total',
+		label: __( 'Total events', 'wp-login-logout-redirect' ),
+		icon: ChartBarIcon,
+	},
 ];
 
 const EVENT_LABELS = {
@@ -97,14 +116,22 @@ const LogsViewer = () => {
 			{ /* Stat cards */ }
 			<div className="wplalr-section">
 				<div className="wplalr-stat-cards">
-					{ STAT_CARDS.map( ( { key, label } ) => (
-						<Card key={ key } className="wplalr-stat-card">
+					{ STAT_CARDS.map( ( { key, label, icon: Icon } ) => (
+						<Card
+							key={ key }
+							className={ `wplalr-stat-card wplalr-stat-card--${ key }` }
+						>
 							<CardBody>
-								<span className="wplalr-stat-value">
-									{ stats[ key ] ?? 0 }
-								</span>
-								<span className="wplalr-stat-label">
-									{ label }
+								<div className="wplalr-stat-info">
+									<span className="wplalr-stat-label">
+										{ label }
+									</span>
+									<span className="wplalr-stat-value">
+										{ stats[ key ] ?? 0 }
+									</span>
+								</div>
+								<span className="wplalr-stat-icon">
+									<Icon />
 								</span>
 							</CardBody>
 						</Card>
@@ -229,7 +256,7 @@ const LogsViewer = () => {
 											<td>{ row.username || '—' }</td>
 											<td>
 												<span
-													className={ `wplalr-event-badge is-${ row.status }` }
+													className={ `wplalr-event-badge is-${ row.event } is-${ row.status }` }
 												>
 													{ EVENT_LABELS[
 														row.event
