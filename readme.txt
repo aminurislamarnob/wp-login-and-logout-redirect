@@ -121,12 +121,12 @@ Yes, go to Users->All Users from admin dashboard left sidebar menu.
 
 == Changelog ==
 = 3.2.0 =
-* [New] Redirect rule engine: target users by role, specific user or capability with drag-and-drop rule priority.
-* [New] URL placeholders {{username}}, {{user_slug}} and {{website_url}} with one-click copy.
-* [New] Audit Logs page: searchable, filterable log of logins, logouts, failed and forced logouts with stat cards.
-* [New] Logged-in Users page: view active sessions and force logout per session, per user, in bulk or everyone.
-* [New] Email alerts on login for selected roles and daily/weekly/monthly activity digests.
-* [New] Modern React settings UI with tabbed navigation and instant save feedback.
+* [Feature] Redirect rule engine: target users by role, specific user or capability with drag-and-drop rule priority.
+* [Feature] URL placeholders {{username}}, {{user_slug}} and {{website_url}} with one-click copy.
+* [Feature] Audit Logs page: searchable, filterable log of logins, logouts, failed and forced logouts with stat cards.
+* [Feature] Logged-in Users page: view active sessions and force logout per session, per user, in bulk or everyone.
+* [Feature] Email alerts on login for selected roles and daily/weekly/monthly activity digests.
+* [Feature] Modern React settings UI with tabbed navigation and instant save feedback.
 * [Improve] Redesigned admin experience: collapsible rule cards, grouped conditions, consistent controls.
 
 = 3.1.7 =
