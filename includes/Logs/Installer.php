@@ -33,12 +33,43 @@ class Installer {
 	const CLEANUP_HOOK = 'wplalr_logs_cleanup';
 
 	/**
+	 * Recurring digest cron hook.
+	 *
+	 * @var string
+	 */
+	const DIGEST_HOOK = 'wplalr_logs_digest_send';
+
+	/**
 	 * The constructor.
 	 */
 	public function __construct() {
 		// Migrate on upgrades that don't re-run the activation hook.
 		add_action( 'admin_init', array( $this, 'maybe_install' ) );
 		add_action( self::CLEANUP_HOOK, array( $this, 'run_cleanup' ) );
+
+		// `monthly` is not a core schedule; register it for the digest.
+		add_filter( 'cron_schedules', array( $this, 'register_schedules' ) );
+
+		// (Re)schedule the digest whenever its cadence option changes.
+		add_action( 'add_option_wplalr_logs_digest', array( $this, 'reschedule_digest_on_add' ), 10, 2 );
+		add_action( 'update_option_wplalr_logs_digest', array( $this, 'reschedule_digest' ), 10, 2 );
+	}
+
+	/**
+	 * Register the non-core `monthly` cron schedule.
+	 *
+	 * @param array $schedules Existing schedules.
+	 * @return array
+	 */
+	public function register_schedules( $schedules ) {
+		if ( ! isset( $schedules['monthly'] ) ) {
+			$schedules['monthly'] = array(
+				'interval' => 30 * DAY_IN_SECONDS,
+				'display'  => __( 'Once Monthly', 'wp-login-logout-redirect' ),
+			);
+		}
+
+		return $schedules;
 	}
 
 	/**
@@ -120,15 +151,59 @@ class Installer {
 	}
 
 	/**
-	 * Clear the cleanup event. Called on deactivation.
+	 * Clear all scheduled events. Called on deactivation.
+	 *
+	 * @return void
+	 */
+	public static function unschedule_all() {
+		self::clear_event( self::CLEANUP_HOOK );
+		self::clear_event( self::DIGEST_HOOK );
+	}
+
+	/**
+	 * Clear the cleanup event. Retained for back-compat.
 	 *
 	 * @return void
 	 */
 	public static function unschedule_cleanup() {
-		$timestamp = wp_next_scheduled( self::CLEANUP_HOOK );
+		self::clear_event( self::CLEANUP_HOOK );
+	}
 
-		if ( $timestamp ) {
-			wp_unschedule_event( $timestamp, self::CLEANUP_HOOK );
+	/**
+	 * Unschedule every occurrence of a hook.
+	 *
+	 * @param string $hook Cron hook name.
+	 * @return void
+	 */
+	protected static function clear_event( $hook ) {
+		wp_clear_scheduled_hook( $hook );
+	}
+
+	/**
+	 * Schedule the digest the first time the option is added.
+	 *
+	 * @param string $option Option name (unused).
+	 * @param mixed  $value  The new cadence value.
+	 * @return void
+	 */
+	public function reschedule_digest_on_add( $option, $value ) {
+		$this->reschedule_digest( '', $value );
+	}
+
+	/**
+	 * Clear and (re)schedule the digest event for the given cadence.
+	 *
+	 * @param mixed $old_value Previous cadence (unused).
+	 * @param mixed $new_value New cadence: '' | daily | weekly | monthly.
+	 * @return void
+	 */
+	public function reschedule_digest( $old_value, $new_value ) {
+		self::clear_event( self::DIGEST_HOOK );
+
+		$cadence = is_string( $new_value ) ? $new_value : '';
+
+		if ( in_array( $cadence, array( 'daily', 'weekly', 'monthly' ), true ) ) {
+			wp_schedule_event( time() + HOUR_IN_SECONDS, $cadence, self::DIGEST_HOOK );
 		}
 	}
 

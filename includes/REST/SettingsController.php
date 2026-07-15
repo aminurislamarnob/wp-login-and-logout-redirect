@@ -78,6 +78,9 @@ class SettingsController extends WP_REST_Controller {
 			'rules'                      => array_values( (array) get_option( RuleEngine::OPTION_RULES, array() ) ),
 			'wplalr_enable_logs'         => 'yes' === get_option( 'wplalr_enable_logs', 'no' ),
 			'wplalr_logs_retention_days' => (int) get_option( 'wplalr_logs_retention_days', 30 ),
+			'wplalr_logs_notification_email' => $this->get_notification_email(),
+			'wplalr_logs_notify_roles'   => array_values( (array) get_option( 'wplalr_logs_notify_roles', array() ) ),
+			'wplalr_logs_digest'         => (string) get_option( 'wplalr_logs_digest', '' ),
 		);
 
 		/**
@@ -119,6 +122,18 @@ class SettingsController extends WP_REST_Controller {
 			update_option( 'wplalr_logs_retention_days', absint( $request->get_param( 'wplalr_logs_retention_days' ) ) );
 		}
 
+		if ( $request->has_param( 'wplalr_logs_notification_email' ) ) {
+			update_option( 'wplalr_logs_notification_email', $this->sanitize_notification_email( $request->get_param( 'wplalr_logs_notification_email' ) ) );
+		}
+
+		if ( $request->has_param( 'wplalr_logs_notify_roles' ) ) {
+			update_option( 'wplalr_logs_notify_roles', $this->sanitize_notify_roles( $request->get_param( 'wplalr_logs_notify_roles' ) ) );
+		}
+
+		if ( $request->has_param( 'wplalr_logs_digest' ) ) {
+			update_option( 'wplalr_logs_digest', $this->sanitize_digest( $request->get_param( 'wplalr_logs_digest' ) ) );
+		}
+
 		return $this->get_settings( $request );
 	}
 
@@ -151,6 +166,66 @@ class SettingsController extends WP_REST_Controller {
 		}
 
 		return esc_url_raw( $value );
+	}
+
+	/**
+	 * The notification recipient, falling back to the site admin email.
+	 *
+	 * @return string
+	 */
+	protected function get_notification_email() {
+		$email = (string) get_option( 'wplalr_logs_notification_email', '' );
+
+		return '' !== $email ? $email : (string) get_option( 'admin_email' );
+	}
+
+	/**
+	 * Sanitize the notification email, falling back to the admin email when
+	 * empty or invalid.
+	 *
+	 * @param mixed $value Raw email from the request.
+	 * @return string
+	 */
+	protected function sanitize_notification_email( $value ) {
+		$email = is_string( $value ) ? sanitize_email( $value ) : '';
+
+		return is_email( $email ) ? $email : (string) get_option( 'admin_email' );
+	}
+
+	/**
+	 * Sanitize the notify-on-login roles against the site's registered roles.
+	 *
+	 * @param mixed $value Raw roles from the request.
+	 * @return array
+	 */
+	protected function sanitize_notify_roles( $value ) {
+		if ( ! is_array( $value ) ) {
+			return array();
+		}
+
+		$valid = array_keys( wp_roles()->roles );
+		$clean = array();
+
+		foreach ( $value as $role ) {
+			$role = sanitize_key( $role );
+			if ( in_array( $role, $valid, true ) ) {
+				$clean[] = $role;
+			}
+		}
+
+		return array_values( array_unique( $clean ) );
+	}
+
+	/**
+	 * Sanitize the digest cadence to one of the allowed values.
+	 *
+	 * @param mixed $value Raw cadence from the request.
+	 * @return string '' | daily | weekly | monthly.
+	 */
+	protected function sanitize_digest( $value ) {
+		$value = is_string( $value ) ? $value : '';
+
+		return in_array( $value, array( '', 'daily', 'weekly', 'monthly' ), true ) ? $value : '';
 	}
 
 	/**
@@ -397,6 +472,24 @@ class SettingsController extends WP_REST_Controller {
 				'wplalr_logs_retention_days' => array(
 					'description' => __( 'Auto-delete log rows older than this many days (0 = keep forever).', 'wp-login-logout-redirect' ),
 					'type'        => 'integer',
+					'context'     => array( 'view', 'edit' ),
+				),
+				'wplalr_logs_notification_email' => array(
+					'description' => __( 'Email address that login alerts and digests are sent to.', 'wp-login-logout-redirect' ),
+					'type'        => 'string',
+					'format'      => 'email',
+					'context'     => array( 'view', 'edit' ),
+				),
+				'wplalr_logs_notify_roles'   => array(
+					'description' => __( 'Roles whose successful login triggers an email alert (empty = off).', 'wp-login-logout-redirect' ),
+					'type'        => 'array',
+					'context'     => array( 'view', 'edit' ),
+					'items'       => array( 'type' => 'string' ),
+				),
+				'wplalr_logs_digest'         => array(
+					'description' => __( 'Cadence of the activity digest email.', 'wp-login-logout-redirect' ),
+					'type'        => 'string',
+					'enum'        => array( '', 'daily', 'weekly', 'monthly' ),
 					'context'     => array( 'view', 'edit' ),
 				),
 			),
