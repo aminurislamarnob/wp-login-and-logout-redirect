@@ -10,4 +10,5 @@ export {
 	PlusIcon,
 	TrashIcon,
 	ArrowsUpDownIcon as DragHandleIcon,
+	EllipsisHorizontalCircleIcon as OthersIcon,
 } from '@heroicons/react/24/outline';
