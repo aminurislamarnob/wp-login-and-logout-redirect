@@ -404,6 +404,35 @@
 .wplalr-admin-app .components-form-token-field__input-container {
 	border-radius: var( --wplalr-radius-sm );
 	border-color: var( --wplalr-border-strong );
+	position: relative;
+}
+
+/* Float the suggestions list as a dropdown instead of expanding the field */
+.wplalr-admin-app .components-form-token-field__suggestions-list {
+	position: absolute;
+	top: calc( 100% + 5px );
+	left: -1px;
+	right: -1px;
+	z-index: 100;
+	background: var( --wplalr-surface );
+	border: 1px solid var( --wplalr-border ) !important;
+	border-radius: var( --wplalr-radius-sm );
+	box-shadow: var( --wplalr-shadow-md );
+	max-height: 210px;
+	overflow-y: auto;
+	padding: 4px;
+}
+
+.wplalr-admin-app .components-form-token-field__suggestion {
+	padding: 8px 10px;
+	border-radius: 6px;
+	font-size: 13px;
+}
+
+.wplalr-admin-app .components-form-token-field__suggestion.is-selected,
+.wplalr-admin-app .components-form-token-field__suggestion:hover {
+	background: var( --wplalr-primary-soft );
+	color: var( --wplalr-primary );
 }
 
 .wplalr-admin-app .components-form-token-field__input-container.is-active {
@@ -857,25 +886,141 @@
 
 /* ========== Rules: cards ========== */
 .wplalr-rule-card {
-	margin-bottom: 16px;
-	transition: box-shadow 0.15s ease;
+	margin-bottom: 12px;
 }
 
-.wplalr-rule-card:hover {
+.wplalr-rule-card .components-card {
+	transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.wplalr-rule-card:hover .components-card {
 	box-shadow: var( --wplalr-shadow-md );
 }
 
+.wplalr-rule-card.is-expanded .components-card {
+	border-color: rgba( 85, 57, 253, 0.35 );
+}
+
+.wplalr-rule-card-body {
+	padding: 0 !important;
+}
+
+/* Collapsed summary header */
 .wplalr-rule-header {
 	display: flex;
 	align-items: center;
-	gap: 12px;
-	padding-bottom: 16px;
-	margin-bottom: 16px;
+	gap: 10px;
+	padding: 12px 16px;
+	cursor: pointer;
+}
+
+.wplalr-rule-card.is-expanded .wplalr-rule-header {
 	border-bottom: 1px solid #f1f2f7;
 }
 
-.wplalr-rule-header .wplalr-rule-label {
+.wplalr-rule-priority {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	flex-shrink: 0;
+	border-radius: var( --wplalr-radius-sm );
+	background: var( --wplalr-primary-soft );
+	color: var( --wplalr-primary );
+	font-size: 12px;
+	font-weight: 650;
+	cursor: help;
+}
+
+.wplalr-rule-title {
 	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+
+.wplalr-rule-title strong {
+	font-size: 13px;
+	font-weight: 600;
+	color: var( --wplalr-text );
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.wplalr-rule-summary {
+	font-size: 12px;
+	color: var( --wplalr-text-muted );
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.wplalr-rule-card.is-disabled .wplalr-rule-title {
+	opacity: 0.55;
+}
+
+.wplalr-rule-header-actions {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	flex-shrink: 0;
+}
+
+.wplalr-rule-header-actions .components-toggle-control {
+	margin-right: 8px;
+}
+
+.wplalr-admin-app .wplalr-rule-expand svg {
+	width: 16px;
+	height: 16px;
+	fill: currentColor;
+}
+
+.wplalr-admin-app .wplalr-rule-expand {
+	color: var( --wplalr-text-muted );
+}
+
+.wplalr-admin-app .wplalr-rule-expand:hover {
+	color: var( --wplalr-text );
+}
+
+/* Animated expand/collapse (grid-rows technique) */
+.wplalr-rule-collapse {
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: grid-template-rows 0.28s cubic-bezier( 0.4, 0, 0.2, 1 );
+}
+
+.wplalr-rule-collapse.is-open {
+	grid-template-rows: 1fr;
+}
+
+.wplalr-rule-collapse-inner {
+	overflow: hidden;
+	min-height: 0;
+	/* Keep collapsed content out of the tab order / a11y tree; visibility
+	   is animatable so it flips at the end of the height transition. */
+	visibility: hidden;
+	transition: visibility 0.28s;
+}
+
+.wplalr-rule-collapse.is-open .wplalr-rule-collapse-inner {
+	visibility: visible;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.wplalr-rule-collapse,
+	.wplalr-rule-collapse-inner {
+		transition: none;
+	}
+}
+
+/* Expanded editing body */
+.wplalr-rule-body {
+	padding: 20px 16px;
 }
 
 .wplalr-rule-drag {
@@ -920,6 +1065,46 @@
 	font-style: italic;
 }
 
+/* Grouped container so conditions read as one unit */
+.wplalr-conditions-box {
+	background: var( --wplalr-bg );
+	border: 1px solid var( --wplalr-border );
+	border-radius: var( --wplalr-radius-sm );
+	padding: 16px;
+}
+
+.wplalr-conditions-box .components-form-token-field__input-container,
+.wplalr-conditions-box .components-select-control__input {
+	background: var( --wplalr-surface );
+}
+
+/* "AND" connector between conditions */
+.wplalr-condition-and {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 2px 0 14px;
+}
+
+.wplalr-condition-and::before,
+.wplalr-condition-and::after {
+	content: '';
+	flex: 1 1 auto;
+	height: 1px;
+	background: var( --wplalr-border );
+}
+
+.wplalr-condition-and span {
+	font-size: 10px;
+	font-weight: 650;
+	letter-spacing: 0.08em;
+	color: var( --wplalr-text-muted );
+	background: var( --wplalr-surface );
+	border: 1px solid var( --wplalr-border );
+	border-radius: 999px;
+	padding: 2px 10px;
+}
+
 .wplalr-condition-row {
 	display: flex;
 	align-items: flex-start;
@@ -947,6 +1132,8 @@
 .wplalr-admin-app .wplalr-condition-remove svg {
 	fill: none;
 	stroke: currentColor;
+	width: 18px;
+	height: 18px;
 }
 
 .wplalr-admin-app .components-button.wplalr-add-condition {
@@ -991,18 +1178,53 @@
 	color: var( --wplalr-text-muted );
 }
 
-/* ========== Placeholder hint ========== */
+/* ========== Placeholder hint (click-to-copy chips) ========== */
 .wplalr-placeholder-hint {
 	margin: 4px 0 16px 0;
 	padding: 8px 12px;
 	font-size: 12px;
 	color: var( --wplalr-text-muted );
-	font-family: Menlo, Consolas, monaco, monospace;
 	background: var( --wplalr-bg );
 	border: 1px dashed var( --wplalr-border-strong );
 	border-radius: var( --wplalr-radius-sm );
-	display: block;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
 	width: fit-content;
+}
+
+.wplalr-placeholder-hint-label {
+	font-weight: 500;
+}
+
+.wplalr-placeholder-chip {
+	font-family: Menlo, Consolas, monaco, monospace;
+	font-size: 11px;
+	color: var( --wplalr-text );
+	background: var( --wplalr-surface );
+	border: 1px solid var( --wplalr-border-strong );
+	border-radius: 999px;
+	padding: 8px 10px;
+	cursor: pointer;
+	transition: color 0.15s ease, border-color 0.15s ease,
+		background-color 0.15s ease;
+}
+
+.wplalr-placeholder-chip:hover {
+	color: var( --wplalr-primary );
+	border-color: var( --wplalr-primary );
+}
+
+.wplalr-placeholder-chip:focus-visible {
+	outline: none;
+	box-shadow: var( --wplalr-focus-ring );
+}
+
+.wplalr-placeholder-chip.is-copied {
+	color: var( --wplalr-success );
+	border-color: var( --wplalr-success );
+	background: var( --wplalr-success-soft );
 }
 
 /* ========== Rules: actions / empty ========== */

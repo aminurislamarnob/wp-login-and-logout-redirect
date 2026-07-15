@@ -41,6 +41,7 @@ const withIds = ( rules ) =>
 const RulesSettings = () => {
 	const { settings, isSaving, saveSettings } = useSettings();
 	const [ rules, setRules ] = useState( [] );
+	const [ lastAddedId, setLastAddedId ] = useState( null );
 
 	useEffect( () => {
 		setRules( withIds( settings.rules ) );
@@ -68,7 +69,9 @@ const RulesSettings = () => {
 	};
 
 	const addRule = () => {
-		setRules( ( prev ) => [ ...prev, emptyRule() ] );
+		const rule = emptyRule();
+		setLastAddedId( rule.id );
+		setRules( ( prev ) => [ ...prev, rule ] );
 	};
 
 	const handleDragEnd = ( event ) => {
@@ -117,10 +120,12 @@ const RulesSettings = () => {
 					items={ rules.map( ( rule ) => rule.id ) }
 					strategy={ verticalListSortingStrategy }
 				>
-					{ rules.map( ( rule ) => (
+					{ rules.map( ( rule, index ) => (
 						<RuleCard
 							key={ rule.id }
 							rule={ rule }
+							index={ index }
+							defaultExpanded={ rule.id === lastAddedId }
 							onChange={ ( patch ) =>
 								updateRule( rule.id, patch )
 							}

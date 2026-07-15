@@ -9,6 +9,7 @@ import {
 } from '@wordpress/components';
 
 import { useSettings } from '../context/SettingsContext';
+import PlaceholderHint from './PlaceholderHint';
 
 const RedirectSettings = () => {
 	const { settings, isSaving, saveSettings } = useSettings();
@@ -91,12 +92,7 @@ const RedirectSettings = () => {
 								__nextHasNoMarginBottom
 							/>
 						</div>
-						<p className="wplalr-placeholder-hint">
-							{ __(
-								'Placeholders: {{username}}, {{user_slug}}, {{website_url}}',
-								'wp-login-logout-redirect'
-							) }
-						</p>
+						<PlaceholderHint />
 						<Button
 							variant="primary"
 							type="submit"
