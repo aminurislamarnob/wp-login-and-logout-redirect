@@ -25,6 +25,11 @@ This plugin also show each users last/latest login date and time on admin dashbo
 
 = Latest Features =
 * Every User last login date and time shown on dashbaord all users page.
+* Audit logging of login, logout and failed-login events with retention control.
+* Email alerts when a user with a selected role signs in, plus daily/weekly/monthly activity digests.
+
+= Privacy =
+When audit logging is enabled, each event stores the user's IP address and browser. Alert and digest emails include this login metadata and are sent only to the configured notification address (the site admin email by default). Notifications are off until you opt in.
 
 == Support ==
 If you find this plugin useful, consider supporting its development through a [donation](https://www.buymeacoffee.com/aiarnob).

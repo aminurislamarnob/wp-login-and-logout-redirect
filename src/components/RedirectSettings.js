@@ -41,13 +41,13 @@ const RedirectSettings = () => {
 					<CardBody className="wplalr-form-section-header">
 						<h3 className="wplalr-section-title">
 							{ __(
-								'Redirect URLs',
+								'Default Redirect URLs',
 								'wp-login-logout-redirect'
 							) }
 						</h3>
 						<p className="wplalr-section-description">
 							{ __(
-								'Set the URLs users are redirected to after logging in or out. Leave blank to use the WordPress defaults.',
+								'These default URLs are used when no rule on the Rules tab matches the user. Leave blank to use the WordPress defaults (admin for login, home for logout).',
 								'wp-login-logout-redirect'
 							) }
 						</p>
@@ -91,6 +91,12 @@ const RedirectSettings = () => {
 								__nextHasNoMarginBottom
 							/>
 						</div>
+						<p className="wplalr-placeholder-hint">
+							{ __(
+								'Placeholders: {{username}}, {{user_slug}}, {{website_url}}',
+								'wp-login-logout-redirect'
+							) }
+						</p>
 						<Button
 							variant="primary"
 							type="submit"

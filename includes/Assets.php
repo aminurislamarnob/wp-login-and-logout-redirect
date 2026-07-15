@@ -56,7 +56,9 @@ class Assets {
 	public function enqueue_admin_scripts() {
 		$screen = get_current_screen();
 
-		if ( ! $screen || 'toplevel_page_wplalr_login_logout_redirect' !== $screen->id ) {
+		// One shared bundle drives all three of our screens (Redirects + Rules,
+		// Audit Logs, Logged-in Users); the app mounts the matching view.
+		if ( ! $screen || ! in_array( $screen->id, Settings::get_page_hooks(), true ) ) {
 			return;
 		}
 
@@ -78,11 +80,24 @@ class Assets {
 
 		wp_set_script_translations( 'wplalr-admin-page', 'wp-login-logout-redirect' );
 
+		if ( ! function_exists( 'get_editable_roles' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/user.php';
+		}
+
+		$roles = array();
+		foreach ( get_editable_roles() as $slug => $details ) {
+			$roles[ $slug ] = translate_user_role( $details['name'] );
+		}
+
 		wp_localize_script(
 			'wplalr-admin-page',
 			'wplalrAdmin',
 			array(
-				'homeUrl' => home_url(),
+				'homeUrl'       => home_url(),
+				'adminUrl'      => esc_url_raw( admin_url() ),
+				'restRoot'      => esc_url_raw( rest_url() ),
+				'roles'         => $roles,
+				'currentUserId' => get_current_user_id(),
 			)
 		);
 

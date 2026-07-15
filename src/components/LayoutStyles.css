@@ -1,5 +1,5 @@
 /* ========== Admin page padding override ========== */
-.toplevel_page_wplalr_login_logout_redirect div#wpcontent {
+.wplalr-admin-page div#wpcontent {
 	padding-inline-start: 0;
 }
 
@@ -75,6 +75,41 @@
 	width: auto;
 	height: 28px;
 	max-width: 180px;
+}
+
+/* ========== Cross-page navigation (submenu pages) ========== */
+.wplalr-page-nav {
+	display: flex;
+	gap: 8px;
+	background: #fff;
+	border-bottom: 1px solid #dcdcde;
+	padding: 0 40px;
+}
+
+.wplalr-page-nav a {
+	display: inline-flex;
+	align-items: center;
+	text-decoration: none;
+	color: #646970;
+	font-weight: 500;
+	font-size: 14px;
+	padding: 14px 12px;
+	border-bottom: 3px solid transparent;
+	transition: all 0.2s ease;
+}
+
+.wplalr-page-nav a:hover {
+	color: #1d2327;
+}
+
+.wplalr-page-nav a:focus {
+	outline: 0;
+	box-shadow: none;
+}
+
+.wplalr-page-nav a.is-active {
+	color: #5539fd;
+	border-bottom: 3px solid #5539fd;
 }
 
 /* ========== Main content area ========== */
@@ -260,4 +295,318 @@
 
 .wplalr-admin-app .components-snackbar-list .components-snackbar {
 	margin-inline: auto !important;
+}
+
+/* ========== Audit Logs: stat cards ========== */
+.wplalr-stat-cards {
+	display: grid;
+	grid-template-columns: repeat( 4, 1fr );
+	gap: 16px;
+	width: 800px;
+}
+
+.wplalr-stat-card .components-card__body {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 20px 24px;
+}
+
+.wplalr-stat-value {
+	font-size: 28px;
+	font-weight: 600;
+	color: #1d2327;
+	line-height: 1.2;
+}
+
+.wplalr-stat-label {
+	font-size: 13px;
+	color: #646970;
+}
+
+/* ========== Audit Logs: toolbar ========== */
+.wplalr-logs-toolbar {
+	width: 800px;
+	align-items: flex-end !important;
+	gap: 12px;
+}
+
+/* ========== Audit Logs: table ========== */
+.wplalr-logs-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.wplalr-logs-table th {
+	text-align: left;
+	font-weight: 600;
+	color: #1d2327;
+	padding: 8px 12px;
+	border-bottom: 1px solid #dcdcde;
+	white-space: nowrap;
+}
+
+.wplalr-logs-table td {
+	padding: 10px 12px;
+	border-bottom: 1px solid #f0f0f1;
+	color: #3c434a;
+	vertical-align: middle;
+}
+
+.wplalr-logs-redirect {
+	max-width: 220px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-family: Menlo, Consolas, monaco, monospace;
+	font-size: 12px;
+}
+
+.wplalr-event-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 10px;
+	font-size: 12px;
+	font-weight: 500;
+	background: #edeff0;
+	color: #3c434a;
+}
+
+.wplalr-event-badge.is-failed {
+	background: #fcf0f1;
+	color: #d63638;
+}
+
+.wplalr-error-code {
+	display: block;
+	font-size: 11px;
+	color: #d63638;
+	margin-top: 2px;
+}
+
+.wplalr-admin-app .wplalr-log-delete svg {
+	fill: none;
+	stroke: currentColor;
+	width: 18px;
+	height: 18px;
+}
+
+/* ========== Audit Logs: pagination ========== */
+.wplalr-logs-pagination {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 12px;
+	margin-top: 16px;
+}
+
+.wplalr-logs-page-info {
+	font-size: 13px;
+	color: #646970;
+}
+
+/* ========== Logged-in Users: table ========== */
+.wplalr-sessions-table .wplalr-col-check {
+	width: 32px;
+}
+
+.wplalr-session-user {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.wplalr-session-avatar {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+
+.wplalr-session-user strong {
+	display: block;
+	color: #1d2327;
+}
+
+.wplalr-session-email {
+	display: block;
+	font-size: 12px;
+	color: #646970;
+}
+
+.wplalr-you-badge {
+	display: inline-block;
+	margin-left: 6px;
+	padding: 1px 6px;
+	border-radius: 8px;
+	font-size: 11px;
+	font-weight: 500;
+	background: #ecf3ff;
+	color: #2271b1;
+}
+
+.wplalr-expand-sessions {
+	margin-left: 8px;
+	height: auto !important;
+	padding: 0 !important;
+}
+
+.wplalr-session-detail td {
+	background: #f6f7f7;
+	font-size: 12px;
+}
+
+.wplalr-session-device {
+	font-weight: 500;
+	color: #3c434a;
+}
+
+.wplalr-session-ip {
+	margin-left: 12px;
+	color: #646970;
+	font-family: Menlo, Consolas, monaco, monospace;
+}
+
+/* ========== Logged-in Users: bulk bar ========== */
+.wplalr-bulk-bar {
+	width: 800px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	padding: 12px 16px;
+}
+
+.wplalr-modal-actions {
+	margin-top: 16px;
+}
+
+/* ========== Rules: cards ========== */
+.wplalr-rule-card {
+	margin-bottom: 16px;
+}
+
+.wplalr-rule-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding-bottom: 16px;
+	margin-bottom: 16px;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.wplalr-rule-header .wplalr-rule-label {
+	flex: 1 1 auto;
+}
+
+.wplalr-rule-drag {
+	cursor: grab;
+	color: #646970;
+}
+
+.wplalr-rule-drag:active {
+	cursor: grabbing;
+}
+
+.wplalr-rule-drag svg {
+	width: 20px;
+	height: 20px;
+}
+
+/* ========== Rules: conditions ========== */
+.wplalr-rule-conditions {
+	margin-bottom: 16px;
+}
+
+.wplalr-rule-conditions-title {
+	font-size: 13px;
+	font-weight: 600;
+	color: #1d2327;
+	margin: 0 0 12px 0;
+}
+
+.wplalr-rule-conditions-empty {
+	font-size: 13px;
+	color: #646970;
+	margin: 0 0 12px 0;
+	font-style: italic;
+}
+
+.wplalr-condition-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	margin-bottom: 12px;
+}
+
+.wplalr-condition-type {
+	flex: 0 0 160px;
+}
+
+.wplalr-condition-values {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.wplalr-condition-remove {
+	margin-top: 24px;
+	color: #d63638;
+}
+
+/* Render the delete (trash) icons as outline glyphs in the danger color
+   instead of the solid fill @wordpress/components applies to button SVGs. */
+.wplalr-admin-app .wplalr-rule-delete svg,
+.wplalr-admin-app .wplalr-condition-remove svg {
+	fill: none;
+	stroke: currentColor;
+}
+
+.wplalr-add-condition {
+	padding-left: 0;
+}
+
+/* ========== Rules: URLs ========== */
+.wplalr-rule-urls {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding-top: 16px;
+	border-top: 1px solid #f0f0f1;
+}
+
+/* ========== Field help ========== */
+.wplalr-field-help {
+	margin: 4px 0 0 0;
+	font-size: 12px;
+	color: #757575;
+}
+
+/* ========== Placeholder hint ========== */
+.wplalr-placeholder-hint {
+	margin: 4px 0 0 0;
+	font-size: 12px;
+	color: #646970;
+	font-family: Menlo, Consolas, monaco, monospace;
+}
+
+.wplalr-settings-group + .wplalr-placeholder-hint {
+	margin-bottom: 16px;
+}
+
+/* ========== Rules: actions / empty ========== */
+.wplalr-rules-empty {
+	margin-bottom: 16px;
+}
+
+.wplalr-rules-empty p {
+	margin: 0;
+	color: #646970;
+	font-size: 14px;
+}
+
+.wplalr-rules-actions {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	margin-top: 8px;
 }
