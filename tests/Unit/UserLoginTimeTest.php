@@ -118,11 +118,16 @@ class UserLoginTimeTest extends TestCase {
 	public function test_rendering_another_plugins_column_leaves_its_output_alone() {
 		$user = $this->make_user();
 
-		$this->markTestIncomplete(
-			'Known defect: user_last_login_time() returns its own empty buffer for every column '
-			. 'instead of passing $output through, so any other custom users-table column renders '
-			. 'blank. Delete this line once the early return is fixed.'
+		$this->assertSame(
+			'Some other plugin value',
+			$this->login_time->user_last_login_time( 'Some other plugin value', 'some_other_column', $user->ID )
 		);
+	}
+
+	public function test_another_plugins_column_survives_even_when_we_have_a_timestamp() {
+		$user = $this->make_user();
+
+		update_user_meta( $user->ID, 'wplalr_last_login', 1700000000 );
 
 		$this->assertSame(
 			'Some other plugin value',

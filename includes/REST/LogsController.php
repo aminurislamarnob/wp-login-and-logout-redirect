@@ -183,6 +183,12 @@ class LogsController extends WP_REST_Controller {
 	 * @return array
 	 */
 	public function get_collection_params() {
+		/*
+		 * Args carrying a `sanitize_callback` need an explicit `validate_callback`
+		 * too: WP only falls back to rest_parse_request_arg — which is what
+		 * enforces `enum` — for args that define no sanitize_callback of their
+		 * own, so otherwise the enums below would never be applied.
+		 */
 		return array(
 			'page'     => array(
 				'type'              => 'integer',
@@ -198,6 +204,7 @@ class LogsController extends WP_REST_Controller {
 				'type'              => 'string',
 				'default'           => '',
 				'enum'              => array( '', 'login', 'logout', 'failed', 'forced_logout' ),
+				'validate_callback' => 'rest_validate_request_arg',
 				'sanitize_callback' => 'sanitize_key',
 			),
 			'status'   => array(
@@ -214,6 +221,7 @@ class LogsController extends WP_REST_Controller {
 				'type'              => 'string',
 				'default'           => 'created_at',
 				'enum'              => LogRepository::SORTABLE,
+				'validate_callback' => 'rest_validate_request_arg',
 				'sanitize_callback' => 'sanitize_key',
 			),
 			'order'    => array(

@@ -134,25 +134,30 @@ class LogsControllerTest extends RestTestCase {
 		$this->assertSame( 'failed', $data[0]['event'] );
 	}
 
-	public function test_an_event_outside_the_enum_is_ignored_rather_than_rejected() {
+	public function test_an_event_outside_the_enum_is_rejected() {
 		$this->acting_as( 'administrator' );
 
 		$this->repository->insert( array( 'event' => 'login' ) );
-		$this->repository->insert( array( 'event' => 'failed' ) );
 
-		// `event` declares an enum *and* a sanitize_callback. WP only falls back
-		// to rest_parse_request_arg (which is what enforces an enum) when an arg
-		// has no sanitize_callback, so this enum is dead — see `order` below for
-		// the same declaration actually being enforced. Harmless in practice
-		// because build_where() allowlists the event, but a typo'd filter returns
-		// everything instead of a 400.
+		// A typo'd filter must fail loudly rather than quietly returning every row.
 		$response = $this->dispatch( 'GET', '/logs', array( 'event' => 'nonsense' ) );
 
-		$this->assertSame( 200, $response->get_status() );
-		$this->assertCount( 2, $response->get_data() );
+		$this->assertSame( 400, $response->get_status() );
 	}
 
-	public function test_an_orderby_injection_attempt_is_neutralized() {
+	public function test_every_valid_event_is_accepted() {
+		$this->acting_as( 'administrator' );
+
+		foreach ( array( '', 'login', 'logout', 'failed', 'forced_logout' ) as $event ) {
+			$this->assertSame(
+				200,
+				$this->dispatch( 'GET', '/logs', array( 'event' => $event ) )->get_status(),
+				sprintf( 'Event "%s" should be accepted.', $event )
+			);
+		}
+	}
+
+	public function test_an_orderby_injection_attempt_is_rejected() {
 		$this->acting_as( 'administrator' );
 
 		$this->repository->insert(
@@ -162,13 +167,22 @@ class LogsControllerTest extends RestTestCase {
 			)
 		);
 
-		// `orderby`'s enum is unenforced for the same reason, so the repository's
-		// own SORTABLE allowlist is what keeps this out of the ORDER BY clause.
 		$response = $this->dispatch( 'GET', '/logs', array( 'orderby' => 'id; DROP TABLE wp_users' ) );
 
-		$this->assertSame( 200, $response->get_status() );
-		$this->assertCount( 1, $response->get_data() );
+		$this->assertSame( 400, $response->get_status() );
 		$this->assertNotEmpty( $this->all_log_rows(), 'The log table must still be intact.' );
+	}
+
+	public function test_every_sortable_column_is_accepted() {
+		$this->acting_as( 'administrator' );
+
+		foreach ( LogRepository::SORTABLE as $column ) {
+			$this->assertSame(
+				200,
+				$this->dispatch( 'GET', '/logs', array( 'orderby' => $column ) )->get_status(),
+				sprintf( 'Column "%s" should be sortable.', $column )
+			);
+		}
 	}
 
 	public function test_an_order_direction_outside_the_enum_is_rejected() {
@@ -176,8 +190,6 @@ class LogsControllerTest extends RestTestCase {
 
 		$this->repository->insert( array( 'event' => 'login' ) );
 
-		// `order` declares no sanitize_callback, so WP validates it against the
-		// enum and refuses the request outright.
 		$response = $this->dispatch( 'GET', '/logs', array( 'order' => 'RAND(); DROP TABLE wp_users' ) );
 
 		$this->assertSame( 400, $response->get_status() );

@@ -46,15 +46,21 @@ class UserLoginTime {
 	 * @return string
      */
     public function user_last_login_time( $output, $column_id, $user_id ) {
-        $wplalr_output = '';
-
-        if ( $column_id === 'wplalr_last_login' ) {
-            $wplalr_last_login = get_user_meta( $user_id, 'wplalr_last_login', true );
-            $wplalr_date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
-            $wplalr_output = $wplalr_last_login ? esc_html( wp_date( $wplalr_date_format, $wplalr_last_login ) ) : '-';
+        // Every custom users-table column runs through this filter, so anything
+        // that isn't ours must be handed back untouched.
+        if ( $column_id !== 'wplalr_last_login' ) {
+            return $output;
         }
 
-        return $wplalr_output;
+        $wplalr_last_login = get_user_meta( $user_id, 'wplalr_last_login', true );
+
+        if ( ! $wplalr_last_login ) {
+            return '-';
+        }
+
+        $wplalr_date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+
+        return esc_html( wp_date( $wplalr_date_format, $wplalr_last_login ) );
     }
 
     /**

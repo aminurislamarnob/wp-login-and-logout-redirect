@@ -220,12 +220,6 @@ class SessionRepositoryTest extends TestCase {
 		$ids = array_column( $this->repository->query()['items'][0]['sessions'], 'token_id' );
 
 		$this->assertCount( 2, $ids );
-
-		$this->markTestIncomplete(
-			'Known defect: token_id() seeds on user|login|expiration|ip|ua and omits the verifier, '
-			. 'so same-second sessions from one device collide. Delete this line once it hashes the verifier.'
-		);
-
 		$this->assertCount(
 			2,
 			array_unique( $ids ),
@@ -243,11 +237,6 @@ class SessionRepositoryTest extends TestCase {
 		$ids = array_column( $this->repository->query()['items'][0]['sessions'], 'token_id' );
 
 		$this->repository->destroy_session( $user_id, $ids[0] );
-
-		$this->markTestIncomplete(
-			'Known defect: destroy_session() unsets every session whose token_id matches, so one '
-			. 'colliding id signs out both devices. Delete this line once token_id() is unique.'
-		);
 
 		$remaining = get_user_meta( $user_id, 'session_tokens', true );
 

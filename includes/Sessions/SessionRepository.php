@@ -105,11 +105,10 @@ class SessionRepository {
 	 * @return array
 	 */
 	protected function sessions_for_user( $user_id, $current_token = '' ) {
-		$manager = WP_Session_Tokens::get_instance( $user_id );
-		$now     = time();
-		$out     = array();
+		$now = time();
+		$out = array();
 
-		foreach ( $manager->get_all() as $token_data ) {
+		foreach ( $this->raw_sessions( $user_id ) as $verifier => $token_data ) {
 			if ( empty( $token_data['expiration'] ) || $token_data['expiration'] < $now ) {
 				continue;
 			}
@@ -117,7 +116,7 @@ class SessionRepository {
 			$ua     = isset( $token_data['ua'] ) ? (string) $token_data['ua'] : '';
 			$parsed = UserAgent::parse( $ua );
 
-			$token_id = $this->token_id( $user_id, $token_data );
+			$token_id = $this->token_id( $user_id, $verifier );
 
 			$out[] = array(
 				'token_id'   => $token_id,
@@ -134,23 +133,61 @@ class SessionRepository {
 	}
 
 	/**
+	 * A user's stored sessions, keyed by verifier.
+	 *
+	 * Reads the `session_tokens` meta directly rather than via
+	 * WP_Session_Tokens::get_all(), which drops the verifier keys — and the
+	 * verifier is the only field that is unique per session. This is the same
+	 * store destroy_session() writes back to.
+	 *
+	 * @param int $user_id User id.
+	 * @return array Map of verifier => session data.
+	 */
+	protected function raw_sessions( $user_id ) {
+		$sessions = get_user_meta( $user_id, 'session_tokens', true );
+
+		if ( ! is_array( $sessions ) ) {
+			return array();
+		}
+
+		$out = array();
+
+		foreach ( $sessions as $verifier => $data ) {
+			// Sessions written before WP 4.0 stored just the expiration.
+			$out[ $verifier ] = is_array( $data ) ? $data : array( 'expiration' => (int) $data );
+		}
+
+		return $out;
+	}
+
+	/**
 	 * Stable, non-reversible id for a session.
 	 *
-	 * Core stores sessions keyed by the token verifier (a hash) since WP 4.0; we
-	 * hash it again with the user id so the client never receives anything that
-	 * maps back to a usable token. The id is only used to address a session for
-	 * destruction within this repository.
+	 * Core keys sessions by the token verifier (a hash of the token) since WP 4.0.
+	 * Hashing the verifier again with the user id gives the client an id that is
+	 * unique per session but cannot be turned back into a usable token. The id is
+	 * only used to address a session for destruction within this repository.
 	 *
-	 * @param int   $user_id    User id.
-	 * @param array $token_data The session array from WP_Session_Tokens::get_all.
+	 * @param int    $user_id  User id.
+	 * @param string $verifier The session's key in the session_tokens meta.
 	 * @return string
 	 */
-	protected function token_id( $user_id, $token_data ) {
-		// get_all() drops the verifier key, so derive a stable id from the
-		// session's immutable fields. This is matched the same way on destroy.
-		$seed = $user_id . '|' . ( isset( $token_data['login'] ) ? $token_data['login'] : '' ) . '|' . ( isset( $token_data['expiration'] ) ? $token_data['expiration'] : '' ) . '|' . ( isset( $token_data['ip'] ) ? $token_data['ip'] : '' ) . '|' . ( isset( $token_data['ua'] ) ? $token_data['ua'] : '' );
+	protected function token_id( $user_id, $verifier ) {
+		return wp_hash( $user_id . '|' . $verifier );
+	}
 
-		return wp_hash( $seed );
+	/**
+	 * The verifier core would store a given raw token under.
+	 *
+	 * Mirrors WP_User_Meta_Session_Tokens::hash_token(), which is private. The
+	 * ext/hash branch is the only reachable one: it has been bundled and
+	 * non-optional since PHP 7.4, and this plugin requires 7.4+.
+	 *
+	 * @param string $token Raw session token from the logged-in cookie.
+	 * @return string
+	 */
+	protected function verifier_for_token( $token ) {
+		return hash( 'sha256', $token );
 	}
 
 	/**
@@ -171,14 +208,7 @@ class SessionRepository {
 			return '';
 		}
 
-		$manager = WP_Session_Tokens::get_instance( $user_id );
-		$session = $manager->get( $token );
-
-		if ( ! is_array( $session ) ) {
-			return '';
-		}
-
-		return $this->token_id( $user_id, $session );
+		return $this->token_id( $user_id, $this->verifier_for_token( $token ) );
 	}
 
 	/**
@@ -197,7 +227,7 @@ class SessionRepository {
 		}
 
 		// WP_Session_Tokens only exposes destroy($raw_token) / destroy_others /
-		// destroy_all, and get_all() does not return the raw token. To drop one
+		// destroy_all, and none of them can address one session by id. To drop a
 		// specific device we filter the raw session_tokens meta — the same store
 		// core's WP_User_Meta_Session_Tokens reads and writes.
 		$sessions = get_user_meta( $user_id, 'session_tokens', true );
@@ -207,10 +237,13 @@ class SessionRepository {
 		}
 
 		$found = false;
-		foreach ( $sessions as $verifier => $data ) {
-			if ( hash_equals( $this->token_id( $user_id, $data ), $token_id ) ) {
+
+		foreach ( array_keys( $sessions ) as $verifier ) {
+			if ( hash_equals( $this->token_id( $user_id, $verifier ), $token_id ) ) {
 				unset( $sessions[ $verifier ] );
 				$found = true;
+				// Verifiers are unique, so exactly one session can match.
+				break;
 			}
 		}
 
