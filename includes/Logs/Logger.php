@@ -13,10 +13,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * collected unless an admin opts in.
  *
  * Redirect capture: `wp_login` fires before WordPress resolves the login
- * redirect, so a login is parked as "pending" on `wp_login` and flushed (with
- * the resolved URL + matched rule id) from `wplalr_after_resolve`. A `shutdown`
- * safety net flushes the row even when no redirect was resolved (e.g. a
- * programmatic login that never hit the `login_redirect` filter).
+ * redirect, so a login is parked as "pending" on `wp_login`, tagged with the
+ * matched rule id from `wplalr_after_resolve`, and flushed from
+ * `wplalr_redirect_resolved` once the destination is final. The two hooks are
+ * both needed: only the first knows which rule matched, and only the second
+ * knows where the user is actually going — `wplalr_after_resolve` fires inside
+ * the rule engine, before placeholders, fallbacks and validation run. A
+ * `shutdown` safety net flushes the row even when no redirect was resolved
+ * (e.g. a programmatic login that never hit the `login_redirect` filter).
  */
 class Logger {
 
@@ -35,6 +39,13 @@ class Logger {
 	protected $pending_login = null;
 
 	/**
+	 * Pending logout row awaiting redirect enrichment, or null.
+	 *
+	 * @var array|null
+	 */
+	protected $pending_logout = null;
+
+	/**
 	 * The constructor.
 	 *
 	 * @param LogRepository $repository Data layer.
@@ -48,8 +59,9 @@ class Logger {
 
 		add_action( 'wp_login', array( $this, 'on_login' ), 20, 2 );
 		add_action( 'wplalr_after_resolve', array( $this, 'on_after_resolve' ), 10, 4 );
+		add_action( 'wplalr_redirect_resolved', array( $this, 'on_redirect_resolved' ), 10, 2 );
 		add_action( 'wp_login_failed', array( $this, 'on_login_failed' ), 10, 2 );
-		add_action( 'shutdown', array( $this, 'flush_pending_login' ) );
+		add_action( 'shutdown', array( $this, 'flush_pending' ) );
 		add_action( 'wplalr_session_destroyed', array( $this, 'on_session_destroyed' ), 10, 2 );
 	}
 
@@ -84,22 +96,26 @@ class Logger {
 	}
 
 	/**
-	 * Enrich + write the pending login (or write a logout row) once the rule
-	 * engine has resolved a destination.
+	 * Note which rule matched, and park a logout until its destination is final.
 	 *
-	 * @param string        $url     Resolved URL (may be empty when no rule matched).
+	 * The URL passed here is deliberately ignored: it is the rule engine's own
+	 * output, which is empty whenever the global option supplies the destination
+	 * and still holds unexpanded `{{placeholders}}` when a rule matched. The row is
+	 * written from on_redirect_resolved() instead.
+	 *
+	 * @param string        $url     Resolved rule URL (unused; see above).
 	 * @param string        $event   'login' or 'logout'.
-	 * @param \WP_User|null  $user    The user being redirected.
-	 * @param array|null     $matched The matched rule, or null.
+	 * @param \WP_User|null $user    The user being redirected.
+	 * @param array|null    $matched The matched rule, or null.
 	 * @return void
 	 */
 	public function on_after_resolve( $url, $event, $user = null, $matched = null ) {
 		$rule_id = is_array( $matched ) && ! empty( $matched['id'] ) ? $matched['id'] : '';
 
-		if ( 'login' === $event && null !== $this->pending_login ) {
-			$this->pending_login['redirect_url'] = $url;
-			$this->pending_login['rule_id']      = $rule_id;
-			$this->flush_pending_login();
+		if ( 'login' === $event ) {
+			if ( null !== $this->pending_login ) {
+				$this->pending_login['rule_id'] = $rule_id;
+			}
 
 			return;
 		}
@@ -107,19 +123,39 @@ class Logger {
 		if ( 'logout' === $event ) {
 			$user_obj = $user instanceof \WP_User ? $user : null;
 
-			$this->record(
-				array_merge(
-					$this->base_row(),
-					array(
-						'user_id'      => $user_obj ? $user_obj->ID : 0,
-						'username'     => $user_obj ? $user_obj->user_login : '',
-						'event'        => 'logout',
-						'status'       => 'success',
-						'redirect_url' => $url,
-						'rule_id'      => $rule_id,
-					)
+			$this->pending_logout = array_merge(
+				$this->base_row(),
+				array(
+					'user_id'  => $user_obj ? $user_obj->ID : 0,
+					'username' => $user_obj ? $user_obj->user_login : '',
+					'event'    => 'logout',
+					'status'   => 'success',
+					'rule_id'  => $rule_id,
 				)
 			);
+		}
+	}
+
+	/**
+	 * Write the parked row now that the destination is settled.
+	 *
+	 * The hook also passes the user, but the parked row already carries it.
+	 *
+	 * @param string $url   The final destination URL.
+	 * @param string $event 'login' or 'logout'.
+	 * @return void
+	 */
+	public function on_redirect_resolved( $url, $event ) {
+		if ( 'login' === $event && null !== $this->pending_login ) {
+			$this->pending_login['redirect_url'] = $url;
+			$this->flush_pending_login();
+
+			return;
+		}
+
+		if ( 'logout' === $event && null !== $this->pending_logout ) {
+			$this->pending_logout['redirect_url'] = $url;
+			$this->flush_pending_logout();
 		}
 	}
 
@@ -177,8 +213,18 @@ class Logger {
 	}
 
 	/**
-	 * Write the parked login row if one is still pending (shutdown safety net
-	 * for logins that never resolved a redirect).
+	 * Write any row still parked (shutdown safety net for a login or logout that
+	 * never resolved a redirect).
+	 *
+	 * @return void
+	 */
+	public function flush_pending() {
+		$this->flush_pending_login();
+		$this->flush_pending_logout();
+	}
+
+	/**
+	 * Write the parked login row if one is still pending.
 	 *
 	 * @return void
 	 */
@@ -189,6 +235,22 @@ class Logger {
 
 		$row                 = $this->pending_login;
 		$this->pending_login = null;
+
+		$this->record( $row );
+	}
+
+	/**
+	 * Write the parked logout row if one is still pending.
+	 *
+	 * @return void
+	 */
+	public function flush_pending_logout() {
+		if ( null === $this->pending_logout ) {
+			return;
+		}
+
+		$row                  = $this->pending_logout;
+		$this->pending_logout = null;
 
 		$this->record( $row );
 	}

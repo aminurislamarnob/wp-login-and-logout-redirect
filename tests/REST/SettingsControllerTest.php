@@ -332,9 +332,11 @@ class SettingsControllerTest extends RestTestCase {
 		$this->assertFalse( get_option( RuleEngine::OPTION_RULES, false ) );
 	}
 
-	public function test_a_condition_with_no_values_is_dropped() {
+	public function test_a_rule_whose_only_condition_has_no_values_is_not_stored() {
 		$this->acting_as( 'administrator' );
 
+		// Storing it with empty conditions would make the engine match everyone,
+		// turning a rule that targets nobody yet into a site-wide redirect.
 		$this->dispatch(
 			'POST',
 			'/settings',
@@ -353,12 +355,37 @@ class SettingsControllerTest extends RestTestCase {
 			)
 		);
 
+		$this->assertSame( array(), get_option( RuleEngine::OPTION_RULES ) );
+	}
+
+	public function test_a_rule_that_declares_no_conditions_at_all_is_still_a_catch_all() {
+		$this->acting_as( 'administrator' );
+
+		// An admin who adds no conditions means "everyone" — that is the whole
+		// point of a catch-all rule, and must keep working.
+		$this->dispatch(
+			'POST',
+			'/settings',
+			array(
+				'rules' => array(
+					array(
+						'id'        => 'r',
+						'enabled'   => true,
+						'login_url' => home_url( '/everyone/' ),
+					),
+				),
+			)
+		);
+
 		$this->assertSame( array(), get_option( RuleEngine::OPTION_RULES )[0]['conditions'] );
 	}
 
-	public function test_an_unregistered_role_is_dropped_from_a_condition() {
+	public function test_a_role_that_is_not_registered_is_kept_rather_than_dropped() {
 		$this->acting_as( 'administrator' );
 
+		// Roles come and go with the plugins that register them. Dropping the value
+		// here would empty the condition, and the rule engine reads a rule with no
+		// conditions as matching everyone — so the rule would silently go site-wide.
 		$this->dispatch(
 			'POST',
 			'/settings',
@@ -377,14 +404,46 @@ class SettingsControllerTest extends RestTestCase {
 			)
 		);
 
-		$this->assertSame( array( 'editor' ), get_option( RuleEngine::OPTION_RULES )[0]['conditions'][0]['values'] );
+		$this->assertSame(
+			array( 'editor', 'not_a_role' ),
+			get_option( RuleEngine::OPTION_RULES )[0]['conditions'][0]['values']
+		);
 	}
 
-	public function test_a_user_condition_keeps_only_real_users() {
+	public function test_a_role_value_is_still_sanitized() {
+		$this->acting_as( 'administrator' );
+
+		$this->dispatch(
+			'POST',
+			'/settings',
+			array(
+				'rules' => array(
+					array(
+						'id'         => 'r',
+						'conditions' => array(
+							array(
+								'type'   => 'role',
+								'values' => array( 'Edi tor<script>' ),
+							),
+						),
+					),
+				),
+			)
+		);
+
+		$this->assertSame(
+			array( 'editorscript' ),
+			get_option( RuleEngine::OPTION_RULES )[0]['conditions'][0]['values']
+		);
+	}
+
+	public function test_a_user_condition_keeps_an_id_whose_account_is_gone() {
 		$this->acting_as( 'administrator' );
 
 		$real = self::factory()->user->create();
 
+		// Same reasoning as roles: a deleted account must not widen the rule. The
+		// engine compares against the real user id, so a stale id matches nobody.
 		$this->dispatch(
 			'POST',
 			'/settings',
@@ -403,7 +462,39 @@ class SettingsControllerTest extends RestTestCase {
 			)
 		);
 
-		$this->assertSame( array( (string) $real ), get_option( RuleEngine::OPTION_RULES )[0]['conditions'][0]['values'] );
+		$this->assertSame(
+			array( (string) $real, '999999' ),
+			get_option( RuleEngine::OPTION_RULES )[0]['conditions'][0]['values']
+		);
+	}
+
+	public function test_a_user_condition_still_drops_a_value_that_is_not_an_id() {
+		$this->acting_as( 'administrator' );
+
+		$real = self::factory()->user->create();
+
+		$this->dispatch(
+			'POST',
+			'/settings',
+			array(
+				'rules' => array(
+					array(
+						'id'         => 'r',
+						'conditions' => array(
+							array(
+								'type'   => 'user',
+								'values' => array( (string) $real, 'not-an-id' ),
+							),
+						),
+					),
+				),
+			)
+		);
+
+		$this->assertSame(
+			array( (string) $real ),
+			get_option( RuleEngine::OPTION_RULES )[0]['conditions'][0]['values']
+		);
 	}
 
 	public function test_duplicate_condition_values_are_collapsed() {

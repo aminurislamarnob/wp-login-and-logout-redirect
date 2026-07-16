@@ -128,6 +128,8 @@ Yes, go to Users->All Users from admin dashboard left sidebar menu.
 * [Feature] Email alerts on login for selected roles and daily/weekly/monthly activity digests.
 * [Feature] Modern React settings UI with tabbed navigation and instant save feedback.
 * [Improve] Redesigned admin experience: collapsible rule cards, grouped conditions, consistent controls.
+* [Fix] Audit Logs now record the URL the user was actually sent to. Previously the redirect column was empty whenever the destination came from the global login/logout setting, and showed the raw, unexpanded placeholder text when a rule used one.
+* [Fix] Saving your settings no longer widens a rule to the whole site when one of its conditions refers to a role or user that no longer exists (for example after deactivating the plugin that registered the role). The rule now stays as written and simply matches nobody until that role or user is back.
 
 = 3.1.7 =
 * [Improve] Fix PHPCS coding standard issues across all files.

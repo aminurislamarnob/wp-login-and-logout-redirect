@@ -171,12 +171,6 @@ class LogoutFlowTest extends IntegrationTestCase {
 	}
 
 	public function test_a_logout_sent_by_the_global_option_logs_where_the_user_actually_went() {
-		$this->markTestIncomplete(
-			'Same defect the login flow has: the logger hooks wplalr_after_resolve, which fires '
-			. 'before Redirection falls back to the wplalr_logout_redirect option, so redirect_url '
-			. 'is NULL for every logout the option handles.'
-		);
-
 		$this->enable_logs();
 
 		update_option( 'wplalr_logout_redirect', home_url( '/goodbye/' ) );

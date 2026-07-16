@@ -89,7 +89,38 @@ class Redirection {
 
 		$safe_fallback = ! empty( $fallback ) ? $fallback : admin_url();
 
-		return wp_validate_redirect( $redirect_to, $safe_fallback );
+		$redirect_to = wp_validate_redirect( $redirect_to, $safe_fallback );
+
+		$this->announce_destination( $redirect_to, 'login', $user );
+
+		return $redirect_to;
+	}
+
+	/**
+	 * Announce the settled destination.
+	 *
+	 * `wplalr_after_resolve` fires from inside the rule engine, so it only ever
+	 * carries the rule's own URL — before the option fallback, placeholders and
+	 * validation have had their say. Anything that needs to know where the user is
+	 * actually going (the audit log) has to be told here instead.
+	 *
+	 * @param string        $url   The final destination.
+	 * @param string        $event 'login' or 'logout'.
+	 * @param \WP_User|null $user  The user being redirected.
+	 * @return void
+	 */
+	protected function announce_destination( $url, $event, $user ) {
+		/**
+		 * Fires once the final redirect destination is settled.
+		 *
+		 * Unlike `wplalr_after_resolve`, the URL here is the one the user will be
+		 * sent to: placeholders expanded, fallbacks applied, validated.
+		 *
+		 * @param string        $url   The final destination URL.
+		 * @param string        $event 'login' or 'logout'.
+		 * @param \WP_User|null $user  The user being redirected.
+		 */
+		do_action( 'wplalr_redirect_resolved', $url, $event, $user instanceof \WP_User ? $user : null );
 	}
 
 	/**
@@ -137,7 +168,11 @@ class Redirection {
 			);
 		}
 
-		wp_safe_redirect( wp_validate_redirect( $redirect_url, home_url() ) );
+		$destination = wp_validate_redirect( $redirect_url, home_url() );
+
+		$this->announce_destination( $destination, 'logout', $user );
+
+		wp_safe_redirect( $destination );
 		exit();
 	}
 

@@ -278,6 +278,15 @@ class SettingsController extends WP_REST_Controller {
 				);
 			}
 
+			/*
+			 * A rule that declared conditions but kept none would match everyone —
+			 * the exact opposite of what it was written to do. Refuse to store it
+			 * rather than silently widening it site-wide.
+			 */
+			if ( ! empty( $raw_conditions ) && empty( $conditions ) ) {
+				continue;
+			}
+
 			$clean_rule = array(
 				'id'         => isset( $rule['id'] ) && '' !== $rule['id'] ? sanitize_text_field( $rule['id'] ) : wp_generate_uuid4(),
 				'enabled'    => ! empty( $rule['enabled'] ),
@@ -339,21 +348,29 @@ class SettingsController extends WP_REST_Controller {
 			return array_values( (array) apply_filters( 'wplalr_sanitize_condition_values', array(), $type, $values ) );
 		}
 
-		$valid_roles = array_keys( wp_roles()->roles );
-		$clean       = array();
+		$clean = array();
 
+		/*
+		 * Values are checked for shape, never for existence. A role or user id can
+		 * disappear after a rule is written — deactivate the plugin that registered
+		 * the role, delete the account — and dropping the value on the next save
+		 * would empty the condition, which the rule engine reads as "matches
+		 * everyone". Keeping it is both safer and lossless: the engine matches it
+		 * against the user's real roles/id, so a value nothing can satisfy simply
+		 * matches nobody, and the rule works again if the role or user comes back.
+		 */
 		foreach ( $values as $value ) {
 			switch ( $type ) {
 				case 'role':
 					$role = sanitize_key( $value );
-					if ( in_array( $role, $valid_roles, true ) ) {
+					if ( '' !== $role ) {
 						$clean[] = $role;
 					}
 					break;
 
 				case 'user':
 					$user_id = absint( $value );
-					if ( $user_id && get_user_by( 'id', $user_id ) ) {
+					if ( $user_id ) {
 						$clean[] = (string) $user_id;
 					}
 					break;

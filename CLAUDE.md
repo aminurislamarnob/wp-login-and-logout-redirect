@@ -55,7 +55,7 @@ Namespace: `PluginizeLab\WpLoginLogoutRedirect` — PSR-4 autoloaded from `inclu
 - `Settings` — registers the admin menu page ("Redirect Options") and renders the React app mount point (`<div id="wplalr-settings">`). No longer uses the Settings API.
 - `REST\SettingsController` — `WP_REST_Controller` exposing `GET`/`POST` at `wplalr/v1/settings` (cap: `manage_options`). Reads/writes the two existing options `wplalr_login_redirect` and `wplalr_logout_redirect`. This is what the React settings page talks to.
 - `Assets` — on the settings screen (`toplevel_page_wplalr_login_logout_redirect`) enqueues the webpack build from `assets/build/admin/` (using `script.asset.php` for deps/version), localizes `window.wplalrAdmin`, and loads `wp-components` styles. Also registers/enqueues the front-end script/style.
-- `Redirection` — hooks into `login_redirect`, `woocommerce_login_redirect`, and `wp_logout` to perform the actual redirects using the stored options. Falls back to `admin_url()` for login and `home_url()` for logout when no URL is configured.
+- `Redirection` — hooks into `login_redirect`, `woocommerce_login_redirect`, and `wp_logout` to perform the actual redirects using the stored options. Falls back to `admin_url()` for login and `home_url()` for logout when no URL is configured. Fires `wplalr_redirect_resolved` ($url, $event, $user) once the destination is final — placeholders expanded, fallbacks applied, validated. Anything needing the real destination must use that, **not** `wplalr_after_resolve`, which fires inside the rule engine and only carries the rule's own URL.
 - `UserLoginTime` — stores `wplalr_last_login` user meta on login, adds a sortable "Last Login" column to the WP admin users list.
 
 **React admin app (`src/`, built with `@wordpress/scripts`):**
@@ -81,8 +81,9 @@ test runs inside a transaction that is rolled back.
 - Defaults assume Homebrew MySQL on `127.0.0.1` with `root`/`root`; override by
   calling the script directly with your own credentials.
 
-Six tests are `markTestIncomplete()` — they encode intended behavior for known
-defects (see the message on each). Delete the marker line when the bug is fixed.
+When a test is `markTestIncomplete()`, it encodes intended behavior for a known
+defect (see the message on each). Delete the marker line when the bug is fixed.
+There are currently none.
 
 ### The integration suite
 

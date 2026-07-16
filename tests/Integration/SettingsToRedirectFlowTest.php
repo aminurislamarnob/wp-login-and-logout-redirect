@@ -260,13 +260,6 @@ class SettingsToRedirectFlowTest extends IntegrationTestCase {
 	 */
 
 	public function test_a_rule_condition_naming_an_unknown_role_does_not_make_the_rule_universal() {
-		$this->markTestIncomplete(
-			'SettingsController::sanitize_rules() drops a condition whose role is not registered, '
-			. 'and RuleEngine::matches() treats a rule with no conditions as matching everyone. '
-			. 'Together they widen a targeted rule into a site-wide one. Either the sanitizer must '
-			. 'drop the whole rule, or a rule whose conditions were all stripped must match nobody.'
-		);
-
 		$this->save(
 			array(
 				'rules' => array(
@@ -289,13 +282,6 @@ class SettingsToRedirectFlowTest extends IntegrationTestCase {
 	}
 
 	public function test_re_saving_a_rule_whose_role_no_longer_exists_does_not_redirect_everyone() {
-		$this->markTestIncomplete(
-			'Same defect, reached the way a site actually hits it. A rule targets shop_manager; '
-			. 'WooCommerce is deactivated so the role is gone; the admin opens settings and saves '
-			. 'without changing anything. The condition is stripped silently and every user on the '
-			. 'site — subscribers included — is redirected to the shop dashboard.'
-		);
-
 		add_role( 'shop_manager', 'Shop Manager' );
 
 		$this->save(

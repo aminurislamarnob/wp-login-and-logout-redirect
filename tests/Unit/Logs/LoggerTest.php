@@ -50,8 +50,9 @@ class LoggerTest extends TestCase {
 
 		$this->assertNotFalse( has_action( 'wp_login', array( $logger, 'on_login' ) ) );
 		$this->assertNotFalse( has_action( 'wplalr_after_resolve', array( $logger, 'on_after_resolve' ) ) );
+		$this->assertNotFalse( has_action( 'wplalr_redirect_resolved', array( $logger, 'on_redirect_resolved' ) ) );
 		$this->assertNotFalse( has_action( 'wp_login_failed', array( $logger, 'on_login_failed' ) ) );
-		$this->assertNotFalse( has_action( 'shutdown', array( $logger, 'flush_pending_login' ) ) );
+		$this->assertNotFalse( has_action( 'shutdown', array( $logger, 'flush_pending' ) ) );
 		$this->assertNotFalse( has_action( 'wplalr_session_destroyed', array( $logger, 'on_session_destroyed' ) ) );
 	}
 
@@ -76,7 +77,8 @@ class LoggerTest extends TestCase {
 
 		$this->assertCount( 0, $this->all_log_rows(), 'The row must wait for the resolved URL.' );
 
-		$logger->on_after_resolve( 'https://example.test/hi/', 'login', $user, array( 'id' => 'rule-7' ) );
+		$logger->on_after_resolve( 'https://example.test/rule-url/', 'login', $user, array( 'id' => 'rule-7' ) );
+		$logger->on_redirect_resolved( 'https://example.test/hi/', 'login' );
 
 		$rows = $this->all_log_rows();
 
@@ -89,12 +91,28 @@ class LoggerTest extends TestCase {
 		$this->assertSame( 'success', $rows[0]['status'] );
 	}
 
+	public function test_the_logged_url_is_the_final_destination_not_the_rule_url() {
+		$logger = $this->enabled_logger();
+		$user   = $this->make_user( 'zoe' );
+
+		$logger->on_login( $user->user_login, $user );
+
+		// What the rule engine resolved: empty, because no rule matched.
+		$logger->on_after_resolve( '', 'login', $user, null );
+
+		// Where Redirection actually settled on sending them.
+		$logger->on_redirect_resolved( 'https://example.test/members/', 'login' );
+
+		$this->assertSame( 'https://example.test/members/', $this->all_log_rows()[0]['redirect_url'] );
+	}
+
 	public function test_a_login_that_matched_no_rule_records_an_empty_rule_id() {
 		$logger = $this->enabled_logger();
 		$user   = $this->make_user( 'zoe' );
 
 		$logger->on_login( $user->user_login, $user );
 		$logger->on_after_resolve( '', 'login', $user, null );
+		$logger->on_redirect_resolved( 'https://example.test/hi/', 'login' );
 
 		$rows = $this->all_log_rows();
 
@@ -108,9 +126,10 @@ class LoggerTest extends TestCase {
 
 		$logger->on_login( $user->user_login, $user );
 		$logger->on_after_resolve( 'https://example.test/hi/', 'login', $user, null );
+		$logger->on_redirect_resolved( 'https://example.test/hi/', 'login' );
 
 		// The shutdown safety net must not duplicate the row.
-		$logger->flush_pending_login();
+		$logger->flush_pending();
 
 		$this->assertCount( 1, $this->all_log_rows() );
 	}
@@ -174,7 +193,8 @@ class LoggerTest extends TestCase {
 		$logger = $this->enabled_logger();
 		$user   = $this->make_user( 'zoe' );
 
-		$logger->on_after_resolve( 'https://example.test/bye/', 'logout', $user, array( 'id' => 'rule-9' ) );
+		$logger->on_after_resolve( 'https://example.test/rule-url/', 'logout', $user, array( 'id' => 'rule-9' ) );
+		$logger->on_redirect_resolved( 'https://example.test/bye/', 'logout' );
 
 		$rows = $this->all_log_rows();
 
@@ -188,7 +208,8 @@ class LoggerTest extends TestCase {
 	public function test_a_logout_without_a_user_still_records() {
 		$logger = $this->enabled_logger();
 
-		$logger->on_after_resolve( 'https://example.test/bye/', 'logout', null, null );
+		$logger->on_after_resolve( '', 'logout', null, null );
+		$logger->on_redirect_resolved( 'https://example.test/bye/', 'logout' );
 
 		$rows = $this->all_log_rows();
 
@@ -196,12 +217,26 @@ class LoggerTest extends TestCase {
 		$this->assertSame( '', $rows[0]['username'] );
 	}
 
+	public function test_a_logout_that_never_resolved_a_redirect_is_flushed_at_shutdown() {
+		$logger = $this->enabled_logger();
+		$user   = $this->make_user( 'zoe' );
+
+		$logger->on_after_resolve( '', 'logout', $user, null );
+
+		$this->assertCount( 0, $this->all_log_rows(), 'The row should still be parked.' );
+
+		$logger->flush_pending();
+
+		$this->assertCount( 1, $this->all_log_rows() );
+	}
+
 	public function test_a_logout_does_not_consume_a_pending_login() {
 		$logger = $this->enabled_logger();
 		$user   = $this->make_user( 'zoe' );
 
 		$logger->on_login( $user->user_login, $user );
-		$logger->on_after_resolve( 'https://example.test/bye/', 'logout', $user, null );
+		$logger->on_after_resolve( '', 'logout', $user, null );
+		$logger->on_redirect_resolved( 'https://example.test/bye/', 'logout' );
 
 		$rows = $this->all_log_rows();
 

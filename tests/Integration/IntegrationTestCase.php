@@ -73,8 +73,9 @@ abstract class IntegrationTestCase extends TestCase {
 		if ( $this->logger instanceof Logger ) {
 			remove_action( 'wp_login', array( $this->logger, 'on_login' ), 20 );
 			remove_action( 'wplalr_after_resolve', array( $this->logger, 'on_after_resolve' ), 10 );
+			remove_action( 'wplalr_redirect_resolved', array( $this->logger, 'on_redirect_resolved' ), 10 );
 			remove_action( 'wp_login_failed', array( $this->logger, 'on_login_failed' ), 10 );
-			remove_action( 'shutdown', array( $this->logger, 'flush_pending_login' ) );
+			remove_action( 'shutdown', array( $this->logger, 'flush_pending' ) );
 			remove_action( 'wplalr_session_destroyed', array( $this->logger, 'on_session_destroyed' ), 10 );
 		}
 

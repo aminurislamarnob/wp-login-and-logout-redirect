@@ -279,14 +279,6 @@ class LoginFlowTest extends IntegrationTestCase {
 	}
 
 	public function test_a_login_sent_by_the_global_option_logs_where_the_user_actually_went() {
-		$this->markTestIncomplete(
-			'Logger::on_after_resolve hooks wplalr_after_resolve, which RuleEngine::resolve() '
-			. 'fires before Redirection applies the global-option fallback. The logger only ever '
-			. 'sees the rule URL, so redirect_url is NULL for every login the option handles — '
-			. 'which is every site not using rules. Delete this line when the logger records the '
-			. 'final destination instead.'
-		);
-
 		$this->enable_logs();
 
 		update_option( 'wplalr_login_redirect', home_url( '/members/' ) );
@@ -297,11 +289,6 @@ class LoginFlowTest extends IntegrationTestCase {
 	}
 
 	public function test_a_login_sent_to_the_dashboard_fallback_logs_where_the_user_actually_went() {
-		$this->markTestIncomplete(
-			'Same root cause: nothing is configured, Redirection falls back to admin_url(), but '
-			. 'the rule engine resolved an empty string and that is what the logger stored.'
-		);
-
 		$this->enable_logs();
 
 		$this->sign_in( $this->make_user() );
@@ -310,13 +297,6 @@ class LoginFlowTest extends IntegrationTestCase {
 	}
 
 	public function test_a_login_logs_the_expanded_placeholder_url_not_the_raw_token() {
-		$this->markTestIncomplete(
-			'Same root cause, worst symptom: the logger sees the rule URL before Placeholders '
-			. 'runs, so "{{website_url}}/author/{{username}}/" is stored after esc_url_raw '
-			. 'strips the braces — logging http://website_url/author/username/, a destination '
-			. 'that does not exist and was never visited.'
-		);
-
 		$this->enable_logs();
 
 		$user = $this->make_user( 'subscriber', array( 'user_login' => 'ada' ) );
