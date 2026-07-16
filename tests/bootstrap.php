@@ -46,3 +46,5 @@ require $wplalr_tests_dir . '/includes/bootstrap.php';
 // Base classes: PHPUnit only autoloads files matching the *Test.php suffix.
 require_once __DIR__ . '/TestCase.php';
 require_once __DIR__ . '/REST/RestTestCase.php';
+require_once __DIR__ . '/Integration/RedirectCaught.php';
+require_once __DIR__ . '/Integration/IntegrationTestCase.php';

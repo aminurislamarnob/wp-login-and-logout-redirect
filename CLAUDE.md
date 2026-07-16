@@ -28,6 +28,7 @@ composer test:install
 composer test
 composer test:unit
 composer test:rest
+composer test:integration
 
 # Install JS dependencies
 npm install
@@ -80,8 +81,28 @@ test runs inside a transaction that is rolled back.
 - Defaults assume Homebrew MySQL on `127.0.0.1` with `root`/`root`; override by
   calling the script directly with your own credentials.
 
-Three tests are `markTestIncomplete()` — they encode intended behavior for known
+Six tests are `markTestIncomplete()` — they encode intended behavior for known
 defects (see the message on each). Delete the marker line when the bug is fixed.
+
+### The integration suite
+
+`tests/Integration/` drives the plugin through its real WordPress hooks rather
+than calling plugin methods: `wp_signon()`, the `login_redirect` filter,
+`wp_logout`, the cron hooks, and the REST routes. It exists to cover the seams
+between classes, which is where the defects it found all live.
+
+- `IntegrationTestCase` — the plugin bootstraps itself during the test bootstrap,
+  so `Redirection` and `UserLoginTime` are **already hooked**; use them as-is,
+  because constructing a second instance doubles every callback. `Logger` and
+  `Notifier` gate on `wplalr_enable_logs` *in their constructor* and logging is
+  off at boot, so they hook nothing — call `enable_logs()` to set the option and
+  build the pair, and never before the option is set. `tear_down()` unhooks them.
+- `log_out()` catches the redirect via a `wp_redirect` filter that throws
+  `RedirectCaught`, since `redirect_after_logout()` ends in `exit()`.
+- `act_as_session()` mints a real `logged_in` cookie: `wp_get_session_token()`
+  reads the cookie and has no filter, so it is the only way `is_current` works.
+- `sign_in()` makes the signed-in user the current user — re-assert an admin
+  before any later REST write, or it 403s.
 
 ## Coding Standards
 

@@ -17,6 +17,10 @@
 		<testsuite name="rest">
 			<directory suffix="Test.php">./tests/REST</directory>
 		</testsuite>
+
+		<testsuite name="integration">
+			<directory suffix="Test.php">./tests/Integration</directory>
+		</testsuite>
 	</testsuites>
 
 	<filter>
