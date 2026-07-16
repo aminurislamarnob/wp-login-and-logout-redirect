@@ -21,6 +21,14 @@ composer phpcs
 # Auto-fix PHPCS issues
 composer phpcbf
 
+# Install the WordPress test suite + scratch DB (once, before the first test run)
+composer test:install
+
+# Run PHPUnit (all suites / just one)
+composer test
+composer test:unit
+composer test:rest
+
 # Install JS dependencies
 npm install
 
@@ -55,6 +63,25 @@ Namespace: `PluginizeLab\WpLoginLogoutRedirect` — PSR-4 autoloaded from `inclu
 - `src/context/SettingsContext.js` — fetches/saves settings via `apiFetch` against `/wplalr/v1/settings`; exposes `settings`, `isLoading`, `isSaving`, `saveSettings`; fires `@wordpress/notices` snackbars.
 - `src/components/` — `Layout` (header + tabbed hash-nav + `SnackbarList` + loading skeleton), `SettingsHeader`, `RedirectSettings` (the Redirects tab), `icons`, `LayoutStyles.css`.
 - `webpack.config.js` — single entry `admin/script: ./src/admin.js`, output to `assets/build/`. Source (`src/`, `webpack.config.js`, `package.json`) is excluded from the release ZIP via `.distignore`; the prebuilt `assets/build/` ships.
+
+## Tests
+
+PHPUnit against the real WordPress core test suite (no mocking framework) — each
+test runs inside a transaction that is rolled back.
+
+- `tests/bootstrap.php` boots WP with the plugin loaded and creates the audit-log
+  table once up front (DDL implicitly commits in MySQL, so it cannot be per-test).
+- `tests/TestCase.php` — base class; resets plugin options and log rows per test.
+- `tests/REST/RestTestCase.php` — adds a `WP_REST_Server` plus `dispatch()` /
+  `acting_as()` helpers. `reboot_server()` re-registers routes for tests that add a
+  schema filter (route args are frozen at `rest_api_init`).
+- `bin/install-wp-tests.sh` falls back to the wordpress-develop git mirror when
+  `svn` is absent (the default on macOS).
+- Defaults assume Homebrew MySQL on `127.0.0.1` with `root`/`root`; override by
+  calling the script directly with your own credentials.
+
+Three tests are `markTestIncomplete()` — they encode intended behavior for known
+defects (see the message on each). Delete the marker line when the bug is fixed.
 
 ## Coding Standards
 

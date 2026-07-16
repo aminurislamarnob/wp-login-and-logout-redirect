@@ -267,5 +267,3 @@ card. Placeholder chips are reachable and copy on Enter.
 | HTC-18 | | |
 | HTC-19 | | |
 | HTC-20 | | |
-</content>
-</invoke>
