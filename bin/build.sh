@@ -46,7 +46,7 @@ npm run build
 
 # Copy all files
 status "Copying files... ✌️"
-FILES=(wp-login-logout-redirect.php index.php readme.txt dist includes templates assets languages composer.json composer.lock)
+FILES=(wp-login-logout-redirect.php index.php readme.txt dist includes templates assets languages composer.json composer.lock package.json package-lock.json)
 
 for file in ${FILES[@]}; do
     if [ -f "$file" ] || [ -d "$file" ]; then
@@ -59,8 +59,9 @@ status "Installing dependencies... 📦"
 cd $BUILD_DIR
 composer install --optimize-autoloader --no-dev -q
 
-# Remove composer lock file
+# Remove composer files
 rm composer.lock
+rm package-lock.json
 
 # go one up, to the build dir
 status "Creating archive... 🎁"

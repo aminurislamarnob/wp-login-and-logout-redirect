@@ -39,3 +39,5 @@ composer.json
 docs
 CHANGELOG.md
 DEVELOPER.md
+.claude
+CLAUDE.md
