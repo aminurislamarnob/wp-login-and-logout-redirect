@@ -14,7 +14,7 @@ final class WpLoginLogoutRedirect {
      *
      * @var string
      */
-    public $version = '3.1.7';
+    public $version = '4.0.0';
 
     /**
      * Instance of self
@@ -46,6 +46,7 @@ final class WpLoginLogoutRedirect {
 
         add_action( 'plugins_loaded', [ $this, 'init_plugin' ] );
         add_action( 'woocommerce_flush_rewrite_rules', [ $this, 'flush_rewrite_rules' ] );
+        add_action( 'rest_api_init', [ $this, 'register_rest_routes' ] );
     }
 
     /**
@@ -85,7 +86,8 @@ final class WpLoginLogoutRedirect {
      * Nothing is being called here yet.
      */
     public function activate() {
-        // Rewrite rules during wp_login_logout_redirect activation
+        // Create the audit-log table and schedule its cleanup cron.
+        ( new Logs\Installer() )->install();
     }
 
     /**
@@ -103,7 +105,10 @@ final class WpLoginLogoutRedirect {
      *
      * Nothing being called here yet.
      */
-    public function deactivate() {     }
+    public function deactivate() {
+        // Clear scheduled cron events; the table and its data are kept.
+        Logs\Installer::unschedule_all();
+    }
 
     /**
      * Define all constants
@@ -170,10 +175,44 @@ final class WpLoginLogoutRedirect {
      * @return void
      */
     public function init_classes() {
-        // $this->container['scripts'] = new Assets();
+        $this->container['scripts'] = new Assets();
         $this->container['admin_settings'] = new Settings();
-        $this->container['redirection'] = new Redirection();
+        $this->container['admin_settings_controller'] = new REST\SettingsController();
+        $this->container['logs_controller'] = new REST\LogsController();
+        $this->container['sessions_controller'] = new REST\SessionsController();
+        $this->container['rule_engine'] = new RuleEngine();
+        $this->container['placeholders'] = new Placeholders();
+        $this->container['redirection'] = new Redirection( $this->container['rule_engine'], $this->container['placeholders'] );
         $this->container['user_login_time'] = new UserLoginTime();
+        $this->container['release_notice'] = new ReleaseNotice();
+
+        // Audit logs.
+        $this->container['logs_installer']  = new Logs\Installer();
+        $this->container['logs_repository'] = new Logs\LogRepository();
+        $this->container['logger']          = new Logs\Logger( $this->container['logs_repository'] );
+        $this->container['logs_notifier']   = new Logs\Notifier( $this->container['logs_repository'] );
+    }
+
+    /**
+     * Register plugin REST routes
+     *
+     * @return void
+     */
+    public function register_rest_routes() {
+        if ( ! isset( $this->container['admin_settings_controller'] ) ) {
+            $this->container['admin_settings_controller'] = new REST\SettingsController();
+        }
+        $this->container['admin_settings_controller']->register_routes();
+
+        if ( ! isset( $this->container['logs_controller'] ) ) {
+            $this->container['logs_controller'] = new REST\LogsController();
+        }
+        $this->container['logs_controller']->register_routes();
+
+        if ( ! isset( $this->container['sessions_controller'] ) ) {
+            $this->container['sessions_controller'] = new REST\SessionsController();
+        }
+        $this->container['sessions_controller']->register_routes();
     }
 
     /**

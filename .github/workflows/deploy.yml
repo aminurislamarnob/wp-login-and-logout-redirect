@@ -22,9 +22,16 @@ jobs:
           coverage: none
           tools: composer:v2
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
       - name: Install dependencies and build
         run: |
           composer install --no-dev --optimize-autoloader
+          npm install
+          npm run build
 
       - name: Create plugin zip
         run: |
@@ -46,7 +53,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # TODO: Uncomment when ready to deploy to WordPress.org
       - name: WordPress Plugin Deploy
         id: deploy
         uses: 10up/action-wordpress-plugin-deploy@stable

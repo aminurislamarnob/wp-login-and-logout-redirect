@@ -4,100 +4,147 @@ namespace PluginizeLab\WpLoginLogoutRedirect;
 
 class Settings {
 	/**
+	 * Hook suffixes for our admin pages, keyed by view.
+	 *
+	 * Populated on `admin_menu`; read by Assets to enqueue the shared bundle on
+	 * exactly our screens without hardcoding screen-id strings.
+	 *
+	 * @var array
+	 */
+	private static $page_hooks = array();
+
+	/**
 	 * The constructor.
 	 */
 	public function __construct() {
-        add_action( 'admin_menu', array( $this, 'login_logout_redirect_menu' ) );
-        add_filter( 'plugin_action_links_' . WP_LOGIN_LOGOUT_REDIRECT_BASENAME, array( $this, 'plugin_action_link' ) );
-        add_action( 'admin_init', array( $this, 'register_login_logout_settings' ) );
+		add_action( 'admin_menu', array( $this, 'login_logout_redirect_menu' ) );
+		add_filter( 'plugin_action_links_' . WP_LOGIN_LOGOUT_REDIRECT_BASENAME, array( $this, 'plugin_action_link' ) );
+		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 	}
 
-    /**
-     * Register plugin admin menu
-     */
-    public function login_logout_redirect_menu() {
-        add_menu_page( __( 'WP Login and Logout Redirect Options', 'wp-login-logout-redirect' ), __( 'Redirect Options', 'wp-login-logout-redirect' ), 'manage_options', 'wplalr_login_logout_redirect', array( $this, 'login_logout_redirect_settings_form' ), 'dashicons-randomize' );
-    }
+	/**
+	 * Register plugin admin menu and submenu pages.
+	 *
+	 * All three pages share one React bundle (see Assets); each renders its own
+	 * mount node and the app boots the matching view.
+	 */
+	public function login_logout_redirect_menu() {
+		$settings = add_menu_page(
+			__( 'WP Login and Logout Redirect Options', 'wp-login-logout-redirect' ),
+			__( 'Redirect Options', 'wp-login-logout-redirect' ),
+			'manage_options',
+			'wplalr_login_logout_redirect',
+			array( $this, 'login_logout_redirect_settings_form' ),
+			'dashicons-randomize'
+		);
 
-    /**
-     * Plugin options form
-     */
-    public function login_logout_redirect_settings_form() {
-        settings_errors();
-        require_once pluginizelab_wp_login_logout_redirect()->get_template( 'settings-form.php' );
-    }
+		// Duplicate the parent as the first submenu so the cleaner label shows.
+		add_submenu_page(
+			'wplalr_login_logout_redirect',
+			__( 'Redirect Options', 'wp-login-logout-redirect' ),
+			__( 'Redirect Options', 'wp-login-logout-redirect' ),
+			'manage_options',
+			'wplalr_login_logout_redirect',
+			array( $this, 'login_logout_redirect_settings_form' )
+		);
 
-    /**
-     * Add settings page link with plugin.
-     */
-    public function plugin_action_link( $links ) {
-        $wplalr_login_logout_plugin_action_links = array(
-			'<a href="' . esc_url( admin_url( 'admin.php?page=wplalr_login_logout_redirect' ) ) . '"> ' . __( 'Settings', 'wp-login-logout-redirect' ) . '</a>',
-        );
-        return array_merge( $links, $wplalr_login_logout_plugin_action_links );
-    }
+		$audit_logs = add_submenu_page(
+			'wplalr_login_logout_redirect',
+			__( 'Audit Logs', 'wp-login-logout-redirect' ),
+			__( 'Audit Logs', 'wp-login-logout-redirect' ),
+			'manage_options',
+			'wplalr_audit_logs',
+			array( $this, 'render_audit_logs_page' )
+		);
+
+		$sessions = add_submenu_page(
+			'wplalr_login_logout_redirect',
+			__( 'Logged-in Users', 'wp-login-logout-redirect' ),
+			__( 'Logged-in Users', 'wp-login-logout-redirect' ),
+			'manage_options',
+			'wplalr_sessions',
+			array( $this, 'render_sessions_page' )
+		);
+
+		$whats_new = add_submenu_page(
+			'wplalr_login_logout_redirect',
+			__( "What's New", 'wp-login-logout-redirect' ),
+			__( "What's New", 'wp-login-logout-redirect' ),
+			'manage_options',
+			'wplalr_whats_new',
+			array( $this, 'render_whats_new_page' )
+		);
+
+		self::$page_hooks = array(
+			'settings'   => $settings,
+			'audit_logs' => $audit_logs,
+			'sessions'   => $sessions,
+			'whats_new'  => $whats_new,
+		);
+	}
 
 	/**
-     * Plugin settings page
-     */
-    public function register_login_logout_settings() {
+	 * Get the captured hook suffixes for our admin pages.
+	 *
+	 * @return array Keyed by view: settings|audit_logs|sessions.
+	 */
+	public static function get_page_hooks() {
+		return self::$page_hooks;
+	}
 
-        // register a new section
-        add_settings_section(
-            'wplalr_login_logout_settings_section',
-            __( 'WP Login and Logout Redirect Options', 'wp-login-logout-redirect' ), array( $this, 'login_logout_section_text' ),
-            'wplalr_login_logout_section'
-        );
+	/**
+	 * Add a shared body class on our admin screens so CSS can target all of
+	 * them (the per-screen body classes differ between the top-level and
+	 * submenu pages).
+	 *
+	 * @param string $classes Space-separated body classes.
+	 * @return string
+	 */
+	public function admin_body_class( $classes ) {
+		$screen = get_current_screen();
 
-        // register a new field in the "wplalr_login_logout_settings_section" section
-        add_settings_field(
-            'wplalr_login_redirect',
-            __( 'Login Redirect URL', 'wp-login-logout-redirect' ), array( $this, 'login_field_callback' ),
-            'wplalr_login_logout_section',
-            'wplalr_login_logout_settings_section'
-        );
+		if ( $screen && in_array( $screen->id, self::$page_hooks, true ) ) {
+			$classes .= ' wplalr-admin-page';
+		}
 
-        // register a new setting for login redirect field
-        register_setting( 'wplalr_login_logout_settings_section', 'wplalr_login_redirect' );
+		return $classes;
+	}
 
-        // register a new field in the "wplalr_login_logout_settings_section" section
-        add_settings_field(
-            'wplalr_logout_redirect',
-            __( 'Logout Redirect URL', 'wp-login-logout-redirect' ), array( $this, 'logout_field_callback' ),
-            'wplalr_login_logout_section',
-            'wplalr_login_logout_settings_section'
-        );
+	/**
+	 * Render the Redirects + Rules app mount point.
+	 */
+	public function login_logout_redirect_settings_form() {
+		echo '<div id="wplalr-settings"></div>';
+	}
 
-        // register a new setting for logout redirect field
-        register_setting( 'wplalr_login_logout_settings_section', 'wplalr_logout_redirect' );
-    }
+	/**
+	 * Render the Audit Logs app mount point.
+	 */
+	public function render_audit_logs_page() {
+		echo '<div id="wplalr-audit-logs"></div>';
+	}
 
-    /**
-     * Login redirect url field
-     */
-    public function login_field_callback() {
-        $wplalr_login_redirect_value = get_option( 'wplalr_login_redirect' );
+	/**
+	 * Render the Logged-in Users app mount point.
+	 */
+	public function render_sessions_page() {
+		echo '<div id="wplalr-sessions"></div>';
+	}
 
-        //Using esc_url() here because of here expecting url input
-        printf( '<div><input name="wplalr_login_redirect" type="text" class="regular-text" value="%s" placeholder="%s"/></div>', esc_url( $wplalr_login_redirect_value ), esc_attr( get_home_url() . '/example-login-redirect-link/' ) );
+	/**
+	 * Render the What's New app mount point.
+	 */
+	public function render_whats_new_page() {
+		echo '<div id="wplalr-whats-new"></div>';
+	}
 
-        echo '<small>' . esc_html__( 'Enter the URL to which the user will be redirected after a successful login.', 'wp-login-logout-redirect' ) . '</small>';
-    }
-
-    /**
-     * Logout redirect url field
-     */
-    public function logout_field_callback() {
-        $wplalr_logout_redirect_value = get_option( 'wplalr_logout_redirect' );
-        printf( '<div><input name="wplalr_logout_redirect" type="text" class="regular-text" value="%s"  placeholder="%s"/></div>', esc_url( $wplalr_logout_redirect_value ), esc_attr( get_home_url() . '/example-logout-redirect-link/' ) );  //Using esc_url() here because of here expecting url input
-
-        echo '<small>' . esc_html__( 'Enter the URL to which the user will be redirected after a successful logout.', 'wp-login-logout-redirect' ) . '</small>';
-    }
-
-    /**
-     * Plugin settings page section text
-     */
-    public function login_logout_section_text() {
-        printf( '%s %s %s', '<p>', esc_html__( 'You can change WordPress default login or logout or both redirect URL', 'wp-login-logout-redirect' ), '</p>' );
-    }
+	/**
+	 * Add settings page link with plugin.
+	 */
+	public function plugin_action_link( $links ) {
+		$wplalr_login_logout_plugin_action_links = array(
+			'<a href="' . esc_url( admin_url( 'admin.php?page=wplalr_login_logout_redirect' ) ) . '"> ' . __( 'Settings', 'wp-login-logout-redirect' ) . '</a>',
+		);
+		return array_merge( $links, $wplalr_login_logout_plugin_action_links );
+	}
 }

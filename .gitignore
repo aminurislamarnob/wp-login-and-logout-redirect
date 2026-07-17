@@ -8,3 +8,8 @@ debug.log
 vendor
 phpcs-report.txt
 .phpunit.result.cache
+# Playwright e2e
+/test-results/
+/playwright-report/
+/e2e/.state/
+/e2e/.backups/
