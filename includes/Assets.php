@@ -100,6 +100,7 @@ class Assets {
 				'roles'         => $roles,
 				'currentUserId' => get_current_user_id(),
 				'hasWooCommerce' => class_exists( 'WooCommerce' ),
+				'hasStoreSuite'  => defined( 'STORESUITE_PLUGIN_FILE' ),
 			)
 		);
 

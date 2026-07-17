@@ -29,6 +29,7 @@ const WhatsNewApp = () => {
 	const adminUrl = window.wplalrAdmin?.adminUrl || '';
 	const assetsUrl = window.wplalrAdmin?.assetsUrl || '';
 	const hasWooCommerce = !! window.wplalrAdmin?.hasWooCommerce;
+	const hasStoreSuite = !! window.wplalrAdmin?.hasStoreSuite;
 
 	const features = applyFilters( 'wplalr_whats_new_features', [
 		{
@@ -198,8 +199,8 @@ const WhatsNewApp = () => {
 				</div>
 			</div>
 
-			{ /* StoreSuite promo — only relevant on WooCommerce stores */ }
-			{ hasWooCommerce && (
+			{ /* StoreSuite promo — only for WooCommerce stores not yet running it */ }
+			{ hasWooCommerce && ! hasStoreSuite && (
 			<div className="wplalr-section">
 				<Card className="wplalr-whatsnew-promo">
 					<CardBody>
