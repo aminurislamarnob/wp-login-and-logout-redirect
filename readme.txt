@@ -2,18 +2,18 @@
 Contributors: aminurislam01, pluginizelab
 Donate link: https://www.buymeacoffee.com/aiarnob
 Tags: login redirect, logout redirect, redirect, login security, audit log
-Requires at least: 5.8
+Requires at least: 6.6
 Tested up to: 7.0
 Stable tag: 4.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Redirect users to any URL after login or logout with powerful per-role rules, a searchable audit log, live session management, and email notifications.
+Redirect users to any URL after login or logout with per-role rules, a searchable audit log, live session management, and email notifications.
 
 == Description ==
 
-WP Login and Logout Redirect gives you full control over where users land after they sign in or out of your site — from a simple pair of default URLs to powerful per-role redirect rules. On top of that, it records login activity in a searchable audit log, alerts you by email when important users sign in, and lets you see (and force out) everyone currently logged in.
+Entryway - WP Login and Logout Redirect gives you full control over where users land after they sign in or out of your site — from a simple pair of default URLs to powerful per-role redirect rules. On top of that, it records login activity in a searchable audit log, alerts you by email when important users sign in, and lets you see (and force out) everyone currently logged in.
 
 Everything is managed from a fast, modern settings screen built with React — no page reloads, instant feedback, and a clean design that feels right at home in your WordPress admin.
 
@@ -75,9 +75,9 @@ If you find this plugin useful, consider supporting its development through a [d
 
 Installing this plugin is very easy just like any other WordPress plugin. Please follow these instructions:
 
-1. In your WordPress admin panel, go to Plugins > New Plugin, search for "WP Login and Logout Redirect" and click on "Install Now"
+1. In your WordPress admin panel, go to Plugins > Add New Plugin, search for "Entryway" or "WP Login and Logout Redirect" and click on "Install Now"
 
-2. Alternatively, download the plugin and upload the wordpress-login-and-logout-redirect.zip to your plugins directory, which usually is /wp-content/plugins/.
+2. Alternatively, download the plugin and upload the wp-login-and-logout-redirect.zip to your plugins directory, which usually is /wp-content/plugins/.
 
 3. Activate the plugin from plugins page.
 
@@ -117,6 +117,27 @@ Yes. The Logged-in Users page lists all active sessions. You can end a single se
 = As an admin can I see every registered users last login date and time? =
 Yes, go to Users->All Users from admin dashboard left sidebar menu.
 
+= I upgraded from WP Login and Logout Redirect — do I need to reconfigure anything? =
+No. Entryway is the same plugin with a new name — all settings, rules and logs carry over as they were.
+
+= How do I get an email when an administrator signs in? =
+Enable email notifications on Redirect Options → Others and pick the roles to watch. You can also enable a daily, weekly or monthly activity digest.
+
+= Are failed login attempts recorded? =
+Yes. With logging enabled, failed logins are recorded with the attempted username, IP, browser and error reason.
+
+= How long are audit log entries kept? =
+Your choice: 7, 30 or 90 days, or forever. Older entries are cleaned up automatically.
+
+= Does the login redirect work with the WooCommerce login form? =
+Yes. Your configured URL or matching rule wins over the WooCommerce default My Account redirect.
+
+= What happens to a rule if its role or user is deleted? =
+The rule stays as written and simply matches nobody until that role or user is back — it never widens to match everyone.
+
+= Can I force logout everyone without logging myself out? =
+Yes. The "logout everyone" action has an option to keep your own session active.
+
 
 
 == Changelog ==
@@ -129,6 +150,7 @@ Yes, go to Users->All Users from admin dashboard left sidebar menu.
 * [Feature] Email alerts on login for selected roles and daily/weekly/monthly activity digests.
 * [Feature] Modern React settings UI with tabbed navigation and instant save feedback.
 * [Feature] What's New page showcasing everything in the release, linked from the plugin's admin navigation.
+* [Feature] One-time dismissible admin notice announcing the release, with a link to the What's New page.
 * [Improve] Redesigned admin experience: collapsible rule cards, grouped conditions, consistent controls.
 * [Fix] Audit Logs now record the URL the user was actually sent to. Previously the redirect column was empty whenever the destination came from the global login/logout setting, and showed the raw, unexpanded placeholder text when a rule used one.
 * [Fix] Saving your settings no longer widens a rule to the whole site when one of its conditions refers to a role or user that no longer exists (for example after deactivating the plugin that registered the role). The rule now stays as written and simply matches nobody until that role or user is back.
