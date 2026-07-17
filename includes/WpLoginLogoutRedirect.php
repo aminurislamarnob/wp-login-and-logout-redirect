@@ -184,6 +184,7 @@ final class WpLoginLogoutRedirect {
         $this->container['placeholders'] = new Placeholders();
         $this->container['redirection'] = new Redirection( $this->container['rule_engine'], $this->container['placeholders'] );
         $this->container['user_login_time'] = new UserLoginTime();
+        $this->container['release_notice'] = new ReleaseNotice();
 
         // Audit logs.
         $this->container['logs_installer']  = new Logs\Installer();
