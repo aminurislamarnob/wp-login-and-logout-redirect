@@ -200,7 +200,17 @@ const LogsViewer = () => {
 							</p>
 						) }
 						{ ! isLoading && items.length > 0 && (
+							<div className="wplalr-table-wrap">
 							<table className="wplalr-logs-table">
+								<colgroup>
+									<col className="wplalr-col-time" />
+									<col />
+									<col className="wplalr-col-event" />
+									<col className="wplalr-col-ip" />
+									<col className="wplalr-col-browser" />
+									<col />
+									<col className="wplalr-col-actions" />
+								</colgroup>
 								<thead>
 									<tr>
 										<th>
@@ -297,6 +307,7 @@ const LogsViewer = () => {
 									) ) }
 								</tbody>
 							</table>
+							</div>
 						) }
 
 						{ columns }

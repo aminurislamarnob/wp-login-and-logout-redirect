@@ -217,7 +217,7 @@ const SessionsViewer = () => {
 					</FlexItem>
 					<FlexItem>
 						<Button
-							variant="secondary"
+							variant="primary"
 							isDestructive
 							onClick={ onLogoutEveryone }
 							disabled={ total === 0 }
@@ -420,7 +420,8 @@ const SessionsViewer = () => {
 													<td>
 														<Button
 															size="small"
-															variant="secondary"
+															className="wplalr-logout-user"
+															variant="primary"
 															isDestructive
 															onClick={ () =>
 																onLogoutUser(

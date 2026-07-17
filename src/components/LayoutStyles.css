@@ -17,7 +17,7 @@
 	--wplalr-warning: #b54708;
 	--wplalr-warning-soft: #fef3e2;
 	--wplalr-radius: 12px;
-	--wplalr-radius-sm: 8px;
+	--wplalr-radius-sm: 6px;
 	--wplalr-shadow-sm: 0 1px 2px rgba( 16, 24, 40, 0.06 );
 	--wplalr-shadow-md: 0 6px 16px -4px rgba( 16, 24, 40, 0.1 );
 	--wplalr-focus-ring: 0 0 0 3px rgba( 85, 57, 253, 0.18 );
@@ -339,6 +339,7 @@
 
 .wplalr-admin-app .components-button {
 	border-radius: var( --wplalr-radius-sm );
+	text-transform: capitalize;
 	transition: background-color 0.15s ease, color 0.15s ease,
 		box-shadow 0.15s ease;
 }
@@ -685,10 +686,36 @@
 }
 
 /* ========== Audit Logs: table ========== */
+.wplalr-table-wrap {
+	overflow-x: auto;
+}
+
 .wplalr-logs-table {
 	width: 100%;
+	min-width: 720px;
+	table-layout: fixed;
 	border-collapse: collapse;
 	font-size: 13px;
+}
+
+.wplalr-col-time {
+	width: 110px;
+}
+
+.wplalr-col-event {
+	width: 140px;
+}
+
+.wplalr-col-ip {
+	width: 110px;
+}
+
+.wplalr-col-browser {
+	width: 130px;
+}
+
+.wplalr-col-actions {
+	width: 48px;
 }
 
 .wplalr-logs-table th {
@@ -708,6 +735,9 @@
 	border-bottom: 1px solid #f1f2f7;
 	color: #3c434a;
 	vertical-align: middle;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .wplalr-logs-table tbody tr {
@@ -723,10 +753,6 @@
 }
 
 .wplalr-logs-redirect {
-	max-width: 220px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	font-family: Menlo, Consolas, monaco, monospace;
 	font-size: 12px;
 }
@@ -804,6 +830,29 @@
 	width: 32px;
 }
 
+/* Fixed layout sizes columns off the header row: pin the narrow ones so the
+   User column keeps the remaining width and full emails stay visible. */
+.wplalr-sessions-table th:nth-child( 3 ),
+.wplalr-sessions-table th:nth-child( 4 ) {
+	width: 92px;
+}
+
+.wplalr-sessions-table th:nth-child( 5 ) {
+	width: 100px;
+}
+
+.wplalr-sessions-table th:last-child {
+	width: 80px;
+}
+
+/* Session cells hold short values plus the user identity block — let them
+   wrap rather than clip, so long emails stay fully readable. */
+.wplalr-sessions-table td {
+	white-space: normal;
+	overflow: visible;
+	text-overflow: clip;
+}
+
 .wplalr-session-user {
 	display: flex;
 	align-items: center;
@@ -815,6 +864,7 @@
 	height: 34px;
 	border-radius: 50%;
 	flex-shrink: 0;
+	object-fit: cover;
 	box-shadow: 0 0 0 2px var( --wplalr-surface ), 0 0 0 3px var( --wplalr-border );
 }
 
@@ -827,6 +877,7 @@
 	display: block;
 	font-size: 12px;
 	color: var( --wplalr-text-muted );
+	overflow-wrap: anywhere;
 }
 
 .wplalr-you-badge {
@@ -840,8 +891,12 @@
 	color: var( --wplalr-primary );
 }
 
-.wplalr-expand-sessions {
-	margin-left: 8px;
+.wplalr-admin-app .components-button.wplalr-logout-user {
+	font-weight: 500;
+}
+
+.wplalr-admin-app .components-button.wplalr-expand-sessions {
+	margin-left: 10px;
 	height: auto !important;
 	padding: 0 !important;
 	color: var( --wplalr-primary ) !important;
