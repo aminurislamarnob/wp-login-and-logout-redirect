@@ -1,8 +1,10 @@
 name: Plugin asset/readme update
-on:
-  push:
-    branches:
-      - develop
+# TODO: Restore the push trigger when ready to sync readme/assets to WordPress.org
+# on:
+#   push:
+#     branches:
+#       - develop
+on: workflow_dispatch
 jobs:
   develop:
     name: Push to develop
