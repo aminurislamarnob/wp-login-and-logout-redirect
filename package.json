@@ -1,6 +1,6 @@
 {
 	"name": "wp-login-and-logout-redirect",
-	"version": "3.1.7",
+	"version": "4.0.0",
 	"description": "Redirect users to specific URLs on login or logout.",
 	"main": "index.js",
 	"scripts": {

@@ -19,8 +19,6 @@ export {
 	EnvelopeIcon,
 	SparklesIcon,
 	CodeBracketIcon,
-	CheckCircleIcon,
-	WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline';
 
 export const ChevronDownIcon = () => (

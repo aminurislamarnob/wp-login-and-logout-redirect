@@ -4,7 +4,7 @@ Donate link: https://www.buymeacoffee.com/aiarnob
 Tags: login redirect, logout redirect, redirect, login security, audit log
 Requires at least: 5.8
 Tested up to: 7.0
-Stable tag: 3.1.7
+Stable tag: 4.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -120,7 +120,7 @@ Yes, go to Users->All Users from admin dashboard left sidebar menu.
 
 
 == Changelog ==
-= 3.2.0 =
+= 4.0.0 =
 * [Feature] Redirect rule engine: target users by role, specific user or capability with drag-and-drop rule priority.
 * [Feature] URL placeholders {{username}}, {{user_slug}} and {{website_url}} with one-click copy.
 * [Feature] Audit Logs page: searchable, filterable log of logins, logouts, failed and forced logouts with stat cards.

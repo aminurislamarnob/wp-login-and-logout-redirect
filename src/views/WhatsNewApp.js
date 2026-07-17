@@ -15,11 +15,9 @@ import {
 	UsersIcon,
 	EnvelopeIcon,
 	SparklesIcon,
-	CheckCircleIcon,
-	WrenchScrewdriverIcon,
 } from '../components/icons';
 
-const RELEASE_VERSION = '3.2.0';
+const RELEASE_VERSION = '4.0.0';
 
 /**
  * The What's New view: a showcase of everything that shipped in this release.
@@ -102,21 +100,6 @@ const WhatsNewApp = () => {
 			),
 		},
 	] );
-
-	const fixes = [
-		__(
-			'Audit Logs now record the URL the user was actually sent to — including global settings and expanded placeholders.',
-			'wp-login-logout-redirect'
-		),
-		__(
-			'A rule no longer widens to the whole site when one of its conditions refers to a role or user that no longer exists — it simply matches nobody until they are back.',
-			'wp-login-logout-redirect'
-		),
-		__(
-			'Redesigned admin experience: collapsible rule cards, grouped conditions and consistent controls throughout.',
-			'wp-login-logout-redirect'
-		),
-	];
 
 	return (
 		<>
@@ -208,31 +191,6 @@ const WhatsNewApp = () => {
 						)
 					) }
 				</div>
-			</div>
-
-			{ /* Fixes & improvements */ }
-			<div className="wplalr-section">
-				<Card className="wplalr-whatsnew-fixes">
-					<CardBody>
-						<h3 className="wplalr-whatsnew-fixes-title">
-							<span className="wplalr-whatsnew-fixes-badge">
-								<WrenchScrewdriverIcon />
-							</span>
-							{ __(
-								'Fixes & improvements',
-								'wp-login-logout-redirect'
-							) }
-						</h3>
-						<ul className="wplalr-whatsnew-fixes-list">
-							{ fixes.map( ( fix, index ) => (
-								<li key={ index }>
-									<CheckCircleIcon />
-									<span>{ fix }</span>
-								</li>
-							) ) }
-						</ul>
-					</CardBody>
-				</Card>
 			</div>
 		</>
 	);

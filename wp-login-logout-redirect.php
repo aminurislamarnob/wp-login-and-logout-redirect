@@ -3,7 +3,7 @@
 Plugin Name: Entryway - WP Login & Logout Redirect
 Plugin URI: https://wordpress.org/plugins/wp-login-and-logout-redirect/
 Description: Redirect users after login or logout with powerful per-role rules, audit logs, live session management, and email notifications.
-Version: 3.1.7
+Version: 4.0.0
 Author: Aminur Islam
 Author URI: https://github.com/aminurislamarnob
 License: GPLv2 or later
