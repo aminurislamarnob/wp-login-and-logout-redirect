@@ -297,7 +297,7 @@ const RuleCard = ( {
 
 								<div className="wplalr-rule-urls">
 									<TextControl
-										type="url"
+										type="text"
 										label={ __(
 											'Login redirect URL',
 											'wp-login-logout-redirect'
@@ -311,7 +311,7 @@ const RuleCard = ( {
 										__nextHasNoMarginBottom
 									/>
 									<TextControl
-										type="url"
+										type="text"
 										label={ __(
 											'Logout redirect URL',
 											'wp-login-logout-redirect'

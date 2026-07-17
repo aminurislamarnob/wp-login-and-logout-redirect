@@ -58,7 +58,7 @@ const RedirectSettings = () => {
 					<CardBody className="wplalr-form-section-body">
 						<div className="wplalr-settings-group">
 							<TextControl
-								type="url"
+								type="text"
 								label={ __(
 									'Login Redirect URL',
 									'wp-login-logout-redirect'
@@ -76,7 +76,7 @@ const RedirectSettings = () => {
 						</div>
 						<div className="wplalr-settings-group">
 							<TextControl
-								type="url"
+								type="text"
 								label={ __(
 									'Logout Redirect URL',
 									'wp-login-logout-redirect'
