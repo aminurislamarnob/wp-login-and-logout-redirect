@@ -1,26 +1,32 @@
 /* ========== Design tokens ========== */
 .wplalr-admin-app {
-	--wplalr-primary: #5539fd;
-	--wplalr-primary-hover: #4930e0;
-	--wplalr-primary-soft: #efedff;
-	--wplalr-primary-gradient: linear-gradient( 135deg, #5539fd 0%, #8b5cf6 100% );
+	--wplalr-primary: #3858e9;
+	--wplalr-primary-hover: #2145e6;
+	--wplalr-primary-soft: #edf1fe;
+	--wplalr-primary-gradient: linear-gradient( 135deg, #3858e9 0%, #6a82f5 100% );
 	--wplalr-bg: #f6f7fb;
 	--wplalr-surface: #ffffff;
-	--wplalr-border: #e6e8f0;
-	--wplalr-border-strong: #d5d8e2;
-	--wplalr-text: #1a1c25;
-	--wplalr-text-muted: #6b7086;
+	--wplalr-border: #dddddd;
+	--wplalr-border-strong: #949494;
+	--wplalr-text: #1e1e1e;
+	--wplalr-text-muted: #757575;
 	--wplalr-danger: #d92d20;
 	--wplalr-danger-soft: #fdecec;
 	--wplalr-success: #147d4f;
 	--wplalr-success-soft: #e7f7ef;
 	--wplalr-warning: #b54708;
 	--wplalr-warning-soft: #fef3e2;
-	--wplalr-radius: 12px;
-	--wplalr-radius-sm: 6px;
+	--wplalr-radius: 8px;
+	--wplalr-radius-sm: 2px;
 	--wplalr-shadow-sm: 0 1px 2px rgba( 16, 24, 40, 0.06 );
 	--wplalr-shadow-md: 0 6px 16px -4px rgba( 16, 24, 40, 0.1 );
-	--wplalr-focus-ring: 0 0 0 3px rgba( 85, 57, 253, 0.18 );
+	--wplalr-focus-ring: 0 0 0 3px rgba( 56, 88, 233, 0.18 );
+
+	/* Match Gutenberg's default accent so unstyled @wordpress/components
+	   controls pick up the same blue instead of the admin color scheme. */
+	--wp-components-color-accent: var( --wplalr-primary );
+	--wp-components-color-accent-darker-10: var( --wplalr-primary-hover );
+	--wp-components-color-accent-darker-20: #183ad6;
 
 	color: var( --wplalr-text );
 	-webkit-font-smoothing: antialiased;
@@ -41,7 +47,7 @@
 
 .wplalr-settings-header {
 	background:
-		radial-gradient( 1200px 120px at 0% 0%, rgba( 85, 57, 253, 0.05 ), transparent 60% ),
+		radial-gradient( 1200px 120px at 0% 0%, rgba( 56, 88, 233, 0.05 ), transparent 60% ),
 		var( --wplalr-surface );
 	padding: 28px 40px;
 }
@@ -95,8 +101,8 @@
 	margin-right: 14px;
 	color: #fff;
 	background: var( --wplalr-primary-gradient );
-	border-radius: 10px;
-	box-shadow: 0 4px 10px -2px rgba( 85, 57, 253, 0.45 );
+	border-radius: 8px;
+	box-shadow: 0 4px 10px -2px rgba( 56, 88, 233, 0.45 );
 	text-align: center;
 	align-items: center;
 	justify-content: center;
@@ -215,7 +221,9 @@
 	font-weight: 500;
 	font-size: 13px;
 	padding: 8px 16px;
-	border-radius: var( --wplalr-radius-sm );
+	/* Nested inside the 10px pill container (4px padding), so 6px keeps the
+	   active pill's corners concentric with the container's. */
+	border-radius: 6px;
 	transition: color 0.15s ease, background-color 0.15s ease,
 		box-shadow 0.15s ease;
 }
@@ -303,6 +311,17 @@
 	padding: 24px !important;
 }
 
+/* Table cards: the table bleeds to the card edges, like WooCommerce
+   Analytics tables. */
+.wplalr-form-section-body.wplalr-table-section-body {
+	padding: 0 !important;
+	overflow: hidden;
+}
+
+.wplalr-table-section-body > .wplalr-section-description {
+	padding: 24px;
+}
+
 /* ========== Section title / description ========== */
 .wplalr-section-title {
 	font-size: 16px;
@@ -331,15 +350,17 @@
 	font-weight: 500;
 }
 
-.wplalr-setting-wrapper .components-card {
+.wplalr-admin-app .components-card {
 	border: 1px solid var( --wplalr-border );
 	border-radius: var( --wplalr-radius );
-	box-shadow: var( --wplalr-shadow-sm );
+	box-shadow: none;
 }
 
 .wplalr-admin-app .components-button {
 	border-radius: var( --wplalr-radius-sm );
-	text-transform: capitalize;
+	font-size: 13px;
+	font-weight: 500;
+	text-transform: none;
 	transition: background-color 0.15s ease, color 0.15s ease,
 		box-shadow 0.15s ease;
 }
@@ -355,19 +376,19 @@
 	.wplalr-header-actions
 	.components-button.is-primary:hover:not( :disabled ) {
 	background: var( --wplalr-primary-hover );
-	box-shadow: 0 4px 10px -2px rgba( 85, 57, 253, 0.4 );
 }
 
 .wplalr-admin-app .components-button.is-secondary:not( .is-destructive ) {
-	box-shadow: inset 0 0 0 1px var( --wplalr-border-strong );
-	color: var( --wplalr-text );
-	background: var( --wplalr-surface );
+	box-shadow: inset 0 0 0 1px var( --wplalr-primary );
+	color: var( --wplalr-primary );
+	background: transparent;
 }
 
 .wplalr-admin-app
 	.components-button.is-secondary:not( .is-destructive ):hover:not( :disabled ) {
-	box-shadow: inset 0 0 0 1px var( --wplalr-primary );
-	color: var( --wplalr-primary );
+	box-shadow: inset 0 0 0 1px var( --wplalr-primary-hover );
+	color: var( --wplalr-primary-hover );
+	background: var( --wplalr-primary-soft );
 }
 
 /* Inputs: rounded corners + brand focus ring */
@@ -466,7 +487,7 @@
 }
 
 .wplalr-admin-app .components-form-token-field__remove-token.components-button:hover {
-	background: #e2ddff;
+	background: #dfe6fc;
 	color: var( --wplalr-primary-hover );
 }
 
@@ -637,13 +658,6 @@
 	height: 20px;
 }
 
-/* The "total" card gets the brand gradient badge for hierarchy */
-.wplalr-stat-card--total .wplalr-stat-icon {
-	background: var( --wplalr-primary-gradient );
-	color: #fff;
-	box-shadow: 0 4px 10px -2px rgba( 85, 57, 253, 0.45 );
-}
-
 .wplalr-stat-value {
 	font-size: 30px;
 	font-weight: 700;
@@ -665,8 +679,15 @@
 }
 
 /* ========== Audit Logs: toolbar ========== */
+/* White card header band above the table, like the Woo Analytics tables. */
+.wplalr-admin-app .components-card__header.wplalr-table-toolbar {
+	padding: 24px;
+	background: var( --wplalr-surface );
+	border-bottom: 1px solid var( --wplalr-border );
+}
+
 .wplalr-logs-toolbar {
-	width: min( 100%, 800px );
+	width: 100%;
 	align-items: center !important;
 	gap: 10px;
 }
@@ -715,37 +736,39 @@
 }
 
 .wplalr-col-actions {
-	width: 48px;
+	width: 68px;
 }
 
 .wplalr-logs-table th {
 	text-align: left;
-	font-weight: 600;
-	font-size: 11px;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	color: var( --wplalr-text-muted );
+	font-weight: 700;
+	font-size: 13px;
+	color: var( --wplalr-text );
+	background: #f8f9fa;
 	padding: 10px 12px;
-	border-bottom: 1px solid var( --wplalr-border );
+	border-bottom: 1px solid #e2e4e7;
 	white-space: nowrap;
 }
 
 .wplalr-logs-table td {
-	padding: 12px;
-	border-bottom: 1px solid #f1f2f7;
-	color: #3c434a;
+	padding: 16px 12px;
+	border-bottom: 1px solid #f0f0f0;
+	color: var( --wplalr-text );
 	vertical-align: middle;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-.wplalr-logs-table tbody tr {
-	transition: background-color 0.1s ease;
+/* Match Woo's 24px gutter on the flush card edges. */
+.wplalr-logs-table th:first-child,
+.wplalr-logs-table td:first-child {
+	padding-left: 24px;
 }
 
-.wplalr-logs-table tbody tr:hover {
-	background: #fafafe;
+.wplalr-logs-table th:last-child,
+.wplalr-logs-table td:last-child {
+	padding-right: 24px;
 }
 
 .wplalr-logs-table tbody tr:last-child td {
@@ -753,7 +776,6 @@
 }
 
 .wplalr-logs-redirect {
-	font-family: Menlo, Consolas, monaco, monospace;
 	font-size: 12px;
 }
 
@@ -802,7 +824,8 @@
 	margin-top: 4px;
 }
 
-.wplalr-admin-app .wplalr-log-delete svg {
+.wplalr-admin-app .wplalr-log-delete svg,
+.wplalr-admin-app .wplalr-logout-user svg {
 	fill: none;
 	stroke: currentColor;
 	width: 18px;
@@ -815,8 +838,7 @@
 	align-items: center;
 	justify-content: flex-end;
 	gap: 12px;
-	margin-top: 16px;
-	padding-top: 16px;
+	padding: 12px 24px;
 	border-top: 1px solid var( --wplalr-border );
 }
 
@@ -827,7 +849,7 @@
 
 /* ========== Logged-in Users: table ========== */
 .wplalr-sessions-table .wplalr-col-check {
-	width: 32px;
+	width: 36px;
 }
 
 /* Fixed layout sizes columns off the header row: pin the narrow ones so the
@@ -900,6 +922,11 @@
 	height: auto !important;
 	padding: 0 !important;
 	color: var( --wplalr-primary ) !important;
+	vertical-align: middle;
+}
+
+.wplalr-admin-app .components-button.wplalr-expand-sessions svg {
+	display: block;
 }
 
 .wplalr-session-detail td {
@@ -915,14 +942,14 @@
 .wplalr-session-ip {
 	margin-left: 12px;
 	color: var( --wplalr-text-muted );
-	font-family: Menlo, Consolas, monaco, monospace;
 }
 
 /* ========== Logged-in Users: bulk bar ========== */
 .wplalr-bulk-bar {
-	width: min( 100%, 800px );
+	margin: 16px 24px;
+	width: auto !important;
 	background: var( --wplalr-primary-soft );
-	border: 1px solid rgba( 85, 57, 253, 0.25 );
+	border: 1px solid rgba( 56, 88, 233, 0.25 );
 	border-radius: var( --wplalr-radius-sm );
 	padding: 10px 16px;
 	color: var( --wplalr-primary );
@@ -953,7 +980,7 @@
 }
 
 .wplalr-rule-card.is-expanded .components-card {
-	border-color: rgba( 85, 57, 253, 0.35 );
+	border-color: rgba( 56, 88, 233, 0.35 );
 }
 
 .wplalr-rule-card-body {
@@ -1202,7 +1229,7 @@
 }
 
 .wplalr-admin-app .components-button.wplalr-add-condition:hover:not( :disabled ) {
-	background: #e2ddff;
+	background: #dfe6fc;
 	color: var( --wplalr-primary-hover );
 	text-decoration: none;
 }
@@ -1254,7 +1281,6 @@
 }
 
 .wplalr-placeholder-chip {
-	font-family: Menlo, Consolas, monaco, monospace;
 	font-size: 11px;
 	color: var( --wplalr-text );
 	background: var( --wplalr-surface );

@@ -6,6 +6,7 @@ import { useState, Fragment } from '@wordpress/element';
 import {
 	Card,
 	CardBody,
+	CardHeader,
 	Button,
 	Spinner,
 	SelectControl,
@@ -21,6 +22,7 @@ import { applyFilters } from '@wordpress/hooks';
  * Internal dependencies
  */
 import { useSessions } from '../hooks/useSessions';
+import { LogoutIcon, ChevronDownIcon, ChevronUpIcon } from './icons';
 
 const ROLES = window.wplalrAdmin?.roles || {};
 const CURRENT_USER_ID = Number( window.wplalrAdmin?.currentUserId || 0 );
@@ -182,9 +184,11 @@ const SessionsViewer = () => {
 
 	return (
 		<>
-			{ /* Toolbar */ }
+			{ /* Table (toolbar grouped in the card header, Woo-style) */ }
 			<div className="wplalr-section">
-				<Flex className="wplalr-logs-toolbar" wrap>
+				<Card>
+					<CardHeader className="wplalr-table-toolbar">
+						<Flex className="wplalr-logs-toolbar" wrap>
 					<FlexItem isBlock>
 						<SearchControl
 							__nextHasNoMarginBottom
@@ -217,7 +221,7 @@ const SessionsViewer = () => {
 					</FlexItem>
 					<FlexItem>
 						<Button
-							variant="primary"
+							variant="secondary"
 							isDestructive
 							onClick={ onLogoutEveryone }
 							disabled={ total === 0 }
@@ -228,13 +232,12 @@ const SessionsViewer = () => {
 							) }
 						</Button>
 					</FlexItem>
-				</Flex>
-			</div>
+						</Flex>
+					</CardHeader>
 
-			{ /* Bulk bar */ }
-			{ selected.length > 0 && (
-				<div className="wplalr-section">
-					<Flex className="wplalr-bulk-bar">
+					{ /* Bulk bar */ }
+					{ selected.length > 0 && (
+						<Flex className="wplalr-bulk-bar">
 						<FlexItem>
 							{ sprintf(
 								/* translators: %d: number of selected users. */
@@ -254,14 +257,10 @@ const SessionsViewer = () => {
 								) }
 							</Button>
 						</FlexItem>
-					</Flex>
-				</div>
-			) }
+						</Flex>
+					) }
 
-			{ /* Table */ }
-			<div className="wplalr-section">
-				<Card>
-					<CardBody className="wplalr-form-section-body">
+					<CardBody className="wplalr-form-section-body wplalr-table-section-body">
 						{ isLoading && (
 							<div className="wplalr-loading">
 								<Spinner />
@@ -397,43 +396,54 @@ const SessionsViewer = () => {
 														{ row.session_count >
 															1 && (
 															<Button
-																variant="link"
+																size="small"
 																className="wplalr-expand-sessions"
+																icon={
+																	isExpanded ? (
+																		<ChevronUpIcon />
+																	) : (
+																		<ChevronDownIcon />
+																	)
+																}
+																label={
+																	isExpanded
+																		? __(
+																				'Hide sessions',
+																				'wp-login-logout-redirect'
+																		  )
+																		: __(
+																				'Show sessions',
+																				'wp-login-logout-redirect'
+																		  )
+																}
+																showTooltip
 																onClick={ () =>
 																	toggleExpand(
 																		row.user_id
 																	)
 																}
-															>
-																{ isExpanded
-																	? __(
-																			'Hide',
-																			'wp-login-logout-redirect'
-																	  )
-																	: __(
-																			'Show',
-																			'wp-login-logout-redirect'
-																	  ) }
-															</Button>
+															/>
 														) }
 													</td>
 													<td>
 														<Button
 															size="small"
 															className="wplalr-logout-user"
-															variant="primary"
 															isDestructive
+															icon={
+																<LogoutIcon />
+															}
+															label={ __(
+																'Log out',
+																'wp-login-logout-redirect'
+															) }
+															showTooltip
 															onClick={ () =>
 																onLogoutUser(
 																	row
 																)
 															}
-														>
-															{ __(
-																'Log out',
-																'wp-login-logout-redirect'
-															) }
-														</Button>
+														/>
 													</td>
 												</tr>
 												{ isExpanded &&
@@ -478,20 +488,23 @@ const SessionsViewer = () => {
 																<td>
 																	<Button
 																		size="small"
-																		variant="tertiary"
+																		className="wplalr-logout-user"
 																		isDestructive
+																		icon={
+																			<LogoutIcon />
+																		}
+																		label={ __(
+																			'End session',
+																			'wp-login-logout-redirect'
+																		) }
+																		showTooltip
 																		onClick={ () =>
 																			destroySession(
 																				row.user_id,
 																				session.token_id
 																			)
 																		}
-																	>
-																		{ __(
-																			'End',
-																			'wp-login-logout-redirect'
-																		) }
-																	</Button>
+																	/>
 																</td>
 															</tr>
 														)

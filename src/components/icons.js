@@ -11,8 +11,8 @@ export {
 	TrashIcon,
 	ArrowsUpDownIcon as DragHandleIcon,
 	EllipsisHorizontalCircleIcon as OthersIcon,
-	ArrowRightEndOnRectangleIcon as LoginIcon,
-	ArrowLeftStartOnRectangleIcon as LogoutIcon,
+	ArrowLeftEndOnRectangleIcon as LoginIcon,
+	ArrowRightStartOnRectangleIcon as LogoutIcon,
 	ShieldExclamationIcon as FailedLoginIcon,
 	ChartBarIcon,
 } from '@heroicons/react/24/outline';

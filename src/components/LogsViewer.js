@@ -6,6 +6,7 @@ import { useState } from '@wordpress/element';
 import {
 	Card,
 	CardBody,
+	CardHeader,
 	Button,
 	Spinner,
 	SelectControl,
@@ -139,9 +140,11 @@ const LogsViewer = () => {
 				</div>
 			</div>
 
-			{ /* Toolbar */ }
+			{ /* Table (toolbar grouped in the card header, Woo-style) */ }
 			<div className="wplalr-section">
-				<Flex className="wplalr-logs-toolbar" wrap>
+				<Card>
+					<CardHeader className="wplalr-table-toolbar">
+						<Flex className="wplalr-logs-toolbar" wrap>
 					<FlexItem isBlock>
 						<SearchControl
 							__nextHasNoMarginBottom
@@ -182,13 +185,9 @@ const LogsViewer = () => {
 							{ __( 'Delete all', 'wp-login-logout-redirect' ) }
 						</Button>
 					</FlexItem>
-				</Flex>
-			</div>
-
-			{ /* Table */ }
-			<div className="wplalr-section">
-				<Card>
-					<CardBody className="wplalr-form-section-body">
+						</Flex>
+					</CardHeader>
+					<CardBody className="wplalr-form-section-body wplalr-table-section-body">
 						{ isLoading && (
 							<div className="wplalr-loading">
 								<Spinner />
