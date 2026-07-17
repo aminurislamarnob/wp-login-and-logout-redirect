@@ -12,6 +12,12 @@ changelog.txt
 .travis.yml
 debug.log
 phpunit.xml
+phpunit.xml.dist
+.phpunit.result.cache
+e2e
+playwright.config.js
+playwright-report
+test-results
 .svnignore
 README.md
 plugin-deploy.sh
