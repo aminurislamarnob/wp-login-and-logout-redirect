@@ -36,7 +36,7 @@ class Redirection {
 		$this->placeholders = $placeholders;
 
 		add_filter( 'login_redirect', array( $this, 'login_redirect' ), 10, 3 );
-		add_filter( 'woocommerce_login_redirect', array( $this, 'woocommerce_login_redirect' ), 10, 2 );
+		add_filter( 'woocommerce_login_redirect', array( $this, 'woocommerce_login_redirect' ), 99, 2 );
 		add_action( 'wp_logout', array( $this, 'redirect_after_logout' ) );
 	}
 
