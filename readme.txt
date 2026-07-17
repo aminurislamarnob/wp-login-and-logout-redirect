@@ -1,4 +1,4 @@
-=== WP Login and Logout Redirect ===
+=== Entryway - WP Login & Logout Redirect ===
 Contributors: aminurislam01, pluginizelab
 Donate link: https://www.buymeacoffee.com/aiarnob
 Tags: login redirect, logout redirect, redirect, login security, audit log
@@ -9,7 +9,7 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Redirect users to any URL after login or logout — with per-role rules, an audit log of login activity, and a live view of logged-in users.
+Redirect users to any URL after login or logout with powerful per-role rules, a searchable audit log, live session management, and email notifications.
 
 == Description ==
 
