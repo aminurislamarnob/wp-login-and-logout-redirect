@@ -36,17 +36,16 @@ const ROLE_OPTIONS = [
 /**
  * Format a unix timestamp as a coarse relative string.
  *
- * @param {number}  ts     Target timestamp (seconds).
- * @param {boolean} future Whether the target is expected in the future.
+ * @param {number} ts Target timestamp (seconds).
  * @return {string} Relative label.
  */
-const relative = ( ts, future = false ) => {
+const relative = ( ts ) => {
 	if ( ! ts ) {
 		return '—';
 	}
 
 	const now = Math.floor( Date.now() / 1000 );
-	const diff = Math.abs( future ? ts - now : now - ts );
+	const diff = Math.abs( now - ts );
 
 	const mins = Math.round( diff / 60 );
 	const hours = Math.round( diff / 3600 );
@@ -64,11 +63,8 @@ const relative = ( ts, future = false ) => {
 		value = sprintf( __( '%d days', 'wp-login-logout-redirect' ), days );
 	}
 
-	return future
-		? /* translators: %s: a duration like "5 min". */
-		  sprintf( __( 'in %s', 'wp-login-logout-redirect' ), value )
-		: /* translators: %s: a duration like "5 min". */
-		  sprintf( __( '%s ago', 'wp-login-logout-redirect' ), value );
+	/* translators: %s: a duration like "5 min". */
+	return sprintf( __( '%s ago', 'wp-login-logout-redirect' ), value );
 };
 
 const SessionsViewer = () => {
@@ -311,12 +307,6 @@ const SessionsViewer = () => {
 										</th>
 										<th>
 											{ __(
-												'Expires',
-												'wp-login-logout-redirect'
-											) }
-										</th>
-										<th>
-											{ __(
 												'Sessions',
 												'wp-login-logout-redirect'
 											) }
@@ -403,12 +393,6 @@ const SessionsViewer = () => {
 														) }
 													</td>
 													<td>
-														{ relative(
-															first.expiration,
-															true
-														) }
-													</td>
-													<td>
 														{ row.session_count }
 														{ row.session_count >
 															1 && (
@@ -463,7 +447,7 @@ const SessionsViewer = () => {
 																<td />
 																<td
 																	colSpan={
-																		4
+																		3
 																	}
 																>
 																	<span className="wplalr-session-device">
