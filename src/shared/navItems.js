@@ -27,4 +27,8 @@ export const getNavItems = () =>
 			page: 'wplalr_sessions',
 			label: __( 'Logged-in Users', 'wp-login-logout-redirect' ),
 		},
+		{
+			page: 'wplalr_whats_new',
+			label: __( "What's New", 'wp-login-logout-redirect' ),
+		},
 	] );

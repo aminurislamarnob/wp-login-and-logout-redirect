@@ -66,10 +66,20 @@ class Settings {
 			array( $this, 'render_sessions_page' )
 		);
 
+		$whats_new = add_submenu_page(
+			'wplalr_login_logout_redirect',
+			__( "What's New", 'wp-login-logout-redirect' ),
+			__( "What's New", 'wp-login-logout-redirect' ),
+			'manage_options',
+			'wplalr_whats_new',
+			array( $this, 'render_whats_new_page' )
+		);
+
 		self::$page_hooks = array(
 			'settings'   => $settings,
 			'audit_logs' => $audit_logs,
 			'sessions'   => $sessions,
+			'whats_new'  => $whats_new,
 		);
 	}
 
@@ -119,6 +129,13 @@ class Settings {
 	 */
 	public function render_sessions_page() {
 		echo '<div id="wplalr-sessions"></div>';
+	}
+
+	/**
+	 * Render the What's New app mount point.
+	 */
+	public function render_whats_new_page() {
+		echo '<div id="wplalr-whats-new"></div>';
 	}
 
 	/**

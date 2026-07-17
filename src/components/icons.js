@@ -15,6 +15,12 @@ export {
 	ArrowRightStartOnRectangleIcon as LogoutIcon,
 	ShieldExclamationIcon as FailedLoginIcon,
 	ChartBarIcon,
+	UsersIcon,
+	EnvelopeIcon,
+	SparklesIcon,
+	CodeBracketIcon,
+	CheckCircleIcon,
+	WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline';
 
 export const ChevronDownIcon = () => (

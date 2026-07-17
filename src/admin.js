@@ -11,6 +11,7 @@ import PageShell from './shared/PageShell';
 import SettingsApp from './views/SettingsApp';
 import AuditLogsApp from './views/AuditLogsApp';
 import SessionsApp from './views/SessionsApp';
+import WhatsNewApp from './views/WhatsNewApp';
 
 /**
  * Each WordPress submenu page renders exactly one of these mount nodes. The
@@ -32,6 +33,11 @@ const VIEWS = [
 		id: 'wplalr-sessions',
 		page: 'wplalr_sessions',
 		Component: SessionsApp,
+	},
+	{
+		id: 'wplalr-whats-new',
+		page: 'wplalr_whats_new',
+		Component: WhatsNewApp,
 	},
 ];
 

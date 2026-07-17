@@ -1331,7 +1331,208 @@
 	margin-top: 8px;
 }
 
+/* ========== What's New page ========== */
+.wplalr-whatsnew-hero.components-card {
+	background:
+		radial-gradient( 900px 220px at 0% 0%, rgba( 56, 88, 233, 0.08 ), transparent 65% ),
+		radial-gradient( 700px 200px at 100% 100%, rgba( 56, 88, 233, 0.05 ), transparent 60% ),
+		var( --wplalr-surface );
+}
+
+.wplalr-whatsnew-hero .components-card__body {
+	padding: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 12px;
+}
+
+.wplalr-whatsnew-version {
+	display: inline-flex;
+	align-items: center;
+	padding: 4px 12px;
+	border-radius: 999px;
+	background: var( --wplalr-primary-soft );
+	color: var( --wplalr-primary );
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.wplalr-whatsnew-title {
+	margin: 0;
+	font-size: 24px;
+	font-weight: 650;
+	line-height: 1.25;
+	color: var( --wplalr-text );
+}
+
+.wplalr-whatsnew-subtitle {
+	margin: 0;
+	max-width: 640px;
+	font-size: 14px;
+	line-height: 1.6;
+	color: var( --wplalr-text-muted );
+}
+
+.wplalr-whatsnew-hero-actions {
+	display: flex;
+	gap: 12px;
+	margin-top: 8px;
+	flex-wrap: wrap;
+}
+
+.wplalr-whatsnew-grid {
+	display: grid;
+	grid-template-columns: repeat( 3, 1fr );
+	gap: 16px;
+}
+
+.wplalr-whatsnew-card {
+	--wplalr-whatsnew-accent: var( --wplalr-primary );
+	--wplalr-whatsnew-accent-soft: var( --wplalr-primary-soft );
+	transition: border-color 0.15s ease;
+}
+
+.wplalr-whatsnew-card:hover {
+	border-color: var( --wplalr-whatsnew-accent );
+}
+
+.wplalr-whatsnew-card--green {
+	--wplalr-whatsnew-accent: var( --wplalr-success );
+	--wplalr-whatsnew-accent-soft: var( --wplalr-success-soft );
+}
+
+.wplalr-whatsnew-card--amber {
+	--wplalr-whatsnew-accent: var( --wplalr-warning );
+	--wplalr-whatsnew-accent-soft: var( --wplalr-warning-soft );
+}
+
+.wplalr-whatsnew-card--slate {
+	--wplalr-whatsnew-accent: #47506b;
+	--wplalr-whatsnew-accent-soft: #eef1f6;
+}
+
+.wplalr-whatsnew-card--violet {
+	--wplalr-whatsnew-accent: #6941c6;
+	--wplalr-whatsnew-accent-soft: #f2edfc;
+}
+
+.wplalr-whatsnew-card .components-card__body {
+	padding: 24px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
+	height: 100%;
+}
+
+.wplalr-whatsnew-card-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: var( --wplalr-radius );
+	background: var( --wplalr-whatsnew-accent-soft );
+	color: var( --wplalr-whatsnew-accent );
+}
+
+.wplalr-whatsnew-card-icon svg {
+	width: 22px;
+	height: 22px;
+}
+
+.wplalr-whatsnew-card-title {
+	margin: 0;
+	font-size: 15px;
+	font-weight: 650;
+	color: var( --wplalr-text );
+}
+
+.wplalr-whatsnew-card-description {
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.55;
+	color: var( --wplalr-text-muted );
+	flex: 1;
+}
+
+.wplalr-whatsnew-card-link {
+	font-size: 13px;
+	font-weight: 500;
+	color: var( --wplalr-primary );
+	text-decoration: none;
+}
+
+.wplalr-whatsnew-card-link:hover,
+.wplalr-whatsnew-card-link:focus {
+	color: var( --wplalr-primary-hover );
+	text-decoration: underline;
+}
+
+.wplalr-whatsnew-fixes .components-card__body {
+	padding: 24px;
+}
+
+.wplalr-whatsnew-fixes-title {
+	margin: 0 0 16px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 16px;
+	font-weight: 650;
+	color: var( --wplalr-text );
+}
+
+.wplalr-whatsnew-fixes-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: var( --wplalr-radius );
+	background: var( --wplalr-primary-soft );
+	color: var( --wplalr-primary );
+}
+
+.wplalr-whatsnew-fixes-badge svg {
+	width: 18px;
+	height: 18px;
+}
+
+.wplalr-whatsnew-fixes-list {
+	margin: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.wplalr-whatsnew-fixes-list li {
+	margin: 0;
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	font-size: 13px;
+	line-height: 1.55;
+	color: var( --wplalr-text );
+}
+
+.wplalr-whatsnew-fixes-list li svg {
+	flex-shrink: 0;
+	width: 18px;
+	height: 18px;
+	margin-top: 1px;
+	color: var( --wplalr-success );
+}
+
 /* ========== Responsive ========== */
+@media ( max-width: 1100px ) {
+	.wplalr-whatsnew-grid {
+		grid-template-columns: repeat( 2, 1fr );
+	}
+}
+
 @media ( max-width: 782px ) {
 	.wplalr-settings-header {
 		padding: 20px 20px;
@@ -1348,6 +1549,14 @@
 
 	.wplalr-stat-cards {
 		grid-template-columns: repeat( 2, 1fr );
+	}
+
+	.wplalr-whatsnew-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.wplalr-whatsnew-hero .components-card__body {
+		padding: 24px 20px;
 	}
 
 	.wplalr-hash-nav {
