@@ -59,7 +59,7 @@ class ReleaseNotice {
 					<?php
 					printf(
 						/* translators: %s: plugin version number. */
-						esc_html__( 'Meet Entryway — WP Login & Logout Redirect v%s is here.', 'wp-login-logout-redirect' ),
+						esc_html__( 'WP Login & Logout Redirect is now Entryway. Welcome to v%s!', 'wp-login-logout-redirect' ),
 						esc_html( WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_VERSION )
 					);
 					?>
