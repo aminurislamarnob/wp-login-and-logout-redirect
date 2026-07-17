@@ -11,7 +11,6 @@ import { applyFilters } from '@wordpress/hooks';
  * Internal dependencies
  */
 import SettingsHeader from '../components/SettingsHeader';
-import { Squares2X2Icon } from '../components/icons';
 import { getNavItems } from './navItems';
 
 /**
@@ -36,6 +35,7 @@ const PageShell = ( { current, children } ) => {
 	);
 
 	const adminUrl = window.wplalrAdmin?.adminUrl || '';
+	const assetsUrl = window.wplalrAdmin?.assetsUrl || '';
 	const navItems = getNavItems();
 
 	// Pro extensions add header actions via this filter.
@@ -64,13 +64,13 @@ const PageShell = ( { current, children } ) => {
 	return (
 		<div className="wplalr-admin-app">
 			<SettingsHeader
-				icon={ Squares2X2Icon }
+				logo={ `${ assetsUrl }/admin/images/entryway-logo.png` }
 				title={ __(
 					'WP Login and Logout Redirect',
 					'wp-login-logout-redirect'
 				) }
 				subTitle={ __(
-					'Configure where users are sent after they log in or log out.',
+					'WP Login and Logout Redirect',
 					'wp-login-logout-redirect'
 				) }
 				actions={ headerActions }

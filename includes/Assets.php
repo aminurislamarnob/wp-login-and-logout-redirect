@@ -95,6 +95,7 @@ class Assets {
 			array(
 				'homeUrl'       => home_url(),
 				'adminUrl'      => esc_url_raw( admin_url() ),
+				'assetsUrl'     => esc_url_raw( WP_LOGIN_LOGOUT_REDIRECT_PLUGIN_ASSET ),
 				'restRoot'      => esc_url_raw( rest_url() ),
 				'roles'         => $roles,
 				'currentUserId' => get_current_user_id(),
