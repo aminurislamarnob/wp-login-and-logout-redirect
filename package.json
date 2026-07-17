@@ -9,7 +9,10 @@
 		"format": "wp-scripts format",
 		"lint:css": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
-		"packages-update": "wp-scripts packages-update"
+		"packages-update": "wp-scripts packages-update",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
+		"e2e:restore": "node e2e/restore-site.js"
 	},
 	"repository": {
 		"type": "git",
@@ -39,6 +42,7 @@
 		"react-router-dom": "^6.23.1"
 	},
 	"devDependencies": {
+		"@playwright/test": "^1.61.1",
 		"@wordpress/scripts": "^32.2.0"
 	}
 }

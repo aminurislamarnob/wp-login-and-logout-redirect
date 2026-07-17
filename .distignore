@@ -44,3 +44,7 @@ webpack-entries.js
 base-tailwind.config.js
 CLAUDE.md
 /.claude
+/e2e
+/test-results
+/playwright-report
+playwright.config.js

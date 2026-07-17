@@ -41,6 +41,13 @@ npm run start
 
 # Build release ZIP (runs npm install + npm run build internally)
 chmod +x bin/build.sh && bin/build.sh
+
+# Playwright e2e (runs against the live Herd site http://woocommerce.test)
+npm run test:e2e
+npm run test:e2e:ui
+
+# Recover the site after a killed e2e run (Ctrl-C / crash)
+npm run e2e:restore
 ```
 
 ## Architecture
@@ -84,6 +91,34 @@ test runs inside a transaction that is rolled back.
 When a test is `markTestIncomplete()`, it encodes intended behavior for a known
 defect (see the message on each). Delete the marker line when the bug is fixed.
 There are currently none.
+
+### The Playwright e2e suite
+
+`e2e/` drives a real browser against the live Herd site `http://woocommerce.test`
+— **not** a disposable container. That choice has consequences the harness is
+built around:
+
+- **Setup snapshots, teardown restores.** `e2e/global-setup.js` records the
+  plugin's active state and all its options before touching anything
+  (`e2e/.state/restore.json`, plus a copy in `e2e/.backups/` that is never
+  deleted); `global-teardown.js` puts everything back and deletes the throwaway
+  `wplalr_e2e_*` users. **Never kill a running e2e process** — teardown won't
+  run and the site is left mutated. If that happens, `npm run e2e:restore`
+  replays the newest backup.
+- **One run at a time, one worker.** Every spec mutates the same site-wide
+  options; `workers: 1` is load-bearing and a second concurrent `playwright
+  test` corrupts both runs (and the site).
+- **Everything the suite creates is prefixed `wplalr_e2e_`** (users, rule ids)
+  and all site mutation goes through wp-cli (`e2e/utils/wp-cli.js`), never
+  hand-rolled SQL. The `freshPlugin` auto-fixture wipes plugin options and the
+  log table before every test.
+- Setup refuses to run while `peters-login-redirect` or `sky-login-redirect`
+  is active — they fight over the same `login_redirect` filter.
+- URL assertions use `sitePath()` from `e2e/fixtures.js`: WP's `home_url()` is
+  http but Herd 301s to https, so literal-URL assertions fail on the scheme.
+- The rules drag test uses dnd-kit's KeyboardSensor (space / arrows / space)
+  with short waits between presses — there is nothing pollable between steps,
+  and its live-region text is the same for pick-up and move.
 
 ### The integration suite
 
