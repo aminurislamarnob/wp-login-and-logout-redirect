@@ -27,6 +27,8 @@ const RELEASE_VERSION = '4.0.0';
  */
 const WhatsNewApp = () => {
 	const adminUrl = window.wplalrAdmin?.adminUrl || '';
+	const assetsUrl = window.wplalrAdmin?.assetsUrl || '';
+	const hasWooCommerce = !! window.wplalrAdmin?.hasWooCommerce;
 
 	const features = applyFilters( 'wplalr_whats_new_features', [
 		{
@@ -109,7 +111,10 @@ const WhatsNewApp = () => {
 					<CardBody>
 						<span className="wplalr-whatsnew-version">
 							{ /* translators: %s: plugin version number. */ }
-							{ __( 'Version', 'wp-login-logout-redirect' ) }{ ' ' }
+							{ __(
+								'Version',
+								'wp-login-logout-redirect'
+							) }{ ' ' }
 							{ RELEASE_VERSION }
 						</span>
 						<h2 className="wplalr-whatsnew-title">
@@ -192,6 +197,101 @@ const WhatsNewApp = () => {
 					) }
 				</div>
 			</div>
+
+			{ /* StoreSuite promo — only relevant on WooCommerce stores */ }
+			{ hasWooCommerce && (
+			<div className="wplalr-section">
+				<Card className="wplalr-whatsnew-promo">
+					<CardBody>
+						<div className="wplalr-whatsnew-promo-content">
+							<span className="wplalr-whatsnew-promo-eyebrow">
+								{ __(
+									'From the same author',
+									'wp-login-logout-redirect'
+								) }
+							</span>
+							<img
+								className="wplalr-whatsnew-promo-logo"
+								src={ `${ assetsUrl }/admin/images/storesuite-logo.png` }
+								alt={ __(
+									'StoreSuite',
+									'wp-login-logout-redirect'
+								) }
+							/>
+							<h3 className="wplalr-whatsnew-promo-title">
+								{ __(
+									'Manage your WooCommerce store without opening wp-admin.',
+									'wp-login-logout-redirect'
+								) }
+							</h3>
+							<p className="wplalr-whatsnew-promo-description">
+								{ __(
+									'Everything you need - from products and orders to coupons and analytics - in one modern dashboard.',
+									'wp-login-logout-redirect'
+								) }
+							</p>
+							<ul className="wplalr-whatsnew-promo-pills">
+								<li>
+									{ __(
+										'Orders & Products',
+										'wp-login-logout-redirect'
+									) }
+								</li>
+								<li>
+									{ __(
+										'CSV Import/Export',
+										'wp-login-logout-redirect'
+									) }
+								</li>
+								<li>
+									{ __(
+										'Manage Coupons',
+										'wp-login-logout-redirect'
+									) }
+								</li>
+								<li>
+									{ __(
+										'Live Analytics',
+										'wp-login-logout-redirect'
+									) }
+								</li>
+								<li>
+									{ __(
+										'AI Product Assistant',
+										'wp-login-logout-redirect'
+									) }
+								</li>
+								<li>
+									{ __(
+										'Many More',
+										'wp-login-logout-redirect'
+									) }
+								</li>
+							</ul>
+							<div className="wplalr-whatsnew-promo-actions">
+								<Button
+									variant="primary"
+									href="https://wordpress.org/plugins/storesuite/"
+									target="_blank"
+									rel="noreferrer"
+								>
+									{ __(
+										'Install StoreSuite — Free',
+										'wp-login-logout-redirect'
+									) }
+								</Button>
+								<span className="wplalr-whatsnew-promo-note">
+									{ __(
+										'Free forever on WordPress.org.',
+										'wp-login-logout-redirect'
+									) }
+								</span>
+							</div>
+						</div>
+					</CardBody>
+				</Card>
+			</div>
+			) }
 		</>
 	);
 };

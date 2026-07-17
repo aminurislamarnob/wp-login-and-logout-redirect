@@ -99,6 +99,7 @@ class Assets {
 				'restRoot'      => esc_url_raw( rest_url() ),
 				'roles'         => $roles,
 				'currentUserId' => get_current_user_id(),
+				'hasWooCommerce' => class_exists( 'WooCommerce' ),
 			)
 		);
 

@@ -1470,6 +1470,90 @@
 	text-decoration: underline;
 }
 
+/* ========== What's New: StoreSuite promo ========== */
+.wplalr-whatsnew-promo.components-card {
+	background:
+		radial-gradient( 800px 260px at 100% 0%, rgba( 105, 65, 198, 0.1 ), transparent 60% ),
+		radial-gradient( 600px 220px at 0% 100%, rgba( 56, 88, 233, 0.06 ), transparent 60% ),
+		var( --wplalr-surface );
+	border-color: rgba( 105, 65, 198, 0.35 );
+}
+
+.wplalr-whatsnew-promo .components-card__body {
+	padding: 32px 40px;
+}
+
+.wplalr-whatsnew-promo-content {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 12px;
+	max-width: 720px;
+}
+
+.wplalr-whatsnew-promo-eyebrow {
+	display: inline-flex;
+	align-items: center;
+	padding: 4px 12px;
+	border-radius: 999px;
+	background: #f2edfc;
+	color: #6941c6;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.wplalr-whatsnew-promo-logo {
+	display: block;
+	max-height: 36px;
+	width: auto;
+}
+
+.wplalr-whatsnew-promo-title {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 650;
+	color: var( --wplalr-text );
+}
+
+.wplalr-whatsnew-promo-description {
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.6;
+	color: var( --wplalr-text-muted );
+}
+
+.wplalr-whatsnew-promo-pills {
+	margin: 0;
+	list-style: none;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.wplalr-whatsnew-promo-pills li {
+	margin: 0;
+	padding: 4px 12px;
+	border-radius: 999px;
+	background: var( --wplalr-surface );
+	border: 1px solid rgba( 105, 65, 198, 0.3 );
+	color: #6941c6;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.wplalr-whatsnew-promo-actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-top: 8px;
+	flex-wrap: wrap;
+}
+
+.wplalr-whatsnew-promo-note {
+	font-size: 12px;
+	color: var( --wplalr-text-muted );
+}
+
 /* ========== Responsive ========== */
 @media ( max-width: 1100px ) {
 	.wplalr-whatsnew-grid {
@@ -1499,7 +1583,8 @@
 		grid-template-columns: 1fr;
 	}
 
-	.wplalr-whatsnew-hero .components-card__body {
+	.wplalr-whatsnew-hero .components-card__body,
+	.wplalr-whatsnew-promo .components-card__body {
 		padding: 24px 20px;
 	}
 
