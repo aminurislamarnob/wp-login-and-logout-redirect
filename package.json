@@ -10,6 +10,8 @@
 		"lint:css": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
 		"packages-update": "wp-scripts packages-update",
+		"test:js": "wp-scripts test-unit-js",
+		"test:js:watch": "wp-scripts test-unit-js --watch",
 		"test:e2e": "playwright test",
 		"test:e2e:ui": "playwright test --ui",
 		"e2e:restore": "node e2e/restore-site.js"
@@ -43,6 +45,9 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.61.1",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/react": "^15.0.7",
+		"@testing-library/user-event": "^14.6.1",
 		"@wordpress/scripts": "^32.2.0"
 	}
 }
