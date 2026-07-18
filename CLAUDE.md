@@ -39,6 +39,10 @@ npm run build
 # Watch/rebuild during development
 npm run start
 
+# Run the Jest suite for the React admin app (src/**/__tests__/)
+npm run test:js
+npm run test:js:watch
+
 # Build release ZIP (runs npm install + npm run build internally)
 chmod +x bin/build.sh && bin/build.sh
 
@@ -91,6 +95,19 @@ test runs inside a transaction that is rolled back.
 When a test is `markTestIncomplete()`, it encodes intended behavior for a known
 defect (see the message on each). Delete the marker line when the bug is fixed.
 There are currently none.
+
+### The Jest suite (React admin app)
+
+`src/**/__tests__/*.test.js`, run with `npm run test:js` (wp-scripts → Jest +
+React Testing Library, jsdom). `jest.config.js` extends
+`@wordpress/jest-preset-default`; `tests/js/jest.setup.js` stubs the
+`window.wplalrAdmin` localized data and the observer APIs jsdom lacks. Only
+`@wordpress/api-fetch` is mocked — components render inside the real
+`SettingsProvider` and notices are asserted against the real
+`@wordpress/notices` store (spreading `jest.requireActual('@wordpress/data')`
+breaks on its lazy getters, so don't mock that package). The preset runs
+`@wordpress/jest-console`, which fails tests on unexpected `console.warn` —
+that's why the test `MemoryRouter` opts into the React Router v7 future flags.
 
 ### The Playwright e2e suite
 

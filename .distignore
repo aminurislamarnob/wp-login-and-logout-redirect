@@ -48,3 +48,5 @@ CLAUDE.md
 /test-results
 /playwright-report
 playwright.config.js
+jest.config.js
+/coverage
